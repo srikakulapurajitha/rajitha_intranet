@@ -31,7 +31,7 @@ import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
 //import CssBaseline from '@mui/material/CssBaseline';
 import BusinessIcon from '@mui/icons-material/Business';
-import { Description, ExpandLess, ExpandMore, LocalLibrary, NoteAdd } from '@mui/icons-material';
+import { BadgeRounded, Description, ExpandLess, ExpandMore, LocalLibrary, NoteAdd, PersonAdd, SupervisedUserCircle } from '@mui/icons-material';
 
 
 
@@ -73,7 +73,8 @@ export default function NavBar(props) {
 
   const [openCompanyManagementMenu, setOpenCompanyManagementMenu] = useState(false);
 
-  const [openCompanyPageManagemetMenu, setOpenCompanyPageManagemetMenu] = useState(false)
+  const [openCompanyPageManagementMenu, setOpenCompanyPageManagementMenu] = useState(false)
+  const [openUserManagementMenu, setOpenUserManagementMenu] = useState(false);
 
 
 
@@ -86,7 +87,10 @@ export default function NavBar(props) {
         setOpenCompanyManagementMenu(true)
         break
       case 'company pages management':
-        setOpenCompanyPageManagemetMenu(true)
+        setOpenCompanyPageManagementMenu(true)
+        break
+      case 'user management':
+        setOpenUserManagementMenu(true)
         break
       default:
         setDrawerOpen(false)
@@ -104,7 +108,7 @@ export default function NavBar(props) {
   //       setOpenCompanyManagementMenu(false)
   //       break
   //     case 'company pages management':
-  //       setOpenCompanyPageManagemetMenu(false)
+  //       setOpenCompanyPageManagementMenu(false)
   //       break
   //     default:
   //       setDrawerOpen(false)
@@ -328,8 +332,9 @@ export default function NavBar(props) {
               </ListItemButton>
             </ListItem>
           ))}
-
+          
           <Divider />
+          {/*------------------------company management---------------------- */}
           <ListItem disablePadding sx={{ display: 'block' }} onClick={()=>handleSubMenuOpen('company management')}>
             <ListItemButton
               sx={{
@@ -355,7 +360,7 @@ export default function NavBar(props) {
 
           </ListItem>
           <Divider />
-
+          {/*------------------------company pages management---------------------- */}
           <ListItem disablePadding sx={{ display: 'block' }} onClick={()=>handleSubMenuOpen('company pages management')}>
             <ListItemButton
               sx={{
@@ -375,14 +380,40 @@ export default function NavBar(props) {
               >
                 <LocalLibrary />
               </ListItemIcon>
-              {openCompanyPageManagemetMenu ? <ExpandLess /> : <ExpandMore />}
+              {openCompanyPageManagementMenu ? <ExpandLess /> : <ExpandMore />}
+
+            </ListItemButton>
+
+          </ListItem>
+          <Divider />
+          {/*------------------------user management---------------------- */}
+          <ListItem disablePadding sx={{ display: 'block' }} onClick={()=>handleSubMenuOpen('user management')}>
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: 'initial',
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: 'auto',
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}
+
+              >
+                <SupervisedUserCircle />
+              </ListItemIcon>
+              {openUserManagementMenu ? <ExpandLess /> : <ExpandMore />}
 
             </ListItemButton>
 
           </ListItem>
           <Divider />
 
-        </List>
+          </List>
         
       </Drawer>
       <Drawer
@@ -504,9 +535,9 @@ export default function NavBar(props) {
 
           </ListItem>
 
-          {/*------------------------------*/}
+          {/*-----------comapany pages management-------------------*/}
 
-           <ListItem disablePadding sx={{ display: 'block' }} onClick={() => setOpenCompanyPageManagemetMenu(!openCompanyPageManagemetMenu)} >
+           <ListItem disablePadding sx={{ display: 'block' }} onClick={() => setOpenCompanyPageManagementMenu(!openCompanyPageManagementMenu)} >
             <ListItemButton
               sx={{
                 minHeight: 48,
@@ -526,11 +557,11 @@ export default function NavBar(props) {
                 <LocalLibrary />
               </ListItemIcon>
               <ListItemText primary={'Company Page Managment'} />
-              {openCompanyPageManagemetMenu ? <ExpandLess /> : <ExpandMore />}
+              {openCompanyPageManagementMenu ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
             <Divider />
-            {openCompanyPageManagemetMenu ? <>
-            <Fade in={openCompanyPageManagemetMenu} >
+            {openCompanyPageManagementMenu ? <>
+            <Fade in={openCompanyPageManagementMenu} >
               
               <List>
                 
@@ -579,6 +610,88 @@ export default function NavBar(props) {
                       <Description />
                     </ListItemIcon>
                     <ListItemText primary={'View Company Page '}  />
+                  </ListItemButton>
+                </ListItem>
+                <Divider />
+              </List>
+             
+            </Fade>
+            </>:null}
+
+          </ListItem> 
+          {/*---------------user manegement-----------------------*/}
+          <ListItem disablePadding sx={{ display: 'block' }} onClick={() => setOpenUserManagementMenu(!openUserManagementMenu)} >
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: 'center',
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: 3,
+                  justifyContent: 'initial',
+                  alignItems: 'center'
+                }}
+
+              >
+                <SupervisedUserCircle />
+              </ListItemIcon>
+              <ListItemText primary={'User Managment'} />
+              {openUserManagementMenu ? <ExpandLess /> : <ExpandMore />}
+            </ListItemButton>
+            <Divider />
+            {openUserManagementMenu ? <>
+            <Fade in={openUserManagementMenu} >
+              
+              <List>
+                
+                <ListItem disablePadding sx={{ display: 'block' }} onClick={()=>navigate("/adduser")}>
+                  <ListItemButton
+                    sx={{
+                      minHeight: 48,
+                      justifyContent: 'center',
+                      px: 2.5,
+                    }}
+                  >
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: 3,
+                        ml:3,
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                      }}
+                    >
+                      <PersonAdd />
+                    </ListItemIcon>
+                    <ListItemText primary={'Add User '} />
+                  </ListItemButton>
+                </ListItem>
+
+                <ListItem disablePadding sx={{ display: 'block'}} onClick={()=>navigate("/viewusers")}>
+                  <ListItemButton
+                    sx={{
+                      minHeight: 48,
+                      justifyContent: 'center',
+                      px: 2.5,
+                    }}
+                  >
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: 3,
+                        ml: 3,
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                      }}
+
+                    >
+                      <BadgeRounded/>
+                    </ListItemIcon>
+                    <ListItemText primary={'View Users '}  />
                   </ListItemButton>
                 </ListItem>
                 <Divider />

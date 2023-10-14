@@ -6,7 +6,8 @@
 --- create table companypagesmanagement(id varchar(40) primary key, company_name varchar(200) not null, company_pagename varchar(100) not null, company_pagetype varchar(500) not null, company_pagestatus varchar(20) not null,companyId varchar(40) not null, foreign key(companyId) references companymanagement(id) on delete cascade, foreign key(company_name) references companymanagement(company_name) on update cascade); 
 4. office holiday table
 --- create table officeholidays(no int unique auto_increment, holidaylist_title varchar(100) not null, holiday_title varchar(100) not null, holiday_date date not null,holiday_day varchar(15) not null, pageId varchar(40) not null, foreign key(pageId) references companypagesmanagement(id) on delete cascade);
-
+5. user management table
+--- create table usermanagement(profile_pic varchar(200) not null, first_name varchar(100) not null, last_name varchar(100) not null, date_of_birth date not null, country varchar(100) not null,  gender varchar(20) not null, blood_group varchar(10) not null, company_name varchar(200) not null, about_yourself varchar(300) not null, employee_id int primary key, access varchar(50) not null, date_of_joining date not null, status varchar(50) not null, email varchar(200) unique not null, password varchar(100) not null, designation varchar(250) not null, foreign key(company_name) references companymanagement(company_name) on update cascade);
 
 
 ---test---

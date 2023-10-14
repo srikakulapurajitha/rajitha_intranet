@@ -2,13 +2,13 @@ import db from "../config/connectiondb.js";
 import { v4 as uuidv4 } from 'uuid';
 
 export const companynames = (req,res) =>{
-    const q = 'select id, company_name from companymanagement'
+    const q = `select id, company_name from companymanagement where company_status='active' order by id desc`
     db.query(q,(err,result)=>{
         if(err){
-            res.status(500).json('error occurd!')
+            return res.status(500).json('error occurd!')
         }
         else{
-            res.status(200).json(result)
+            return res.status(200).json(result)
         }
     })
 }
@@ -20,7 +20,7 @@ export const addcompanypageholidays =(req,res)=>{
     db.query(q,check_values,(err,result)=>{
         if (err){
             console.log(err)
-            res.status(500).json('error occured!')
+            return res.status(500).json('error occured!')
             
         }
         else{
@@ -32,7 +32,7 @@ export const addcompanypageholidays =(req,res)=>{
                 db.query(insertPageData_query,[insertPageData_values],(err,result)=>{
                     if(err){
                         console.log(err)
-                        res.status(500).json('error occured!')
+                        return res.status(500).json('error occured!')
                     }
                     else{
                     console.log(result)
@@ -42,21 +42,21 @@ export const addcompanypageholidays =(req,res)=>{
                         const insertHolidays_query = 'insert into officeholidays(holidaylist_title, holiday_title, holiday_date, holiday_day,pageID) values(?)'
                         const insertHolidays_values = [req.body.pagedetails.holidaylist_title,req.body.pagedetails.holiday_title[i],req.body.pagedetails.holiday_date[i],req.body.pagedetails.holiday_day[i],pageId]
                         db.query(insertHolidays_query,[insertHolidays_values],(err,result)=>{
-                            if(err) res.status(500).json('error occured!')
+                            if(err) return res.status(500).json('error occured!')
                             else{
                                 console.log(result)
-                                //res.status(201).json('Data Added Successfully')
+                                //return res.status(201).json('Data Added Successfully')
                             }
                         })
                         
                     }
-                    res.status(201).json('data added successfully')
+                    return res.status(201).json('data added successfully')
                     }
                 })
 
             }
             else{
-                res.status(500).json('holiday list title already exist for given data!')
+                return res.status(500).json('holiday list title already exist for given data!')
             }
 
                     
@@ -71,7 +71,7 @@ export const addcompanypageaddress = (req,res)=>{
     const check_query = 'select * from companypagesmanagement where companyId=? and company_pagename=? and company_pagetype=?'
     const check_values = [req.body.companyId,req.body.company_pagename,req.body.company_pagetype]
     db.query(check_query,check_values,async(err,result)=>{
-        if(err) res.status(500).json('error occured!')
+        if(err) return res.status(500).json('error occured!')
         else{
             console.log(result)
             if(result.length===0){
@@ -80,15 +80,15 @@ export const addcompanypageaddress = (req,res)=>{
                 const insert_values = [pageId,req.body.company_name,req.body.company_pagename,req.body.company_pagetype,req.body.company_pagestatus,req.body.companyId]
                 try{
                     await db.promise().query(insert_query,[insert_values])
-                    res.status(201).json('data added successfully')
+                    return res.status(201).json('data added successfully')
                 }
                 catch(err){
                     console.log(err)
-                    res.status(500).json('error occured!')
+                    return res.status(500).json('error occured!')
                 }
             }
             else{
-                res.status(500).json('page already exist for given data!')
+                return res.status(500).json('page already exist for given data!')
             }
         }
     })
@@ -98,7 +98,7 @@ export const addcompanypageaddress = (req,res)=>{
 export const viewcompanypages = (req,res)=>{
     const q = 'select * from companypagesmanagement'
     db.query(q,(err,result)=>{
-        if(err) res.status(500).json('error occured!')
+        if(err) return res.status(500).json('error occured!')
         else res.send(result)
     })
 
@@ -122,7 +122,7 @@ export const getcompanypagedata = (req,res) =>{
     db.query(q,values,(err,result)=>{
         if(err) {
             console.log(err)
-            res.status(500).json('error occured!')
+            return res.status(500).json('error occured!')
         }
         else{
             console.log(result)
@@ -140,7 +140,7 @@ export const updatecompanypageholidays=(req,res)=>{
         console.log('up',result)
         if(err){
             console.log(err)
-            res.status(500).json('error occured!')
+            return res.status(500).json('error occured!')
         }
         else{
             if(result.length===0){
@@ -150,7 +150,7 @@ export const updatecompanypageholidays=(req,res)=>{
                 db.query(updateCompDataQuery,updateCompDataValues,(err,updatecompresult)=>{
                     if(err){
                         console.log(err)
-                        res.status(500).json('error occured!')
+                        return res.status(500).json('error occured!')
                     }
                     else{
                         const delete_holiday_query = ' delete from officeholidays where pageId=? and holidaylist_title =?'
@@ -170,14 +170,14 @@ export const updatecompanypageholidays=(req,res)=>{
                                             } 
                                             else{
                                                 console.log(result)
-                                                //res.status(201).json('Data Added Successfully')
+                                                //return res.status(201).json('Data Added Successfully')
                                             }
                                         })
                                     }                          
                             }
                         })
                     }
-                    res.status(201).json('data updated successfully')
+                    return res.status(201).json('data updated successfully')
                                 
                                 
                 })
@@ -186,7 +186,7 @@ export const updatecompanypageholidays=(req,res)=>{
             }
             else{
                 console.log('exist')
-                res.status(500).json('Holiday title already exist for given data!')
+                return res.status(500).json('Holiday title already exist for given data!')
             }
             
         }
@@ -200,7 +200,7 @@ export const updatecompanypageaddress=(req,res)=>{
     const check_query = 'select * from companypagesmanagement where companyId=? and company_pagename=? and company_pagetype=? and id!=?'
     const check_values = [req.body.companyId,req.body.company_pagename,req.body.company_pagetype,req.body.id]
     db.query(check_query,check_values,async(err,result)=>{
-        if(err) res.status(500).json('error occured!')
+        if(err) return res.status(500).json('error occured!')
         else{
             console.log(result)
             if(result.length===0){
@@ -210,15 +210,15 @@ export const updatecompanypageaddress=(req,res)=>{
                 db.query(updateCompDataQuery,updateCompDataValues,(err,updatecompresult)=>{
                     if(err){
                         console.log(err)
-                        res.status(500).json('error occured!')
+                        return res.status(500).json('error occured!')
                     }
                     else{
-                        res.status(200).json('Data updated Successfully!')
+                        return res.status(200).json('Data updated Successfully!')
                     }
                 })
             }
             else{
-                res.status(500).json('Company page name already exist!')
+                return res.status(500).json('Company page name already exist!')
             }
 
         }})
@@ -233,11 +233,11 @@ export const deletecompanypages = (req,res) =>{
         
         if(err) {
             console.log(err)
-            res.status(500).json(err)
+            return res.status(500).json(err)
         }
         else{
             console.log(result)
-            res.status(200).json('Company Deleted Successfully')
+            return res.status(200).json('Company Deleted Successfully')
         }
     })
     //res.send('ok')

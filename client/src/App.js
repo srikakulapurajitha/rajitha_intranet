@@ -7,6 +7,8 @@ import AddCompany from './Components/Admin/CompanyManagment/AddCompany'
 import ViewCompany from './Components/Admin/CompanyManagment/ViewCompany'
 import AddCompanyPages from './Components/Admin/CompanyPagesManagement/AddCompanyPages'
 import ViewCompanyPages from './Components/Admin/CompanyPagesManagement/ViewCompanyPages'
+import AddUser from './Components/Admin/UserManagement/AddUser'
+import ViewUser from './Components/Admin/UserManagement/ViewUser'
 
 
 export default function App() {
@@ -20,6 +22,9 @@ export default function App() {
       <Route path='/viewcompany' element={<ViewCompany />} />
       <Route path='/addcompanypages' element={<AddCompanyPages />} />
       <Route path='/viewcompanypages' element={<ViewCompanyPages />} />
+      <Route path='/adduser' element={<AddUser />} />
+      <Route path='/viewusers' element={<ViewUser />} />
+      
 
     </Routes>
     </BrowserRouter>

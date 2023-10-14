@@ -13,6 +13,7 @@ import authRoute from './routes/auth.js'
 import comMangementRoute from './routes/companymanagement.js'
 //import attendanceRoute from './routes/attendance.js'
 import comPagesManagementRoute from './routes/companypagemanagement.js'
+import userManagementRoute from './routes/usermanagement.js'
 
 db.connect((err)=>{
     if (err){
@@ -27,14 +28,16 @@ const app = express()
 
 //middleware 
 app.use(cors())
-app.use(express.json())
+app.use(express.json({limit:'50mb'}))
 app.use(cookieParser())
 app.use(express.static('uploads'));
+app.use(express.urlencoded({limit:'50mb',extended:true}))
 
 //routes
 app.use('/api/',authRoute)
 app.use('/api/',comMangementRoute)
 app.use('/api',comPagesManagementRoute)
+app.use('/api/',userManagementRoute)
 //app.use('/api/',attendanceRoute)
 
 

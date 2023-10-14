@@ -10,7 +10,7 @@ export const addcompany = (req,res)=>{
         console.log('res',result)
         if (err){
             console.log(err)
-            res.status(500).json('error occured try again!')
+            return res.status(500).json('error occured try again!')
         }
         else{
             if (result.length===0){
@@ -20,24 +20,24 @@ export const addcompany = (req,res)=>{
                     if (err){
                         if(err.errno===1062){
                         console.log(err)
-                        res.status(406).json('company name already exist!')
+                        return res.status(406).json('company name already exist!')
                         }
                         else{
-                            res.status(500).json('error occured try again!')
+                            return res.status(500).json('error occured try again!')
                         }
                     }
-                    res.status(200).json('company added successfully')
+                    return res.status(200).json('company added successfully')
                 })
 
             }
             else{
-                res.status(406).json('company name already exist!')
+                return res.status(406).json('company name already exist!')
             }
         }
         
     })
     
-    //res.status(200).json('compnay name already exist')
+    //return res.status(200).json('compnay name already exist')
 
 }
 
@@ -46,11 +46,11 @@ export const viewcompany = (req,res)=>{
     db.query(q,(err,result)=>{
         if (err){
             //console.log(err)
-            res.status(500).json('error occured!')
+            return res.status(500).json('error occured!')
         }
         else{
             //console.log(result)
-            res.status(200).json(result)
+            return res.status(200).json(result)
             
            
         }
@@ -65,16 +65,16 @@ export const editcompany = (req,res) =>{
         if(error){
             console.log(error)
             if(error.errno===1062){
-                res.status(500).json('company name already exists!')
+                return res.status(500).json('company name already exists!')
             }
             else{
-            res.status(500).json('error occured!')
+            return res.status(500).json('error occured!')
             }
         }
         else{
             
             console.log(result)
-            res.status(200).json('company details updated successfully')
+            return res.status(200).json('company details updated successfully')
         }
     })
    
@@ -87,12 +87,12 @@ export const deletecompany=(req,res)=>{
         
         if(err) {
             console.log(err)
-            res.status(500).json(err)
+            return res.status(500).json(err)
         }
         else{
             console.log(result)
-            res.status(200).json('Company Deleted Successfully')
+            return res.status(200).json('Company Deleted Successfully')
         }
     })
-    //res.status(500).json('from delete')
+    //return res.status(500).json('from delete')
 }
