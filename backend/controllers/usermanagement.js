@@ -160,9 +160,3 @@ export const edituser = (req, res) => {
     })
     //res.send('from edit')
 }
-
-// const validate=()=>{
-//     console.log('compare:',bcrypt.compareSync('fB0kH7bm','$2b$12$zpS6t9smKFjqH9OXCyUnjeYitu2ZsnSiMrptHEfdY6y5aOK4ujmUO'))
-// }
-// validate()
-

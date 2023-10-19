@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import NavBar from '../NavBar/NavBar';
+import React, { useContext, useState } from 'react';
+import AdminNavBar from '../NavBar/AdminNavBar';
 //import NavBar from '../sidenav/navbar';
 import Box from '@mui/material/Box';
 import {  Backdrop, Container, Grid, List, ListItem, ListItemAvatar,  ListItemText, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, } from '@mui/material';
@@ -50,7 +50,9 @@ import Chart from 'react-apexcharts'
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import Button from '@mui/material/Button';
-
+ 
+import UserContext from '../../context/UserContext';
+import UserNavBar from '../NavBar/UserNavBar';
 
 const convertDateFormat = (date) =>{
     let day = date.getDate()
@@ -477,12 +479,14 @@ const Dashboard = () => {
             </Container>
 
 
-        </Card>)
+    </Card>)
+    const {userDetails} = useContext(UserContext)
+    
     return (
         <>
             <Box sx={{ display: 'flex' }}>
                 
-                <NavBar />
+                {userDetails.access==='admin'?<AdminNavBar />:<UserNavBar/>}
                 <Box component='main' sx={{ flexGrow: 1, p: 3, mt: 6 }}>
 
                     <Grid container spacing={{ xs: 2, md: 2 }} style={{ display: 'flex' }}>
@@ -500,15 +504,15 @@ const Dashboard = () => {
                                 <CardMedia
                                     component="img"
                                     sx={{ display: 'flex', maxWidth: 80, maxHeight: 80, borderRadius: '50%', justifyContent: 'center', alignItems: 'center' }}
-                                    image="profile.jpg"
+                                    image={userDetails.profile_pic!==''?userDetails.profile_pic:userDetails.gender==='male'?'maleavatar.png':'femaleavatar.png'}
                                     alt="profile"
                                 />
                                 <CardContent  >
                                     <Typography component="div" variant="h5">
-                                        Akash Gajanan Dandge (1260)
+                                        {`${userDetails.first_name} ${userDetails.last_name} (bcg/${userDetails.employee_id})`}
                                     </Typography>
                                     <Typography component="div" variant="p" color='gray'>
-                                        Role: Software Developer
+                                        {userDetails.designation}
                                     </Typography>
                                 </CardContent>
                             </Card>

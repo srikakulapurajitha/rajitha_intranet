@@ -1,6 +1,6 @@
 import { Box, Button, FormControl, Grid,  InputLabel, MenuItem, OutlinedInput, Paper, Select, Stack,  TextField,  Typography } from '@mui/material'
 import React, { useState } from 'react'
-import NavBar from '../../Comman/NavBar/NavBar';
+import NavBar from '../../Comman/NavBar/AdminNavBar';
 import axios from 'axios'
 import {  ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css' 

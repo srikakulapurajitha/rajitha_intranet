@@ -5,7 +5,7 @@ import { Backdrop, Box, Button, Card, Container, Dialog, DialogActions, DialogCo
 import React, { useEffect } from 'react';
 import DataTable from 'react-data-table-component';
 import { defaultThemes } from 'react-data-table-component';
-import NavBar from '../../Comman/NavBar/NavBar';
+import NavBar from '../../Comman/NavBar/AdminNavBar';
 import SearchIcon from '@mui/icons-material/Search';
 import axios from 'axios';
 import { useState } from 'react';

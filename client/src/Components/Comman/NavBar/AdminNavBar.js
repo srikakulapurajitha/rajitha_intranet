@@ -31,7 +31,7 @@ import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
 //import CssBaseline from '@mui/material/CssBaseline';
 import BusinessIcon from '@mui/icons-material/Business';
-import { BadgeRounded, Description, ExpandLess, ExpandMore, LocalLibrary, NoteAdd, PersonAdd, SupervisedUserCircle } from '@mui/icons-material';
+import { BadgeRounded,  Description, ExpandLess, ExpandMore, LocalLibrary, NoteAdd, PersonAdd, SupervisedUserCircle } from '@mui/icons-material';
 
 
 
@@ -39,7 +39,12 @@ import { Fade } from '@mui/material';
 
 import AddBusinessIcon from '@mui/icons-material/AddBusiness';
 import StoreIcon from '@mui/icons-material/Store';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import { Avatar } from '@mui/material';
+import UserContext from '../../context/UserContext';
+import Cookies from 'js-cookie';
+import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
 //import CompanyManagementPages from '../CompanyPagesManagement/AddCompanyManagementPages';
 
 const AppBar = styled(MuiAppBar, {
@@ -54,7 +59,7 @@ const drawerWidth = 280;
 
 
 
-export default function NavBar(props) {
+export default function AdminNavBar(props) {
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
@@ -146,6 +151,20 @@ export default function NavBar(props) {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
+  const handleLogout = async() =>{
+    try{
+      const res = await axios.get('/api/logout')
+      toast.success(res.data)
+      navigate('/login',{replace:true})
+    }
+    catch(err){
+      console.log(err)
+      toast.error('error occured!')
+
+    }
+    
+  }
+
 
 
   const menuId = 'primary-search-account-menu';
@@ -167,6 +186,7 @@ export default function NavBar(props) {
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem onClick={handleLogout}>Logout</MenuItem>
     </Menu>
   );
 
@@ -224,6 +244,7 @@ export default function NavBar(props) {
 
 
   const container = window !== undefined ? () => window().document.body : undefined;
+  const {userDetails} = useContext(UserContext)
 
 
   return (
@@ -274,7 +295,7 @@ export default function NavBar(props) {
               onClick={handleProfileMenuOpen}
               color="black"
             >
-              <AccountCircle />
+              {userDetails.profile_pic===''?<AccountCircle />:<Avatar  sx={{ width: 24, height: 24 }} src={userDetails.profile_pic} />}
             </IconButton>
           </Box>
           <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
@@ -707,6 +728,7 @@ export default function NavBar(props) {
       </Drawer>
       {renderMobileMenu}
       {renderMenu}
+      <ToastContainer />
     </>
   );
 }
