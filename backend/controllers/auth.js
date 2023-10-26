@@ -3,6 +3,7 @@ import transporter from "../config/emailconfig.js";
 import jwt from 'jsonwebtoken'
 import bcrypt from "bcrypt";
 import otpGenerator from 'otp-generator'
+import 'dotenv/config'
 
 export const login = (req, res) => {
     console.log(req.body)
@@ -14,11 +15,10 @@ export const login = (req, res) => {
             if (result.length !== 0 && bcrypt.compareSync(req.body.password, result[0].password)) {
                 console.log(result)
                 result = result[0]
-                const token = jwt.sign({ employee_id: result.employee_id, email: result.email, access: result.access }, 'auth_token')
+                const token = jwt.sign({ employee_id: result.employee_id, email: result.email, access: result.access }, process.env.JWT_SECRET)
                 console.log(token)
                 delete result.password
                 res.cookie('USERAUTHID', token,{maxAge: 10800000}).status(200).json(result)
-
             }
             else {
                 return res.status(401).json('Invalid email/password!')
@@ -30,7 +30,7 @@ export const login = (req, res) => {
 export const checkuser = async (req, res) => {
     console.log(req.cookies)
     try {
-        const verify = jwt.verify(req.cookies.USERAUTHID, 'auth_token')
+        const verify = jwt.verify(req.cookies.USERAUTHID, process.env.JWT_SECRET)
         console.log(verify)
         const { employee_id, email, access } = verify
         const q = `select * from usermanagement where employee_id=? and email=? and access=? and status='active'`

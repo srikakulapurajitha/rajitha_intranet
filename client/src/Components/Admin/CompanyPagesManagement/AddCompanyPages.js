@@ -2,11 +2,12 @@ import NavBar from '../../Comman/NavBar/AdminNavBar';
 import { Box, Button, Collapse, Container,  FormControl, Grid,  IconButton,  InputLabel,  MenuItem, OutlinedInput, Paper, Select, Stack,  Typography } from '@mui/material'
 import React, { useEffect, useMemo, useState } from 'react'
 import axios from 'axios'
-import {  ToastContainer, toast } from 'react-toastify';
+import {toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css' 
 import { Add, Delete, Save } from '@mui/icons-material';
 //import { convertDateFormat } from '../../utils';
 import DataTable from 'react-data-table-component';
+import ChartUpload from './ChartsUpload';
 
 
 function AddCompanyPages() {
@@ -36,29 +37,6 @@ function AddCompanyPages() {
   })
 
   const [pageTypeView,setPageTypeView] = useState(false)
-  
-
-  //making rows data
-
-  useEffect(()=>{
-    ////console.log('use called')
-    const data = addHolidays.holiday_date.map((data,index)=>{
-   // //console.log('updating', data,index,addHolidays)
-    return(
-      {
-        id:index+1,
-        title:addHolidays.holiday_title[index],
-        date:data,
-        day:addHolidays.holiday_day[index]
-
-        
-      }
-    )
-  })
-  setHolidayData(data)
-  },[addHolidays])
-
-
   //handling procced option
 
   const handleProccedToOption = (e) =>{
@@ -81,20 +59,37 @@ function AddCompanyPages() {
 
     }
     else if(companyPageData.company_pagetype==='Chart'){
-      return null
+      return chartOption
     }
     else{
       return null
     }
   }
 
+//----------------------------------------------------------Charts------------------------------------------------------------------------
 
+const chartOption = useMemo(()=>{
+
+  return(
+    <>
+    <Paper elevation={5} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center',  height: { xs: '60ch', md: '52ch',lg:'52ch' } }}>
+        <Box  sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',  p: 1, }}>
+          <Typography m={1} component={'h5'} variant='h5'>Upload Chart</Typography>
+          <ChartUpload compData={companyPageData} clear={handleResetCompForm}/>
+        </Box>
+      </Paper>
+    </>
+  )
+  },[companyPageData])
+
+
+//----------------------------------------------------------Address-----------------------------------------------------------------------
   //creating address option
 
   const addressOption = useMemo(()=>{
     const handleConfirm = () =>{
       //console.log('clicked')
-      if (companyPageData.company_name!=='' && companyPageData.company_pagename!=='' && companyPageData.company_pagetype !=='' && companyPageData.company_pagestatus!==''){
+      if (companyPageData.company_name!=='' && companyPageData.company_pagename!=='' && companyPageData.company_pagetype ==='Address' && companyPageData.company_pagestatus!==''){
         let msg = ''
 			  try {
           const result =toast.promise(
@@ -108,10 +103,7 @@ function AddCompanyPages() {
 						success: {
 							render(res) {
                 msg = (res.data.data)
-                
-                              
-                
-								
+                handleResetCompForm()								
 								return (`${msg} `)
 							}
 						},
@@ -133,17 +125,7 @@ function AddCompanyPages() {
 			} 
       }
       else{
-        toast.error('Add data properly!', {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-          });
-        
+        toast.error('Add data properly!')
       }
 
     }
@@ -159,10 +141,31 @@ function AddCompanyPages() {
     )
   },[companyPageData])
 
- 
+ //----------------------------------------------------------------------------------------------------------------------------------------------
 
-  
+//----------------------------------------------------------Holiday--------------------------------------------------------------------------------
   // creating holidaylist option 
+
+    //making rows data
+
+    useEffect(()=>{
+      ////console.log('use called')
+      const data = addHolidays.holiday_date.map((data,index)=>{
+     // //console.log('updating', data,index,addHolidays)
+      return(
+        {
+          id:index+1,
+          title:addHolidays.holiday_title[index],
+          date:data,
+          day:addHolidays.holiday_day[index]
+  
+          
+        }
+      )
+    })
+    setHolidayData(data)
+    },[addHolidays])
+    
   const holidayOption = useMemo(()=>{
 
     const columns = [
@@ -484,6 +487,8 @@ function AddCompanyPages() {
     )
   },[addHolidays,holidayData,tempHolidayData,companyPageData])
 
+//------------------------------------------------------------------------------------------------------------------------------------------
+
   //taking companay names from db
   useEffect(()=>{
     axios.get('/api/companynames')
@@ -491,13 +496,19 @@ function AddCompanyPages() {
       //console.log(res.data)
       setCompanyNames(res.data)
     })
+    .catch((err)=>{
+      setCompanyNames([])
+      toast.error(err.response.data)
+      
+    }
+    )
   },[])
   
   const handleComPageData=(e)=>{
     //console.log(e.target.value)
     setCompanyPageData({...companyPageData,[e.target.name]:e.target.value})
   }
-  const handleResetCompForm=()=>{
+  function handleResetCompForm(){
     //console.log(companyPageData)
     setCompanyPageData({
     company_name:'',
@@ -621,7 +632,7 @@ function AddCompanyPages() {
 
   
    </Box>
-   <ToastContainer />
+   
    </>
   )
 }

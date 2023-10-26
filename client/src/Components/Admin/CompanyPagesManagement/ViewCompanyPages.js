@@ -2,14 +2,13 @@ import React from 'react'
 import NavBar from '../../Comman/NavBar/AdminNavBar';
 import { Box, Card, Divider, Stack, Typography,Button, Drawer, Paper, List, ListItem, ListItemText, Container, DialogActions, Dialog, DialogTitle, DialogContent, FormControl, InputLabel, OutlinedInput, Select, MenuItem, IconButton, Backdrop, TextField } from '@mui/material'
 import DataTable, { defaultThemes } from 'react-data-table-component';
-
 import { useState } from 'react';
 import { useEffect } from 'react';
 import axios from 'axios';
 import { useMemo } from 'react';
 import { Add, Delete, Search } from '@mui/icons-material';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.min.css' 
+import { toast } from 'react-toastify';
+import EditChartUpload from './EditChartUpload';
 
 //table styling
 const customStyles = {
@@ -95,6 +94,7 @@ function ViewCompanyPages() {
 		tempholiday_day:''
 
 	})
+	const [chartImage, setChartImage] = useState('')
 	
 	const [loader, setLoader] = useState(true)
 
@@ -305,6 +305,19 @@ function ViewCompanyPages() {
 						</List>
 					</Paper>
 				)
+			case 'Chart':
+				return(
+					<Paper elevation={5} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: { xs: '35ch',sm:'35ch', md: '35ch',lg:'50ch' }, height: { xs: '55ch', sm: '55ch', md: '55ch' } }}>
+						<Typography  variant='h5' component={'h5'} m={1} p={1} border={'1px solid black'} >Company Page Data</Typography>
+						<Box sx={{height:200}}>
+							<Container sx={{maxWidth:'25ch',height:200,display:'flex',justifyContent:'center',alignItems:'center'}}>
+								<img style={{border:'1px solid gray',maxWidth:'100%',maxHeight:'100%',objectFit:'contain'}} src={viewCompanyPageData.companyPageData[0].chart_image} alt='chart' />
+							</Container>
+
+						</Box>
+					</Paper>
+				)
+	
 			default:
 				return <></>
 
@@ -335,9 +348,9 @@ function ViewCompanyPages() {
 				onClose={handleViewButtonDrawerToggleClosing}
 				variant="temporary"
 				sx={{
-					width: {xs:350,lg:800},
+					width: {xs:300,lg:800},
 					'& .MuiDrawer-paper': {
-						width: {xs:350,lg:800},
+						width: {xs:300,lg:800},
 						marginTop: 6
 					}
 				}}
@@ -444,8 +457,30 @@ function ViewCompanyPages() {
 			</Drawer>
 		)
 	}, [viewDrawerOpen, viewCompanyPageData,  companyPageDataOption])
+//-----------------------------------------------------------------------------------------------------
+
+//---------------------------------------------------Edit-----------------------------------
 
 	//rendering component according to pagetype
+	
+
+	const chartOption= useMemo(()=>{
+		const handleChartImage=(img)=>{
+			console.log('img',img)
+			setChartImage(img)
+		}
+		return(
+			<>
+			<Paper elevation={1} sx={{ display:'flex',justifyContent: 'center', alignItems: 'center', width: { sm: '50ch', md: '50ch',lg:'60ch' }, height: {  md: '45ch' } }}>
+			  <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: { sm: '45ch', lg: '55ch' }, height: { md: '45ch' }, p: 1 }}>
+				<EditChartUpload image={chartImage} handleImage={handleChartImage}  />
+			  </Box>
+			</Paper>
+			</>
+		  )
+	},[chartImage])
+
+	//--------------------------address option--------------------------------------------
 	const addressOption = useMemo(()=>{
 		
 		return(
@@ -459,7 +494,7 @@ function ViewCompanyPages() {
 		)
 	  },[])
 
-	  //----------------------------------------------------------------------------------------
+	  //------------------------------------------------Holiday Option---------------------------------------
 
 	useEffect(()=>{
 		//console.log('use called',holidayData)
@@ -724,8 +759,9 @@ function ViewCompanyPages() {
 	const handleEditButton = (row) =>{
 		//console.log('selected row:',row)
 		setEditDialogOpen(true)
-		setEditCompanyPageData({companyPageDetails:row})
+		
 		if(row.company_pagetype==='Holidays'){
+			setEditCompanyPageData({companyPageDetails:row})
 			axios.post('/api/getcompanypagedata',row)
 		.then(res=>{
 			//console.log(res.data)
@@ -743,12 +779,22 @@ function ViewCompanyPages() {
 		})
 		.catch()
 		}
+		else if(row.company_pagetype==='Chart'){
+			axios.post('/api/getcompanypagedata',row)
+			.then(res=>{
+				console.log(res.data)
+				
+				setEditCompanyPageData({companyPageDetails:row,companyPageData:res.data[0]})
+				setChartImage(res.data[0].chart_image)
+			})
+			.catch()
+		}
+		else{
+			setEditCompanyPageData({companyPageDetails:row})
+		}
 		
 		
 	}
-
-
-	
 	//company edit view
 	const companyPageEditView = useMemo(()=>{
 		//console.log(editCompanyPageData.companyPageDetails.company_pagetype)
@@ -763,16 +809,17 @@ function ViewCompanyPages() {
 			  return addressOption
 		
 			}
-			else if(editCompanyPageData.company_pagetype==='Chart'){
-			  return null
+			else if(editCompanyPageData.companyPageDetails.company_pagetype==='Chart'){
+			  return chartOption
 			}
 			else{
 			  return null
 			}
 		  }
 		const handleEditDialogClose = () =>{
-			//console.log('dilog clicked')
+			console.log('dilog clicked')
 			setEditDialogOpen(false)
+			
 		}
 		
 			//console.log(editCompanyPageData)
@@ -789,7 +836,9 @@ function ViewCompanyPages() {
 					method=axios.put('/api/updatecompanypageaddress', compDetails)	
 				}
 				else if (compDetails.company_pagetype==='Chart'){
-					//method=axios.put('/api/updatecompanypageholidays', {compDetails,editHolidays:addHolidays})	
+					method=axios.put('/api/updatecompanypagechart', {compDetails,image:{prevImg:editCompanyPageData.companyPageData.chart_image,newImg:chartImage}})	
+					
+					console.log(chartImage)
 				}
 				else{
 					toast.error('Enter Data Properly!', {
@@ -858,12 +907,7 @@ function ViewCompanyPages() {
 			<Dialog
 			open={editDialogOpen}
 			onClose={handleEditDialogClose}
-			maxWidth={'400'}
-			
-			
-			
-			
-			
+			maxWidth={'400'}			
 			>
 				<DialogTitle>Edit Company Page</DialogTitle>
 				<DialogContent dividers={true}>
@@ -954,7 +998,7 @@ function ViewCompanyPages() {
 			</Dialog>
 			</>
 		)
-	},[editDialogOpen,editCompanyPageData,companyNames,holidayOption,addHolidays,addressOption])
+	},[editDialogOpen,editCompanyPageData,companyNames,holidayOption,addHolidays,addressOption,chartImage,chartOption])
 
 	//row selection
 	const handleRowSelected = React.useCallback(state => {
@@ -1060,8 +1104,6 @@ function ViewCompanyPages() {
      </Box>
      {companyPageDetailsView}
 	 {companyPageEditView}
-	 <ToastContainer />
-
 	<Backdrop
 	sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
 	open={loader}

@@ -254,7 +254,7 @@ function AddUser() {
     return(
         <>
         <NavBar />
-        <Box component='main' sx={{ flexGrow: 1, p: 3,  mt:{xs:15,md:6,lg:8} }}>
+        <Box component='main' sx={{ flexGrow: 1, p: 3, ml: { xs: 8 },  mt:{xs:20,md:6,lg:8} }}>
             <div style={{ height: '80vh', width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                 <Grid container sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                     <Grid item sm={12} lg={12} md={12}>

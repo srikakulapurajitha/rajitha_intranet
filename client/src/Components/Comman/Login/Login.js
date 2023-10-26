@@ -57,8 +57,8 @@ function Login() {
           <Grid container >
 
             <Grid item xs={0} lg={4}>
-              <Container sx={{ display: 'flex', justifyContent: 'center', height: '400px', width: { xs: '0ch', lg: '400px' } }}>
-                <img src='robo2.png' alt='robo' style={{ maxWidth: "100%", maxHeight: '100%' }} />
+            <Container sx={{ display: 'flex', justifyContent: 'center', height: '400px', alignItems:'center', width: { xs: '0ch', lg: '400px' } }}>
+                <img src='robo2.png' alt='robo' style={{ maxWidth: '100%', maxHeight: '80%' }} />
               </Container>
 
             </Grid>
@@ -137,8 +137,8 @@ function Login() {
 
 
             <Grid item xs={0} lg={4}>
-              <Container sx={{ display: 'flex', justifyContent: 'center', height: '400px', width: { xs: '0ch', lg: '400px' } }}>
-                <img src='robo.png' alt='robo' style={{ maxWidth: '100%', maxHeight: '100%' }} />
+              <Container sx={{ display: 'flex', justifyContent: 'center', height: '400px', alignItems:'center', width: { xs: '0ch', lg: '400px' } }}>
+                <img src='robo.png' alt='robo' style={{ maxWidth: '100%', maxHeight: '80%' }} />
               </Container>
 
             </Grid>

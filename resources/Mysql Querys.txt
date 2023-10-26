@@ -8,7 +8,8 @@
 --- create table officeholidays(no int unique auto_increment, holidaylist_title varchar(100) not null, holiday_title varchar(100) not null, holiday_date date not null,holiday_day varchar(15) not null, pageId varchar(40) not null, foreign key(pageId) references companypagesmanagement(id) on delete cascade);
 5. user management table
 --- create table usermanagement(profile_pic varchar(200) not null, first_name varchar(100) not null, last_name varchar(100) not null, date_of_birth date not null, country varchar(100) not null,  gender varchar(20) not null, blood_group varchar(10) not null, company_name varchar(200) not null, about_yourself varchar(300) not null, employee_id int primary key, access varchar(50) not null, date_of_joining date not null, status varchar(50) not null, email varchar(200) unique not null, password varchar(100) not null, designation varchar(250) not null, foreign key(company_name) references companymanagement(company_name) on update cascade);
-
+6. office charts table
+--- create table officecharts(id int primary key auto_increment, chart_image varchar(200) not null, pageId varchar(40) not null,foreign key(pageId) references companypagesmanagement(id) on delete cascade);
 
 ---test---
 select * from companypagesmanagement inner join officeholidays on id=pageId where company_name='Brightcomgroup India' and company_pagename='Holiday list' and holidaylist_title!='weekend' and holidaylist_title='Holiday list 2023' and pageId='a24f2d61-8c82-4ec8-86bb-9b0358db1eb5';

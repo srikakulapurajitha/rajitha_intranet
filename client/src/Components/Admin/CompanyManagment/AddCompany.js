@@ -2,8 +2,7 @@ import { Box, Button, FormControl, Grid,  InputLabel, MenuItem, OutlinedInput, P
 import React, { useState } from 'react'
 import NavBar from '../../Comman/NavBar/AdminNavBar';
 import axios from 'axios'
-import {  ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.min.css' 
+import {toast } from 'react-toastify';
 import {phone} from 'phone';
 
 function AddComapny() {
@@ -81,7 +80,7 @@ function AddComapny() {
     
       <NavBar />
      
-      <Box component='main' sx={{ flexGrow: 1, p: 3,  mt:{xs:6,md:6,lg:8} }}>
+      <Box component='main' sx={{ flexGrow: 1, p: 3, ml:{xs:8},  mt:{xs:4,md:6,lg:8} }}>
         <div style={{ height: '80vh', width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
           <Grid container sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
             <Grid item sm={12} lg={12} md={12}>
@@ -200,7 +199,6 @@ function AddComapny() {
         </div>
       </Box>
       
-        <ToastContainer />
     </>
   )
 }

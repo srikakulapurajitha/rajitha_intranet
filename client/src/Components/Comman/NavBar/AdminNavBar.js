@@ -31,7 +31,7 @@ import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
 //import CssBaseline from '@mui/material/CssBaseline';
 import BusinessIcon from '@mui/icons-material/Business';
-import { BadgeRounded,  Description, ExpandLess, ExpandMore, LocalLibrary, NoteAdd, PersonAdd, SupervisedUserCircle } from '@mui/icons-material';
+import { AddAlert, Announcement, BadgeRounded,  Campaign,  Description, ExpandLess, ExpandMore, Info, LocalLibrary, NoteAdd, PersonAdd, SupervisedUserCircle } from '@mui/icons-material';
 
 
 
@@ -80,6 +80,7 @@ export default function AdminNavBar(props) {
 
   const [openCompanyPageManagementMenu, setOpenCompanyPageManagementMenu] = useState(false)
   const [openUserManagementMenu, setOpenUserManagementMenu] = useState(false);
+  const [openAnnouncementMenu,setOpenAnnouncementMenu]=useState(false)
 
 
 
@@ -96,6 +97,9 @@ export default function AdminNavBar(props) {
         break
       case 'user management':
         setOpenUserManagementMenu(true)
+        break
+      case 'announcement':
+        setOpenAnnouncementMenu(true)
         break
       default:
         setDrawerOpen(false)
@@ -433,6 +437,32 @@ export default function AdminNavBar(props) {
 
           </ListItem>
           <Divider />
+          {/*--------------------announcement-------------------------- */}
+          <ListItem disablePadding sx={{ display: 'block' }} onClick={()=>handleSubMenuOpen('announcement')}>
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: 'initial',
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: 'auto',
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}
+
+              >
+                <Campaign />
+              </ListItemIcon>
+              {openUserManagementMenu ? <ExpandLess /> : <ExpandMore />}
+
+            </ListItemButton>
+
+          </ListItem>
+          <Divider />
 
           </List>
         
@@ -713,6 +743,88 @@ export default function AdminNavBar(props) {
                       <BadgeRounded/>
                     </ListItemIcon>
                     <ListItemText primary={'View Users '}  />
+                  </ListItemButton>
+                </ListItem>
+                <Divider />
+              </List>
+             
+            </Fade>
+            </>:null}
+
+          </ListItem> 
+          {/*---------------Announcement-----------------------*/}
+          <ListItem disablePadding sx={{ display: 'block' }} onClick={() => setOpenAnnouncementMenu(!openAnnouncementMenu)} >
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: 'center',
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: 3,
+                  justifyContent: 'initial',
+                  alignItems: 'center'
+                }}
+
+              >
+                <Campaign />
+              </ListItemIcon>
+              <ListItemText primary={'Announcements'} />
+              {openAnnouncementMenu ? <ExpandLess /> : <ExpandMore />}
+            </ListItemButton>
+            <Divider />
+            {openAnnouncementMenu ? <>
+            <Fade in={openAnnouncementMenu} >
+              
+              <List>
+                
+                <ListItem disablePadding sx={{ display: 'block' }} onClick={()=>navigate("/addannouncement")}>
+                  <ListItemButton
+                    sx={{
+                      minHeight: 48,
+                      justifyContent: 'center',
+                      px: 2.5,
+                    }}
+                  >
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: 3,
+                        ml:3,
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                      }}
+                    >
+                      <AddAlert />
+                    </ListItemIcon>
+                    <ListItemText primary={'Add Announcement '} />
+                  </ListItemButton>
+                </ListItem>
+
+                <ListItem disablePadding sx={{ display: 'block'}} onClick={()=>navigate("/viewannouncements")}>
+                  <ListItemButton
+                    sx={{
+                      minHeight: 48,
+                      justifyContent: 'center',
+                      px: 2.5,
+                    }}
+                  >
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: 3,
+                        ml: 3,
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                      }}
+
+                    >
+                      <Announcement/>
+                    </ListItemIcon>
+                    <ListItemText primary={'View Announcement '}  />
                   </ListItemButton>
                 </ListItem>
                 <Divider />

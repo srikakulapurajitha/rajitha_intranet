@@ -1,16 +1,36 @@
 import db from "../config/connectiondb.js";
 import { v4 as uuidv4 } from 'uuid';
+import IsAuthenticated from "../utils/authUser.js";
+import jwt from 'jsonwebtoken'
+import 'dotenv/config'
+import cloudinary from "../config/cloudinaryconfig.js";
 
-export const companynames = (req,res) =>{
-    const q = `select id, company_name from companymanagement where company_status='active' order by id desc`
-    db.query(q,(err,result)=>{
-        if(err){
-            return res.status(500).json('error occurd!')
+export const companynames = async(req,res) =>{
+    console.log(req.cookies)
+    try{
+        const verify = jwt.verify(req.cookies.USERAUTHID, process.env.JWT_SECRET)
+        console.log(verify)
+        const { employee_id, email, access } = verify
+        const user = await IsAuthenticated(employee_id, email, access)
+        if(user==='Authorized'&&access==='admin'){
+            const q = `select id, company_name from companymanagement where company_status='active' order by id desc`
+            db.query(q,(err,result)=>{
+                if(err){
+                    return res.status(500).json('not able to fetch company names!')
+                }
+                else{
+                    return res.status(200).json(result)
+                }
+            })
         }
         else{
-            return res.status(200).json(result)
+            return res.status(401).json('Unauthorized User')
         }
-    })
+    }
+    catch{
+        return res.status(500).json('not able to fetch company names!')
+    }
+    
 }
 
 export const addcompanypageholidays =(req,res)=>{
@@ -95,6 +115,45 @@ export const addcompanypageaddress = (req,res)=>{
     //res.send('from address')
 }
 
+export const uploadchart = (req,res)=>{
+    console.log(req.body)
+    const {compData,img} = req.body
+    const check_query = 'select * from companypagesmanagement where companyId=? and company_pagename=? and company_pagetype=?'
+    const check_values = [compData.companyId,compData.company_pagename,compData.company_pagetype]
+    db.query(check_query,check_values,async(err,result)=>{
+        if(err) return res.status(500).json('error occured!')
+        else{
+            console.log(result)
+            if(result.length===0){
+                
+                const pageId = uuidv4()
+                const insert_query_compPageManagement = 'insert into companypagesmanagement values(?) '
+                const insert_values_compPageManagement = [pageId,compData.company_name,compData.company_pagename,compData.company_pagetype,compData.company_pagestatus,compData.companyId]
+                const insert_query_officeChart = `insert into officecharts(chart_image,pageId) values(?)`
+                
+                try{
+                    const img_res = await cloudinary.uploader.upload(img, { upload_preset: 'bpyejre8' })
+                    const chart_img = img_res.url
+                    await db.promise().query(insert_query_compPageManagement,[insert_values_compPageManagement])
+                    await db.promise().query(insert_query_officeChart,[[chart_img,pageId]])
+                    return res.status(201).json('data added successfully')
+                }
+                catch(err){
+                    console.log(err)
+                    return res.status(500).json('error occured!')
+                }
+            }
+            else{
+                return res.status(500).json('page already exist for given data!')
+            }
+        }
+    })
+
+    //res.send('ok')
+}
+
+
+
 export const viewcompanypages = (req,res)=>{
     const q = 'select * from companypagesmanagement'
     db.query(q,(err,result)=>{
@@ -103,6 +162,7 @@ export const viewcompanypages = (req,res)=>{
     })
 
 }
+
 
 export const getcompanypagedata = (req,res) =>{
     console.log(req.body)
@@ -117,6 +177,10 @@ export const getcompanypagedata = (req,res) =>{
             q='select * from companymanagement where id=?'
             values = [req.body.companyId]
             break
+        case 'Chart':
+            q=`select * from officecharts where pageId = ?`
+            values = [req.body.id]
+
     }
     
     db.query(q,values,(err,result)=>{
@@ -177,12 +241,8 @@ export const updatecompanypageholidays=(req,res)=>{
                             }
                         })
                     }
-                    return res.status(201).json('data updated successfully')
-                                
-                                
+                    return res.status(201).json('data updated successfully')               
                 })
-                
-               
             }
             else{
                 console.log('exist')
@@ -225,6 +285,50 @@ export const updatecompanypageaddress=(req,res)=>{
     //res.send('from edit addr')
 }
 
+export const updatecompanypagechart=(req,res)=>{
+    //console.log(req.body)
+    const {compDetails,image} =req.body
+    if(image.prevImg.includes('http://res.cloudinary.com/')&& image.prevImg!==image.newImg){
+        cloudinary.uploader.destroy('intranet_charts'+image.prevImg.slice(image.prevImg.lastIndexOf('/'),image.prevImg.lastIndexOf('.')))
+    }
+    try{
+        const check_query = 'select * from companypagesmanagement where companyId=? and company_pagename=? and company_pagetype=? and id!=?'
+        const check_values = [compDetails.companyId,compDetails.company_pagename,compDetails.company_pagetype,compDetails.id]
+        db.query(check_query,check_values,async(err,result)=>{
+            if(err) return res.status(500).json('error occured!')
+            else{
+                console.log(result)
+                if(result.length===0){
+                    
+                    const updateCompDataQuery = 'update companypagesmanagement set company_name =?, company_pagename=?,company_pagetype=?,company_pagestatus=?,companyId=? where id=?;'
+                    const updateCompDataValues = [compDetails.company_name,compDetails.company_pagename,compDetails.company_pagetype,compDetails.company_pagestatus,compDetails.companyId,compDetails.id]
+                    await db.promise().query(updateCompDataQuery,updateCompDataValues)
+                    if(image.prevImg!==image.newImg){
+                        const img_res = await cloudinary.uploader.upload(image.newImg, { upload_preset: 'bpyejre8' })
+                        const chart_img = img_res.url
+                        console.log(chart_img)
+                        const updateChartDataQuery=`update officecharts set chart_image=? where pageId=?`
+                        await db.promise().query(updateChartDataQuery,[chart_img,compDetails.id])
+                    }
+        
+                    return res.status(201).json('data updated successfully')
+                }
+                else{
+                    return res.status(400).json('Page name already exist!') 
+                }
+            }
+        })
+    }
+    catch(err){
+        console.log(err)
+        return res.status(500).json('error occured!')
+    }
+    
+        
+    
+    
+}
+
 export const deletecompanypages = (req,res) =>{
     console.log(req.body)
     
@@ -233,11 +337,11 @@ export const deletecompanypages = (req,res) =>{
         
         if(err) {
             console.log(err)
-            return res.status(500).json(err)
+            return res.status(500).json('error occured!')
         }
         else{
             console.log(result)
-            return res.status(200).json('Company Deleted Successfully')
+            return res.status(200).json('Company Page Deleted Successfully')
         }
     })
     //res.send('ok')

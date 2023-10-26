@@ -5,7 +5,7 @@ import transporter from "../config/emailconfig.js";
 
 
 
-cron.schedule('15 14 * * *', () => {
+cron.schedule('02 17 * * *', () => {
     sendFestiveGreetings()},        
     {
       scheduled: true,
@@ -80,7 +80,7 @@ Thank You
 Greetings`, "https://i.ibb.co/RzDWBp3/ugadi.png"
     ],
 
-    'ram navami': [
+    'srirama navami': [
 
 `Dear Employees,
 
@@ -172,13 +172,13 @@ Happy Diwali to you and your loved ones.`,'https://i.ibb.co/TDfzQpH/diwali.png'
 }
 
 
-const getHolidaysQuery = `select distinct holiday_date,holiday_title from companypagesmanagement inner join officeholidays on id=pageId where company_name = 'Brightcomgroup India' and company_pagestatus='Active'`
+const getHolidaysQuery = `select distinct holiday_date,holiday_title from companypagesmanagement inner join officeholidays on id=pageId where company_name = 'Brightcomgroup India' and company_pagestatus='active'`
 
 
   export const sendFestiveGreetings = ()=>{
     console.log('running')
     
-    const today = (new Date()).toLocaleString()
+    const today = (new Date('2023-03-29T18:30:00.000Z')).toLocaleString()
     db.query(getHolidaysQuery,(err,res)=>{
         //console.log(res)
         if(err) console.log(err)
@@ -186,16 +186,16 @@ const getHolidaysQuery = `select distinct holiday_date,holiday_title from compan
             //console.log(res)
             
             res.forEach(data=>{
-                //console.log(data.holiday_date,'-',data.holiday_title)
+                console.log(data.holiday_date,'-',data.holiday_title)
                 if ((data.holiday_date).toLocaleString()===today){
                     console.log(data.holiday_title)
                     const holidayTitle = (data.holiday_title).toLowerCase()
                     if(HolidaysDescription[holidayTitle]){
                     var mailOptions = {
-                        from: '"Brightcomgroup"', // sender address
+                        from: '"Brightcomgroup" <akashdandge100@gmail.com>', // sender address
                          // list of receivers
                         envelope: {
-                            from: 'Brightcomgroup"',
+                            from: 'Brightcomgroup" <dibya8572@gmail.com>',
                             to: ['dibyakantid@brightcomgroup.com','deepthim@brightcomgroup.com','shreyav@brightcomgroup.com','karthikd@brightcomgroup.com','rajithas@brightcomgroup.com','madhavas@brightcomgroup.com','akashd@brightcomgroup.com']
                         },
                         subject: `Happy ${data.holiday_title}`,
@@ -243,6 +243,6 @@ const getHolidaysQuery = `select distinct holiday_date,holiday_title from compan
 
 
   
-  //sendFestiveGreetings()
+//sendFestiveGreetings()
 
 

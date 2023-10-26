@@ -14,6 +14,7 @@ import comMangementRoute from './routes/companymanagement.js'
 //import attendanceRoute from './routes/attendance.js'
 import comPagesManagementRoute from './routes/companypagemanagement.js'
 import userManagementRoute from './routes/usermanagement.js'
+import announcementRoute from './routes/announcement.js'
 
 db.connect((err)=>{
     if (err){
@@ -38,6 +39,7 @@ app.use('/api/',authRoute)
 app.use('/api/',comMangementRoute)
 app.use('/api',comPagesManagementRoute)
 app.use('/api/',userManagementRoute)
+app.use('/api/',announcementRoute)
 //app.use('/api/',attendanceRoute)
 
 
