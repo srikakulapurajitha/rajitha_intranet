@@ -40,9 +40,9 @@ export const viewannouncement = (req,res) =>{
 
 export const updateannouncement = (req,res)=>{
     console.log(req.body)
-    const {id,company_name,title,description,announcement_date,companyId} = req.body
-    const check_query=`select * from announcement where title=? and announcement_date=? and companyId=? `
-    const check_values=[title,announcement_date,companyId]
+    const {id,company_name,title,description,announcement_date,companyId,} = req.body
+    const check_query=`select * from announcement where title=? and announcement_date=? and companyId=? and id!=? `
+    const check_values=[title,announcement_date,companyId,id]
     db.query(check_query, check_values,async(err,result)=>{
         if (err){
             console.log(err)
@@ -78,9 +78,28 @@ export const deleteannouncement = async(req,res)=>{
     const q='delete from announcement where id in (?)'
     try{
         await db.promise().query(q,[req.body.id])
-        return res.status(200).json('Company Deleted Successfully')
+        return res.status(200).json('Announcement Deleted Successfully')
     }
     catch{
         return res.status(500).json('error occured!')
     }
+}
+
+
+//Notice
+
+export const notice =  (req,res) =>{
+    console.log(req.body)
+    const q = `select * from announcement where company_name =? and announcement_date=?`
+    const values =[req.body.company_name,req.body.date]
+    db.query(q,values,(err,result)=>{
+        console.log(err)
+        console.log('ann',result)
+        if(err) res.status(500).json('error occured!')
+        else{ 
+            return res.status(200).json(result)
+        }
+
+    })
+    //res.send('ok')
 }

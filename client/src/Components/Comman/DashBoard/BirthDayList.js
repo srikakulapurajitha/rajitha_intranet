@@ -1,21 +1,31 @@
-import { Avatar, Box, Button, Card, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, IconButton, List, ListItem, ListItemAvatar, ListItemText, MobileStepper, Paper, TextField, Typography, useMediaQuery } from '@mui/material';
+import { Avatar, Box, Button, Card, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, IconButton, List, ListItem, ListItemAvatar, ListItemText, MobileStepper, Paper, TextField, Typography} from '@mui/material';
 import CakeIcon from '@mui/icons-material/Cake';
 import MessageIcon from '@mui/icons-material/Message';
-import React from 'react';
-import { useTheme } from 'styled-components';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
+//import { useTheme } from 'styled-components';
+import axios from 'axios'
+import UserContext from '../../context/UserContext'
+import {toast} from 'react-toastify'
 
-const BirthDayList = () => {
-    const [activeStep, setActiveStep] = React.useState(new Date().getMonth());
+const BirthDayList = (props) => {
+    const [activeStep, setActiveStep] = useState(new Date().getMonth());
+   
+    const [filterBirthdayList, setFilterBirthdayList] = useState([])
+    const [selectedUser, setSelectedUser] = useState({})
     const maxSteps = 12;
+    const [open, setOpen] =useState(false);
+    const [birthdayMsg,setBirthdayMsg] =useState('')
+    const {birthdayData} = props
 
-    const [open, setOpen] = React.useState(false);
-    const handleClickOpen = () => {
+    const {userDetails}  = useContext(UserContext)
+
+    const handleClickOpen = (user) => {
+        //console.log(activeStep)
+        setSelectedUser(user)
         setOpen(true);
     };
 
-    const handleClose = () => {
-        setOpen(false);
-    };
+  
 
     const months = {
         1: 'January',
@@ -31,41 +41,110 @@ const BirthDayList = () => {
         11: 'November',
         12: 'December'
     }
-    console.log(activeStep)
+    //console.log(activeStep)
+
+
+    useEffect(() => {
+        const filteredList = birthdayData.filter((data) => new Date(new Date(data.date_of_birth).toLocaleString('en-CA').slice(0, 10)).getMonth() === activeStep)
+        console.log(filteredList)
+        const birthdayList = filteredList.map(d => ({ profile: d.profile_pic, name: `${d.first_name} ${d.last_name}`, email: d.email, dob: `${new Intl.DateTimeFormat('en-US', { month: 'short' }).format(new Date(new Date(d.date_of_birth).toLocaleString('en-CA').slice(0, 10)))} ${new Date(new Date(d.date_of_birth).toLocaleString('en-CA').slice(0, 10)).getDate()}` }))
+        console.log(birthdayList)
+        setFilterBirthdayList(birthdayList)
+    }, [birthdayData, activeStep])
+
 
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
+
     };
 
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
+
+    const sendBirthDayWishes = useMemo(() => {
+        const handleClose = () => {
+            setOpen(false);
+            setSelectedUser({})
+            setBirthdayMsg('')
+        };
+        const handleSendBirthdayGreeting = ()=>{
+            console.log(birthdayMsg)
+            if(birthdayMsg!==''){
+                toast.promise(axios.post('/api/sendbirthdaywishes',{to:selectedUser.email,from:`${userDetails.first_name} ${userDetails.last_name}`,msg:birthdayMsg}),{
+                    pending:{
+                        render(){
+                            return('sending birthday wishes')
+                        }
+                    },
+                    success:{
+                        render(res){
+                            handleClose()
+                            return(res.data.data)
+                        }
+                    },
+                    error:{
+                        render(err){
+                            return(err.data.response.data)
+                        }
+                    }
+                })
+                
+
+            }
+        }
+
+        return (
+            <Dialog
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="responsive-dialog-title"
+            >
+                <DialogTitle >
+                    {"Send Birthday Wishes 🥳"}
+                </DialogTitle>
+                
+                <DialogContent sx={{minWidth:'40ch'}}>
+                    <DialogContentText sx={{ m: 1 }}>
+                        To: {selectedUser.email}
+                    </DialogContentText>
+                    <TextField
+                        value={birthdayMsg}
+                        onInput={e=>setBirthdayMsg(e.target.value)}
+                        error={birthdayMsg===''?true:false}
+                        sx={{ m: 1,minWidth:'40ch' }}
+                        multiline
+                        minRows={4}
+                        maxRows={8}
+                        helperText='write birthday wishes first'
+                        placeholder="write your msg"
+                    />
+
+                    <DialogContentText sx={{ m: 1 }}>
+                        From: {`${userDetails.first_name} ${userDetails.last_name}`}
+                    </DialogContentText>
+
+                </DialogContent>
+               
+                <DialogActions>
+                    <Button  onClick={handleClose}>
+                        Cancel
+                    </Button>
+                    <Button onClick={handleSendBirthdayGreeting}>
+                        Send
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+        )
+    }, [open,userDetails,selectedUser,birthdayMsg])
     return (
         <>
             <Card sx={{ display: 'flex', flexDirection: 'column', height: 390, p: 1 }} >
                 <Typography variant="p" component="div" sx={{ display: 'flex', justifyContent: 'center', fontSize: 20, alignItems: 'center' }}>
-                    Birthday List <CakeIcon fontSize='8' />
+                    Birthday List <CakeIcon sx={{m:0.5, color:'gray'}} fontSize='8' />
                 </Typography>
                 <Divider light />
-
-
-                {/* <Box  sx={{display:'flex',flexDirection:'column',justifyItems:'center',maxHeight:270,scrollBehavior:'smooth'}}>
-            
-            <Box  sx={{display:'flex', height:50, width:'100%', alignItems:'center', justifyContent:'space-around',mt:1.5,borderBottom:'1px solid gray'}} > 
-                <Avatar alt="Remy Sharp" src="profile.jpg" sx={{ml:3}} />
-                <Container sx={{display:'flex', flexDirection:'column', }}>
-                    <Typography variant="p" component="div" fontSize={20} >
-                        Akash Dandge
-                    </Typography>
-                    <Typography variant="p" component="div" color={'gray'}  >
-                        02-Jan
-                    </Typography>
-                </Container>
-                <MessageIcon sx={{fontSize:20,color:'grey'}} />
-            </Box> 
-            
-        </Box> 
-                    */}
                 <Container sx={{ display: 'flex', justifyContent: 'flex-end', flexDirection: 'row', mt: 1 }} >
                     <Paper sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: 80, height: 20, flexDirection: 'row' }}>
                         {months[activeStep + 1]}
@@ -74,176 +153,28 @@ const BirthDayList = () => {
                 <Box style={{ height: 350, overflow: 'auto' }}>
 
                     <List sx={{ width: '100%' }}>
-                        <ListItem
-                            secondaryAction={
-                                <IconButton edge="end" aria-label="comments" onClick={handleClickOpen}>
-                                    <MessageIcon sx={{ m: 1 }} />
-                                </IconButton>
-                            }
-                        >
-                            <ListItemAvatar>
-                                <Avatar src="profile.jpg">
+                        {filterBirthdayList.map((user,index) => (
+                            <>
+                                <Box key={index}>
+                                <ListItem
+                                    
+                                    secondaryAction={
+                                        <IconButton edge="end" aria-label="comments" onClick={()=>handleClickOpen(user)}>
+                                            <MessageIcon sx={{ m: 1 }} />
+                                        </IconButton>
+                                    }
+                                >
+                                    <ListItemAvatar>
+                                        <Avatar src={user.profile}>
+                                        </Avatar>
+                                    </ListItemAvatar>
+                                    <ListItemText primary={user.name} secondary={user.dob} />
 
-                                </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText primary="Akash Dandge Akash Dandge " secondary="Jan 2" />
-
-                        </ListItem>
-                        <Divider variant="inset" component="li" />
-                        <Dialog
-
-                            open={open}
-                            onClose={handleClose}
-                            aria-labelledby="responsive-dialog-title"
-                        >
-                            <DialogTitle id="responsive-dialog-title">
-                                {"Send Birthday Wishes 🥳"}
-                            </DialogTitle>
-                            <DialogContent>
-                                <DialogContentText sx={{m:1}}>
-                                    To: akashd@brightcomgroup.com
-                                </DialogContentText>
-                                
-                                <TextField
-                                    id="outlined-multiline-static"
-                                    sx={{width:'30ch',m:1}}
-                                    multiline
-                                    minRows={4}
-                                    maxRows={8}
-                                    placeholder="write your msg"
-                                    />
-
-                                <DialogContentText sx={{m:1}}>
-                                     From: Akash Dandge
-                                </DialogContentText>
-                                
-                            </DialogContent>
-                            <DialogActions>
-                                <Button autoFocus onClick={handleClose}>
-                                    Cancel
-                                </Button>
-                                <Button onClick={handleClose} autoFocus>
-                                    Send
-                                </Button>
-                            </DialogActions>
-                        </Dialog>
-
-                        {/* <ListItem>
-                            <ListItemAvatar>
-                                <Avatar src="profile.jpg">
-
-                                </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText primary="Akash Dandge" secondary="Jan 2" />
-                            <ListItemAvatar>
-                                <MessageIcon sx={{ color: 'gray' }} />
-                            </ListItemAvatar>
-                        </ListItem>
-                        <Divider variant="inset" component="li" />
-                        <ListItem>
-                            <ListItemAvatar>
-                                <Avatar src="profile.jpg">
-
-                                </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText primary="Akash Dandge" secondary="Jan 2" />
-                            <ListItemAvatar>
-                                <MessageIcon sx={{ color: 'gray' }} />
-                            </ListItemAvatar>
-                        </ListItem>
-                        <Divider variant="inset" component="li" />
-
-                        <ListItem>
-                            <ListItemAvatar>
-                                <Avatar src="profile.jpg">
-
-                                </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText primary="Akash Dandge" secondary="Jan 2" />
-                            <ListItemAvatar>
-                                <MessageIcon sx={{ color: 'gray' }} />
-                            </ListItemAvatar>
-                        </ListItem>
-                        <Divider variant="inset" component="li" />
-
-                        <ListItem>
-                            <ListItemAvatar>
-                                <Avatar src="profile.jpg">
-
-                                </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText primary="Akash Dandge" secondary="Jan 2" />
-                            <ListItemAvatar>
-                                <MessageIcon sx={{ color: 'gray' }} />
-                            </ListItemAvatar>
-                        </ListItem>
-                        <Divider variant="inset" component="li" />
-
-                        <ListItem>
-                            <ListItemAvatar>
-                                <Avatar src="profile.jpg">
-
-                                </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText primary="Akash Dandge" secondary="Jan 2" />
-                            <ListItemAvatar>
-                                <MessageIcon sx={{ color: 'gray' }} />
-                            </ListItemAvatar>
-                        </ListItem>
-                        <Divider variant="inset" component="li" />
-
-                        <ListItem>
-                            <ListItemAvatar>
-                                <Avatar src="profile.jpg">
-
-                                </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText primary="Akash Dandge" secondary="Jan 2" />
-                            <ListItemAvatar>
-                                <MessageIcon sx={{ color: 'gray' }} />
-                            </ListItemAvatar>
-                        </ListItem>
-                        <Divider variant="inset" component="li" />
-
-                        <ListItem>
-                            <ListItemAvatar>
-                                <Avatar src="profile.jpg">
-
-                                </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText primary="Akash Dandge" secondary="Jan 2" />
-                            <ListItemAvatar>
-                                <MessageIcon sx={{ color: 'gray' }} />
-                            </ListItemAvatar>
-                        </ListItem>
-                        <Divider variant="inset" component="li" />
-
-                        <ListItem>
-                            <ListItemAvatar>
-                                <Avatar src="profile.jpg">
-
-                                </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText primary="Akash Dandge" secondary="Jan 2" />
-                            <ListItemAvatar>
-                                <MessageIcon sx={{ color: 'gray' }} />
-                            </ListItemAvatar>
-                        </ListItem>
-                        <Divider variant="inset" component="li" />
-
-                        <ListItem>
-                            <ListItemAvatar>
-                                <Avatar src="profile.jpg">
-
-                                </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText primary="Akash Dandge" secondary="Jan 2" />
-                            <ListItemAvatar>
-                                <MessageIcon sx={{ color: 'gray' }} />
-                            </ListItemAvatar>
-                        </ListItem>
-                        <Divider variant="inset" component="li" /> */}
-
+                                </ListItem>
+                                <Divider variant="inset" component="li" />
+                                </Box>
+                            </>
+                        ))}
                     </List>
                 </Box>
                 <Divider light />
@@ -272,6 +203,7 @@ const BirthDayList = () => {
                 </Box>
 
             </Card>
+            {sendBirthDayWishes}
         </>
     );
 }

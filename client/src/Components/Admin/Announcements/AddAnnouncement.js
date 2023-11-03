@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Box, Button, FormControl, Grid, InputLabel, MenuItem, OutlinedInput, Paper, Select, Stack,  Typography } from '@mui/material';
 import AdminNavBar from '../../Comman/NavBar/AdminNavBar';
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.min.css';
+import {toast } from 'react-toastify';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { DatePicker } from '@mui/x-date-pickers';
@@ -65,18 +64,18 @@ function AddAnnouncement() {
                 {
                     pending: {
                         render() {
-                            return 'Adding Announcement';
+                            return('Adding Announcement');
                         },
                     },
                     success: {
                         render(res) {
                             handleResetAnnouncementForm()
-                            return res.data.data;
+                            return(res.data.data);
                         },
                     },
                     error: {
                         render(err) {
-                            return err.data.response.data;
+                            return(err.data.response.data);
                         },
                     },
                 }
@@ -215,7 +214,7 @@ function AddAnnouncement() {
                     </Grid>
                 </div>
             </Box>
-            <ToastContainer />
+            
         </>
     );
 }

@@ -10,6 +10,10 @@
 --- create table usermanagement(profile_pic varchar(200) not null, first_name varchar(100) not null, last_name varchar(100) not null, date_of_birth date not null, country varchar(100) not null,  gender varchar(20) not null, blood_group varchar(10) not null, company_name varchar(200) not null, about_yourself varchar(300) not null, employee_id int primary key, access varchar(50) not null, date_of_joining date not null, status varchar(50) not null, email varchar(200) unique not null, password varchar(100) not null, designation varchar(250) not null, foreign key(company_name) references companymanagement(company_name) on update cascade);
 6. office charts table
 --- create table officecharts(id int primary key auto_increment, chart_image varchar(200) not null, pageId varchar(40) not null,foreign key(pageId) references companypagesmanagement(id) on delete cascade);
+7. announcement table
+--- CREATE TABLE announcement (id INT AUTO_INCREMENT PRIMARY KEY,  company_name VARCHAR(100) NOT NULL,  title VARCHAR(100) NOT NULL,  description VARCHAR(300) NOT NULL, announcement_date date NOT NULL, companyId varchar(40) not null,foreign key(companyId) references companymanagement(id) on delete cascade, foreign key(company_name) references companymanagement(company_name) on update cascade);
+8. attendance table
+--- create table attendance(id int auto_increment primary key, emp_id int not null, pdate varchar(10) not null, firstin float not null, lastout float not null, status varchar(5) not null,totalhrs float not null, updated_status varchar(5) default 'AA' not null, foreign key(emp_id) references usermanagement(employee_id));
 
 ---test---
 select * from companypagesmanagement inner join officeholidays on id=pageId where company_name='Brightcomgroup India' and company_pagename='Holiday list' and holidaylist_title!='weekend' and holidaylist_title='Holiday list 2023' and pageId='a24f2d61-8c82-4ec8-86bb-9b0358db1eb5';

@@ -11,7 +11,6 @@ import AddUser from './Components/Admin/UserManagement/AddUser'
 import ViewUser from './Components/Admin/UserManagement/ViewUser'
 
 import AdminProtectedRoute from './Components/Comman/ProtectedRoute/AdminProtectedRoute'
-import UserProtectedRoute from './Components/Comman/ProtectedRoute/UserProtectedRoute'
 import CommanProtectedRoute from './Components/Comman/ProtectedRoute/CommanProtectedRoute'
 
 import { UserProvider } from './Components/context/UserProvider'
@@ -20,6 +19,10 @@ import ForgotPassword from './Components/Comman/ForgotPassword/ForgotPassword'
 import TimeZone from './Components/Comman/TimeZone/TimeZone'
 import AddAnnouncement from './Components/Admin/Announcements/AddAnnouncement'
 import ViewAnnouncements from './Components/Admin/Announcements/ViewAnnoucement'
+import UploadAttendance from './Components/Admin/LeaveManagement/UploadAttendance'
+import ViewAttendance from './Components/Admin/LeaveManagement/ViewAttendance'
+import Attendance from './Components/Comman/Attendance/Attendance'
+
 
 
 
@@ -41,6 +44,7 @@ export default function App() {
             {Cookies.get('USERAUTHID') === undefined ? <Route path='*' element={<Navigate to='/login' replace />} /> : <Route path='*' element={<Navigate replace to='/' />} />}
             <Route path='/' element={<CommanProtectedRoute component={<Dashboard />} />} />
             <Route path='/timezones' element={<CommanProtectedRoute component={<TimeZone />} />} />
+            <Route path='/attendance' element={<CommanProtectedRoute component={<Attendance />} />} />
             {/*----------------------------ADMIN------------------------------------------------------------------------------------ */}
             <Route path='/addcompany' element={<AdminProtectedRoute component={<AddCompany />} />} />
             <Route path='/viewcompany' element={<AdminProtectedRoute component={<ViewCompany />} />} />
@@ -50,6 +54,8 @@ export default function App() {
             <Route path='/viewusers' element={<AdminProtectedRoute component={<ViewUser />} />} />
             <Route path='/addannouncement' element={<AdminProtectedRoute component={<AddAnnouncement />} />} />
             <Route path='/viewannouncements' element={<AdminProtectedRoute component={<ViewAnnouncements />} />} />
+            <Route path='/uploadattendance' element={<AdminProtectedRoute component={<UploadAttendance />} />} />
+            <Route path='/viewattendance' element={<AdminProtectedRoute component={<ViewAttendance />} />} />
 
             {/*----------------------------USER------------------------------------------------------------------------------------ */}
 

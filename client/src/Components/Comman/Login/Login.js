@@ -7,7 +7,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import {toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.min.css'
+//import 'react-toastify/dist/ReactToastify.min.css'
 import { Navigate, useNavigate } from 'react-router-dom';
 import UserContext from '../../context/UserContext';
 
@@ -52,13 +52,16 @@ function Login() {
       <Container sx={{ height: { xs: '40vh', lg: '90vh' }, width: '100%', display: 'flex' }}>
         <Grid container spacing={2} mt={1} >
           <Grid item xs={12} lg={12} >
-            <Typography color={'#4B4747'} fontFamily={'Miso-Light'} component={'p'} sx={{ fontSize: { xs: '20px', lg: '50px' }, textAlign: { lg: 'center' } }} variant={'p'}>LEADING THROUGH <span style={{ color: '#F167DC' }}>TECHNOLOGY</span></Typography>
+            <Typography color={'#4B4747'} fontFamily={'Miso-Light'} component={'p'} sx={{ fontSize: { xs: '20px', lg: '35px' }, textAlign: { lg: 'center' } }} variant={'p'}>LEADING THROUGH <span style={{ color: '#F167DC' }}>TECHNOLOGY</span></Typography>
+          </Grid>
+          <Grid item xs={12} lg={12} >
+            <Typography component={'p'} color={'#4B4747'} fontFamily={'Miso-Light'} sx={{ fontSize: { xs: '20px', lg: '35px' }, textAlign: { lg: 'center' } }} variant={'p'}>WINNING THROUGH <span style={{ color: '#F167DC' }}>PEOPLE</span></Typography>
           </Grid>
           <Grid container >
 
             <Grid item xs={0} lg={4}>
             <Container sx={{ display: 'flex', justifyContent: 'center', height: '400px', alignItems:'center', width: { xs: '0ch', lg: '400px' } }}>
-                <img src='robo2.png' alt='robo' style={{ maxWidth: '100%', maxHeight: '80%' }} />
+                <img src='robo2.png' alt='robo' style={{ maxWidth: '100%', maxHeight: '70%' }} />
               </Container>
 
             </Grid>
@@ -69,9 +72,9 @@ function Login() {
                 <Paper elevation={3} >
 
                   <Box component="form" onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '400px', width: '400px' }}>
-                    <Box sx={{ height: 50, m: 1 }}>
+                    <Box sx={{ height: 50, m: 2 }}>
 
-                      <img src='bcglogo.png' alt='logo' style={{ width: '197px', height: '40px' }} />
+                      <img src='bcglogo.png' alt='logo' style={{ width: '250px', height: '50px' }} />
                     </Box>
 
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -138,7 +141,7 @@ function Login() {
 
             <Grid item xs={0} lg={4}>
               <Container sx={{ display: 'flex', justifyContent: 'center', height: '400px', alignItems:'center', width: { xs: '0ch', lg: '400px' } }}>
-                <img src='robo.png' alt='robo' style={{ maxWidth: '100%', maxHeight: '80%' }} />
+                <img src='robo.png' alt='robo' style={{ maxWidth: '100%', maxHeight: '70%' }} />
               </Container>
 
             </Grid>
@@ -147,9 +150,7 @@ function Login() {
 
 
 
-          <Grid item xs={12} lg={12} >
-            <Typography component={'p'} color={'#4B4747'} fontFamily={'Miso-Light'} sx={{ fontSize: { xs: '20px', lg: '50px' }, textAlign: { lg: 'center' } }} variant={'p'}>WINNING THROUGH <span style={{ color: '#F167DC' }}>PEOPLE</span></Typography>
-          </Grid>
+          
 
 
         </Grid>

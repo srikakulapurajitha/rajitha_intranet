@@ -273,18 +273,18 @@ const ViewAnnouncements = () => {
                     {
                         pending: {
                             render() {
-                                return 'Updating announcements';
+                                return('Updating announcements');
                             },
                         },
                         success: {
                             render(res) {
                                 setEditDialogOpen(false);
-                                return res.data.data;
+                                return(res.data.data);
                             },
                         },
                         error: {
                             render(err) {
-                                return err.data.response.data;
+                                return(err.data.response.data);
                             },
                         },
                     }
@@ -439,18 +439,18 @@ const ViewAnnouncements = () => {
                 {
                     pending: {
                         render() {
-                            return 'Deleting announcement';
+                            return('Deleting announcement');
                         },
                     },
                     success: {
                         render(res) {
                             setToggleCleared(!toggleCleared);
-                            return res.data.data
+                            return(res.data.data)
                         },
                     },
                     error: {
                         render(err) {
-                            return err.data.response.data
+                            return(err.data.response.data)
                         },
                     },
                 }

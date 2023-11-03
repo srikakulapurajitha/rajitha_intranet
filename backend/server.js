@@ -11,10 +11,12 @@ import './utils/autofestivewishes.js'
 //importing routes
 import authRoute from './routes/auth.js'
 import comMangementRoute from './routes/companymanagement.js'
-//import attendanceRoute from './routes/attendance.js'
+import attendanceRoute from './routes/attendance.js'
 import comPagesManagementRoute from './routes/companypagemanagement.js'
 import userManagementRoute from './routes/usermanagement.js'
 import announcementRoute from './routes/announcement.js'
+import officeCalenderRoute from './routes/officecalender.js'
+import userDataRoute from './routes/userdata.js'
 
 db.connect((err)=>{
     if (err){
@@ -40,8 +42,9 @@ app.use('/api/',comMangementRoute)
 app.use('/api',comPagesManagementRoute)
 app.use('/api/',userManagementRoute)
 app.use('/api/',announcementRoute)
-//app.use('/api/',attendanceRoute)
-
+app.use('/api/',attendanceRoute)
+app.use('/api/',officeCalenderRoute)
+app.use('/api/',userDataRoute)
 
 
 

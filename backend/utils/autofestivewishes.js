@@ -178,7 +178,7 @@ const getHolidaysQuery = `select distinct holiday_date,holiday_title from compan
   export const sendFestiveGreetings = ()=>{
     console.log('running')
     
-    const today = (new Date('2023-03-29T18:30:00.000Z')).toLocaleString()
+    const today = (new Date()).toLocaleString()
     db.query(getHolidaysQuery,(err,res)=>{
         //console.log(res)
         if(err) console.log(err)
@@ -195,7 +195,7 @@ const getHolidaysQuery = `select distinct holiday_date,holiday_title from compan
                         from: '"Brightcomgroup" <akashdandge100@gmail.com>', // sender address
                          // list of receivers
                         envelope: {
-                            from: 'Brightcomgroup" <dibya8572@gmail.com>',
+                            from: 'Brightcomgroup" <akashdandge100@gmail.com>',
                             to: ['dibyakantid@brightcomgroup.com','deepthim@brightcomgroup.com','shreyav@brightcomgroup.com','karthikd@brightcomgroup.com','rajithas@brightcomgroup.com','madhavas@brightcomgroup.com','akashd@brightcomgroup.com']
                         },
                         subject: `Happy ${data.holiday_title}`,

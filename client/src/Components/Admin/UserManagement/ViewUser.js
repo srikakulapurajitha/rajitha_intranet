@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from 'react'
 import NavBar from '../../Comman/NavBar/AdminNavBar';
 import { Button, Box, Card, Divider, Stack, TextField, Typography, Paper, Drawer, Container, Avatar, ListItem, ListItemText, DialogActions, FormControl, InputLabel, OutlinedInput, IconButton, InputAdornment, MenuItem, Select, DialogContent, DialogTitle, Dialog, Backdrop } from '@mui/material'
 import DataTable, { defaultThemes } from 'react-data-table-component'
-
 import axios from 'axios';
 import { Search, Visibility, VisibilityOff } from '@mui/icons-material';
 import { MobileDatePicker } from '@mui/x-date-pickers';
@@ -11,8 +10,8 @@ import styled from 'styled-components';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from "dayjs";
-import { ToastContainer, toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.min.css' 
+import { toast } from "react-toastify";
+
 
 
 //table styling
@@ -108,8 +107,6 @@ function ViewUser() {
             sortable: true,
             center: true,
             maxWidth: '10px',
-
-
         },
         {
             name: 'User Name',
@@ -430,7 +427,7 @@ function ViewUser() {
                                     <Stack   direction={{xs:'column',md:'row'}} spacing={{xs:2,sm:1,md:2,lg:2}}  >
                                     <FormControl fullWidth sx={{ mb: 2 }} variant="outlined">
                                         <InputLabel size="small" required >Employee ID</InputLabel>
-                                        <OutlinedInput startAdornment={<InputAdornment position="start">bcg/</InputAdornment>} value={editUserData.employee_id} onChange={handleUserDataChange}  size="small" name="employee_id" required={true} type={"text"} readOnly label="Employee ID"  />      
+                                        <OutlinedInput startAdornment={<InputAdornment position="start">bcg/</InputAdornment>} value={editUserData.employee_id} onChange={handleUserDataChange}  size="small" name="employee_id" required={true} type={"text"}  label="Employee ID"  />      
                                     </FormControl>
                                     <FormControl fullWidth sx={{ mb: 2 }} variant="outlined">
                                         <InputLabel size="small" required >Access</InputLabel>
@@ -927,18 +924,13 @@ function ViewUser() {
                                 subHeader
                                 subHeaderComponent={subHeaderSearchbar}
                                 customStyles={customStyles}
-
-
-
-
                             />
                         </Card>
                     </div>
                 </div>
             </Box>
             {userDetailsView}
-            {userEditDetails}
-            <ToastContainer />
+            {userEditDetails} 
             <Backdrop
             sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
             open={loader}

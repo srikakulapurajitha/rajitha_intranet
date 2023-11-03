@@ -9,8 +9,7 @@ import NavBar from '../../Comman/NavBar/AdminNavBar';
 import SearchIcon from '@mui/icons-material/Search';
 import axios from 'axios';
 import { useState } from 'react';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.min.css' 
+import { toast } from 'react-toastify';
 import { Delete } from '@mui/icons-material';
 import { useMemo } from 'react';
 
@@ -559,7 +558,6 @@ const ViewCompany = () => {
 			</Box>
 			{compDetailView}
 			{compEditView}
-			<ToastContainer />
 			<Backdrop
 				sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
 				open={loader}

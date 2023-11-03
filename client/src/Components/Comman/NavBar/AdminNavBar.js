@@ -31,7 +31,7 @@ import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
 //import CssBaseline from '@mui/material/CssBaseline';
 import BusinessIcon from '@mui/icons-material/Business';
-import { AddAlert, Announcement, BadgeRounded,  Campaign,  Description, ExpandLess, ExpandMore, Info, LocalLibrary, NoteAdd, PersonAdd, SupervisedUserCircle } from '@mui/icons-material';
+import { AddAlert, Announcement, BadgeRounded,  Campaign,  Description, EventAvailable, ExpandLess, ExpandMore,  LocalLibrary, ManageHistory, NoteAdd, PersonAdd, SupervisedUserCircle, UploadFile } from '@mui/icons-material';
 
 
 
@@ -42,7 +42,7 @@ import StoreIcon from '@mui/icons-material/Store';
 import { useContext, useState } from 'react';
 import { Avatar } from '@mui/material';
 import UserContext from '../../context/UserContext';
-import Cookies from 'js-cookie';
+//import Cookies from 'js-cookie';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 //import CompanyManagementPages from '../CompanyPagesManagement/AddCompanyManagementPages';
@@ -81,7 +81,7 @@ export default function AdminNavBar(props) {
   const [openCompanyPageManagementMenu, setOpenCompanyPageManagementMenu] = useState(false)
   const [openUserManagementMenu, setOpenUserManagementMenu] = useState(false);
   const [openAnnouncementMenu,setOpenAnnouncementMenu]=useState(false)
-
+  const [openLeaveManagementMenu,setOpenLeaveManagementMenu]=useState(false)
 
 
   const handleSubMenuOpen = (item) => {
@@ -100,6 +100,9 @@ export default function AdminNavBar(props) {
         break
       case 'announcement':
         setOpenAnnouncementMenu(true)
+        break
+      case 'leave management':
+        setOpenLeaveManagementMenu(true)
         break
       default:
         setDrawerOpen(false)
@@ -128,7 +131,7 @@ export default function AdminNavBar(props) {
 
 
   const handleNavigation = (index) => {
-    const navList = ['/', '/attendance','/addcompany','/addcompanypages']
+    const navList = ['/', '/attendance']
     navigate(navList[index])
     setDrawerOpen(false)
   }
@@ -276,7 +279,7 @@ export default function AdminNavBar(props) {
 
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <IconButton size="large" aria-label="show 4 new mails" color="black">
+            {/* <IconButton size="large" aria-label="show 4 new mails" color="black">
               <Badge badgeContent={4} color="error">
                 <MailIcon />
               </Badge>
@@ -289,7 +292,7 @@ export default function AdminNavBar(props) {
               <Badge badgeContent={17} color="error">
                 <NotificationsIcon />
               </Badge>
-            </IconButton>
+            </IconButton> */}
             <IconButton
               size="large"
               edge="end"
@@ -464,6 +467,33 @@ export default function AdminNavBar(props) {
           </ListItem>
           <Divider />
 
+          {/*------------------------leave management---------------------- */}
+          <ListItem disablePadding sx={{ display: 'block' }} onClick={()=>handleSubMenuOpen('leave management')}>
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: 'initial',
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: 'auto',
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}
+
+              >
+                <ManageHistory />
+              </ListItemIcon>
+              {openLeaveManagementMenu ? <ExpandLess /> : <ExpandMore />}
+
+            </ListItemButton>
+
+          </ListItem>
+          <Divider />
+
           </List>
         
       </Drawer>
@@ -532,7 +562,7 @@ export default function AdminNavBar(props) {
             <Fade in={openCompanyManagementMenu} >
               <List>
                 
-                <ListItem disablePadding sx={{ display: 'block' }} onClick={()=>handleNavigation(2)}>
+                <ListItem disablePadding sx={{ display: 'block' }} onClick={()=>navigate('/addcompany')}>
                   <ListItemButton
                     sx={{
                       minHeight: 48,
@@ -825,6 +855,89 @@ export default function AdminNavBar(props) {
                       <Announcement/>
                     </ListItemIcon>
                     <ListItemText primary={'View Announcement '}  />
+                  </ListItemButton>
+                </ListItem>
+                <Divider />
+              </List>
+             
+            </Fade>
+            </>:null}
+
+          </ListItem> 
+
+          {/*---------------leave manegement-----------------------*/}
+          <ListItem disablePadding sx={{ display: 'block' }} onClick={() => setOpenLeaveManagementMenu(!openLeaveManagementMenu)} >
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: 'center',
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: 3,
+                  justifyContent: 'initial',
+                  alignItems: 'center'
+                }}
+
+              >
+                <ManageHistory />
+              </ListItemIcon>
+              <ListItemText primary={'Leave Managment'} />
+              {openLeaveManagementMenu ? <ExpandLess /> : <ExpandMore />}
+            </ListItemButton>
+            <Divider />
+            {openLeaveManagementMenu ? <>
+            <Fade in={openLeaveManagementMenu} >
+              
+              <List>
+                
+                <ListItem disablePadding sx={{ display: 'block' }} onClick={()=>navigate("/uploadattendance")}>
+                  <ListItemButton
+                    sx={{
+                      minHeight: 48,
+                      justifyContent: 'center',
+                      px: 2.5,
+                    }}
+                  >
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: 3,
+                        ml:3,
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                      }}
+                    >
+                      <UploadFile />
+                    </ListItemIcon>
+                    <ListItemText primary={'Upload Attendance '} />
+                  </ListItemButton>
+                </ListItem>
+
+                <ListItem disablePadding sx={{ display: 'block'}} onClick={()=>navigate("/viewattendance")}>
+                  <ListItemButton
+                    sx={{
+                      minHeight: 48,
+                      justifyContent: 'center',
+                      px: 2.5,
+                    }}
+                  >
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: 3,
+                        ml: 3,
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                      }}
+
+                    >
+                      <EventAvailable/>
+                    </ListItemIcon>
+                    <ListItemText primary={'View Attendance '}  />
                   </ListItemButton>
                 </ListItem>
                 <Divider />

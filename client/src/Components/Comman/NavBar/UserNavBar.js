@@ -35,9 +35,9 @@ import { Avatar } from '@mui/material';
 //import CompanyManagementPages from '../CompanyPagesManagement/AddCompanyManagementPages';
 
 import UserContext from '../../context/UserContext';
-import Cookies from 'js-cookie';
+//import Cookies from 'js-cookie';
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
+import {  toast } from 'react-toastify';
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open',
@@ -95,7 +95,7 @@ export default function UserNavBar(props) {
 
 
   const handleNavigation = (index) => {
-    const navList = ['/', '/attendance','/addcompany','/addcompanypages']
+    const navList = ['/', '/attendance']
     navigate(navList[index])
     setDrawerOpen(false)
   }
@@ -177,7 +177,7 @@ export default function UserNavBar(props) {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
+      {/* <MenuItem>
         <IconButton size="large" aria-label="show 4 new mails" color="inherit">
           <Badge badgeContent={4} color="error">
             <MailIcon />
@@ -196,7 +196,7 @@ export default function UserNavBar(props) {
           </Badge>
         </IconButton>
         <p>Notifications</p>
-      </MenuItem>
+      </MenuItem> */}
       <MenuItem onClick={handleProfileMenuOpen}>
         <IconButton
           size="large"
@@ -371,7 +371,6 @@ export default function UserNavBar(props) {
       </Drawer>
       {renderMobileMenu}
       {renderMenu}
-      <ToastContainer />
     </>
   );
 }

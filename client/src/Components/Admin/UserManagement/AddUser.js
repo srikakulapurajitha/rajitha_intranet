@@ -12,8 +12,8 @@ import { generate } from '@wcj/generate-password';
 import { MobileDatePicker } from "@mui/x-date-pickers";
 import styled from "styled-components";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.min.css' 
+import {toast } from "react-toastify";
+//import 'react-toastify/dist/ReactToastify.min.css' 
 
 
 const VisuallyHiddenInput = styled('input')({
@@ -80,7 +80,7 @@ function AddUser() {
             dateOfJoining:new Date().toLocaleDateString('en-CA'),
             status: "",
         }))
-    },[addUserData.employeeId])
+    },[])
 
     const convertBase64 = (file) => {
         return new Promise((resolve, reject) => {
@@ -369,7 +369,7 @@ function AddUser() {
                                     <Stack   direction={{xs:'column',md:'row'}} spacing={{xs:2,sm:1,md:2,lg:2}}  >
                                     <FormControl fullWidth sx={{ mb: 2 }} variant="outlined">
                                         <InputLabel size="small" required >Employee ID</InputLabel>
-                                        <OutlinedInput startAdornment={<InputAdornment position="start">bcg/</InputAdornment>} value={addUserData.employeeId} onChange={handleUserDataChange}  size="small" name="employeeId" required={true} type={"text"} disabled label="Employee ID"  />      
+                                        <OutlinedInput startAdornment={<InputAdornment position="start">bcg/</InputAdornment>} name='employeeId' value={addUserData.employeeId} onChange={handleUserDataChange}  size="small" required={true} type={"text"}  label="Employee ID"  />      
                                     </FormControl>
                                     <FormControl fullWidth sx={{ mb: 2 }} variant="outlined">
                                         <InputLabel size="small" required >Access</InputLabel>
@@ -487,7 +487,6 @@ function AddUser() {
                     </Grid>
                 </div>
             </Box>
-            <ToastContainer />
 
         </>
     )

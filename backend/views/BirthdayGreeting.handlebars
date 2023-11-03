@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            background-image: linear-gradient(135deg, #E8DBFC 10%, #F8F9D2 100%);
+        }
+        
+        .header {
+            background-image: url('https://res.cloudinary.com/dozj3jkhe/image/upload/v1698994301/oxk5a7d1ddvep9a2qgyb.png');
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: 70%;
+            object-fit: contain;
+            height: 150px;
+            width: auto;
+        }
+        
+        .content {
+            padding: 20px;
+        }
+        
+        h1 {
+            color: #ffffff;
+            font-size: 24px;
+            text-align: center;
+        }
+        
+        p {
+            color: #666;
+            font-size: 16px;
+            text-align: left;
+        }
+        
+        .wish {
+            margin: auto;
+            background-image: url("https://res.cloudinary.com/dozj3jkhe/image/upload/v1698929541/komrjuxyqyrgddxal9vr.png");
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+            object-fit: contain;
+        }
+        
+        .wish-info {
+            margin: 20px;
+            padding: 30px;
+            min-height: 150px;
+            text-align: center;
+        }
+        
+        .message {
+            margin-top: 20px;
+            padding: 8px;
+            min-height: 80px;
+        }
+        
+        .from p,
+        span {
+            margin-right: 12px;
+            text-align: right;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+        </div>
+        <div class="content">
+
+            <div class="wish">
+
+
+                <div class="wish-info">
+                    <div class="message">
+                        <p>{{message}}</p>
+                        <span class="from">
+                            <p>Best Regards &nbsp; <br><strong>{{from}}</strong></p>
+                        </span>
+                        
+                    </div>
+
+                </div>
+
+
+
+
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>
