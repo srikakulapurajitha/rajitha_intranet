@@ -1,7 +1,7 @@
 // referenece: 1.https://www.npmjs.com/package/react-data-table-ViewCompany 2.https://react-data-table-ViewCompany.netlify.app/
 
 
-import { Backdrop, Box, Button, Card, Container, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Drawer, FormControl, InputLabel, List, ListItem, ListItemText, MenuItem, OutlinedInput, Paper, Select, Stack, TextField, Typography } from '@mui/material';
+import { Box, Button, Card, Container, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Drawer, FormControl, InputLabel, List, ListItem, ListItemText, MenuItem, OutlinedInput, Paper, Select, Stack, TextField, Typography } from '@mui/material';
 import React, { useEffect } from 'react';
 import DataTable from 'react-data-table-component';
 import { defaultThemes } from 'react-data-table-component';
@@ -14,6 +14,7 @@ import { Delete } from '@mui/icons-material';
 import { useMemo } from 'react';
 
 import phone from 'phone';
+import Loader from '../../Comman/Loader';
 
 
 
@@ -558,12 +559,7 @@ const ViewCompany = () => {
 			</Box>
 			{compDetailView}
 			{compEditView}
-			<Backdrop
-				sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-				open={loader}
-			>
-				<img src='gif2.gif' alt='loader' style={{ mixBlendMode: 'lighten' }} />
-			</Backdrop>
+			<Loader loader={loader} /> 
 		</>
 	);
 };

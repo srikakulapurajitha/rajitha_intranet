@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Box, Chip, Container, Paper, Stack, FormControl, Button, Typography, Backdrop } from '@mui/material'
+import { Box, Chip, Container, Paper, Stack, FormControl, Button, Typography } from '@mui/material'
 import DataTable from 'react-data-table-component';
 import { DatePicker } from '@mui/x-date-pickers';
 import { LocalizationProvider } from '@mui/x-date-pickers';
@@ -10,6 +10,7 @@ import UserNavBar from '../NavBar/UserNavBar';
 import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
 import UserContext from '../../context/UserContext';
+import Loader from '../Loader';
 
 const customStyles = {
     rows: {
@@ -194,9 +195,7 @@ const Attendance = () => {
                     </Paper>
                 </Box>
             </Container>
-            <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loader}>
-                <img src='loader.gif' alt='loader' style={{ mixBlendMode: 'lighten' }} />
-            </Backdrop>
+            <Loader loader={loader} /> 
         </>
     )
 }

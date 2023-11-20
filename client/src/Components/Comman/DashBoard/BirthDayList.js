@@ -154,7 +154,7 @@ const BirthDayList = (props) => {
 
                     <List sx={{ width: '100%' }}>
                         {filterBirthdayList.map((user,index) => (
-                            <>
+                            
                                 <Box key={index}>
                                 <ListItem
                                     
@@ -173,7 +173,7 @@ const BirthDayList = (props) => {
                                 </ListItem>
                                 <Divider variant="inset" component="li" />
                                 </Box>
-                            </>
+                            
                         ))}
                     </List>
                 </Box>

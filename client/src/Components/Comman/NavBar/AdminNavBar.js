@@ -31,10 +31,10 @@ import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
 //import CssBaseline from '@mui/material/CssBaseline';
 import BusinessIcon from '@mui/icons-material/Business';
-import { AddAlert, Announcement, BadgeRounded,  Campaign,  Description, EventAvailable, ExpandLess, ExpandMore,  LocalLibrary, ManageHistory, NoteAdd, PersonAdd, SupervisedUserCircle, UploadFile } from '@mui/icons-material';
+import { AccountBox, AddAlert, Announcement, BadgeRounded,  Campaign,  Description, EventAvailable, ExpandLess, ExpandMore,  GroupAdd,  LocalLibrary, LockOpen, LockReset, Logout, ManageHistory, NoteAdd, PersonAdd, Settings, SupervisedUserCircle, UploadFile } from '@mui/icons-material';
 
 
-
+import {CgListTree} from 'react-icons/cg'
 import { Fade } from '@mui/material';
 
 import AddBusinessIcon from '@mui/icons-material/AddBusiness';
@@ -177,24 +177,61 @@ export default function AdminNavBar(props) {
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
     <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
-    >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-      <MenuItem onClick={handleLogout}>Logout</MenuItem>
-    </Menu>
+        anchorEl={anchorEl}
+        id="account-menu"
+        open={isMenuOpen}
+        onClose={handleMenuClose}
+        onClick={handleMenuClose}
+        PaperProps={{
+          elevation: 0,
+          sx: {
+            overflow: 'visible',
+            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+            mt: 1.5,
+            '& .MuiAvatar-root': {
+              width: 32,
+              height: 32,
+              ml: -0.5,
+              mr: 1,
+            },
+            '&:before': {
+              content: '""',
+              display: 'block',
+              position: 'absolute',
+              top: 0,
+              right: 14,
+              width: 10,
+              height: 10,
+              bgcolor: 'background.paper',
+              transform: 'translateY(-50%) rotate(45deg)',
+              zIndex: 0,
+            },
+          },
+        }}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+      >
+       
+        
+        <MenuItem onClick={()=>navigate('/myprofile')}>
+          <ListItemIcon>
+            <AccountBox fontSize="small" />
+          </ListItemIcon>
+         Profile
+        </MenuItem>
+        <MenuItem onClick={()=>navigate('/changepassword')}>
+          <ListItemIcon>
+            <LockOpen fontSize="small" />
+          </ListItemIcon>
+          Change Password
+        </MenuItem>
+        <MenuItem onClick={handleLogout}>
+          <ListItemIcon>
+            <Logout fontSize="small" />
+          </ListItemIcon>
+          Logout
+        </MenuItem>
+      </Menu>
   );
 
   const mobileMenuId = 'primary-search-account-menu-mobile';
@@ -214,26 +251,7 @@ export default function AdminNavBar(props) {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
-        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={4} color="error">
-            <MailIcon />
-          </Badge>
-        </IconButton>
-        <p>Messages</p>
-      </MenuItem>
-      <MenuItem>
-        <IconButton
-          size="large"
-          aria-label="show 17 new notifications"
-          color="inherit"
-        >
-          <Badge badgeContent={17} color="error">
-            <NotificationsIcon />
-          </Badge>
-        </IconButton>
-        <p>Notifications</p>
-      </MenuItem>
+      
       <MenuItem onClick={handleProfileMenuOpen}>
         <IconButton
           size="large"
@@ -940,6 +958,57 @@ export default function AdminNavBar(props) {
                     <ListItemText primary={'View Attendance '}  />
                   </ListItemButton>
                 </ListItem>
+
+                <ListItem disablePadding sx={{ display: 'block'}} onClick={()=>navigate('/createreportingstructure')}>
+                  <ListItemButton
+                    sx={{
+                      minHeight: 48,
+                      justifyContent: 'center',
+                      px: 2.5,
+                    }}
+                  >
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: 3,
+                        ml: 3,
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                      }}
+
+                    >
+
+                      <GroupAdd />
+                    </ListItemIcon>
+                    <ListItemText primary={'Create Reporting Structure '}  />
+                  </ListItemButton>
+                </ListItem>
+
+                <ListItem disablePadding sx={{ display: 'block'}} onClick={()=>navigate('/viewreportingstructure')}>
+                  <ListItemButton
+                    sx={{
+                      minHeight: 48,
+                      justifyContent: 'center',
+                      px: 2.5,
+                    }}
+                  >
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: 3,
+                        ml: 3,
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                      }}
+
+                    >
+                      < CgListTree fontSize={20} />
+                     
+                    </ListItemIcon>
+                    <ListItemText primary={'View Reporting Structure '}  />
+                  </ListItemButton>
+                </ListItem>
+
                 <Divider />
               </List>
              

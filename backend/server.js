@@ -17,6 +17,8 @@ import userManagementRoute from './routes/usermanagement.js'
 import announcementRoute from './routes/announcement.js'
 import officeCalenderRoute from './routes/officecalender.js'
 import userDataRoute from './routes/userdata.js'
+import reportingStructureRoute from './routes/reportingstructure.js'
+import profileSectionRoute from './routes/profilesection.js'
 
 db.connect((err)=>{
     if (err){
@@ -45,6 +47,8 @@ app.use('/api/',announcementRoute)
 app.use('/api/',attendanceRoute)
 app.use('/api/',officeCalenderRoute)
 app.use('/api/',userDataRoute)
+app.use('/api/',reportingStructureRoute)
+app.use('/api/',profileSectionRoute)
 
 
 

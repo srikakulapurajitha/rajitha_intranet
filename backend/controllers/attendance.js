@@ -77,6 +77,7 @@ function uploadExcelData(name) {
                         //let pdate = (new Date(Date.UTC(0, 0, res.PDate - 1)))
                         res.PDate = new Date(Date.UTC(0, 0, res.PDate - 1))
                         //console.log(pdate.getDate(),``)
+                        console.log(res)
                         try {
                             db.query('select * from attendance where emp_id=? and pdate=date(?)', [res.Emp_code, res.PDate], async (err, result) => {
                                 if (err) return ('error occured!')
@@ -94,8 +95,8 @@ function uploadExcelData(name) {
                                     }
                                     else {
                                         console.log('updating')
-                                        const q = 'update attendance set emp_id=?, pdate=date(?),firstin=?,lastout=?,status=?,totalhrs=?,updated_status=? where emp_id=? and pdate= date(?)'
-                                        const values = [res.Emp_code, res.PDate, res.firstin, res.LastOut, res.Status, res.totlhrs,status, res.Emp_code, res.PDate,status]
+                                        const q = 'update attendance set emp_id=?, pdate=date(?),firstin=?,lastout=?,status=?,totalhrs=? where emp_id=? and pdate= date(?)'
+                                        const values = [res.Emp_code, res.PDate, res.firstin, res.LastOut, res.Status, res.totlhrs, res.Emp_code, res.PDate]
                                         await db.promise().query(q, values)
                                     }
                                 }
@@ -267,7 +268,7 @@ export const filterattendance = (req, res) => {
     const { fromDate, toDate, emp_id } = req.body
     let q, v;
     if (emp_id !== '') {
-        q = `select * from attendance where pdate >=? and pdate <=? and emp_id=?`
+        q = `select * from attendance where pdate >=? and pdate <=? and emp_id=? order by pdate`
         v = [fromDate, toDate, emp_id]
         //console.log(emp_id)
     }
@@ -305,7 +306,7 @@ export const attendance = (req, res) => {
         from_date = new Date(Date.UTC(current_year, current_month - 1, 26))
         to_date = new Date(Date.UTC(current_year, current_month, 25))
     }
-    const q = `select * from attendance where emp_id=? and pdate>=date(?) and pdate<=date(?)`
+    const q = `select * from attendance where emp_id=? and pdate>=date(?) and pdate<=date(?) order by pdate`
     const { emp_id } = req.body
     db.query(q, [emp_id, from_date, to_date], (err, result) => {
         if (err) return res.status(500).json('error occured!')
@@ -324,7 +325,7 @@ export const attendance = (req, res) => {
 export const filteruserattendance = (req, res) => {
     console.log(req.body)
     const { fromDate, toDate, emp_id } = req.body
-    const q = `select * from attendance where pdate >=? and pdate <=? and emp_id=?`
+    const q = `select * from attendance where pdate >=? and pdate <=? and emp_id=? order by pdate`
     db.query(q, [fromDate, toDate, emp_id], (err, result) => {
         if (err) return res.status(500).json('error occured!')
         else {
@@ -353,7 +354,7 @@ export const attendancegraphdata = (req, res) => {
         from_date = new Date(Date.UTC(current_year, current_month - 1, 26))
         to_date = new Date(Date.UTC(current_year, current_month, 25))
     }
-    const q = `select pdate,totalhrs from attendance where emp_id=? and pdate>=date(?) and pdate<=date(?)`
+    const q = `select pdate,totalhrs from attendance where emp_id=? and pdate>=date(?) and pdate<=date(?) order by pdate`
     db.query(q, [emp_id, from_date, to_date], (err, result) => {
         if (err) {
             console.log(err)

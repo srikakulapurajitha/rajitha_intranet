@@ -181,16 +181,16 @@ const Dashboard = () => {
             <Divider>
                 Important Links
             </Divider>
-            <Container sx={{ height: 45, display: 'flex', flexDirection: 'row', justifyContent: "space-around", }}>
+            <Container sx={{ height: 50, display: 'flex', flexDirection: 'row', justifyContent: "space-around", }}>
                 <a href="https://unifiedportal-mem.epfindia.gov.in/memberinterface/" target="_blank" rel="noopener noreferrer" style={{ height: '100%' }}>
-                    <img alt="EPFO" src='EPFO.png' style={{ height: '90%', objectFit: 'contain' }} />
+                    <img alt="EPFO" src='EPFO.png' style={{ height: '70%', objectFit: 'contain' }} />
                 </a>
 
                 <a href="https://www.healthindiatpa.com/" target="_blank" rel="noopener noreferrer" style={{ height: '100%' }}>
-                    <img alt="Health India" src='insurance.png' style={{ height: '90%', objectFit: 'contain' }} />
+                    <img alt="Health India" src='insurance.png' style={{ height: '70%', objectFit: 'contain' }} />
                 </a>
                 <a href="https://www.icicibank.com/" target="_blank" rel="noopener noreferrer" style={{ height: '100%' }}>
-                    <img alt="icici bank" src='icici.png' style={{ height: '90%', objectFit: 'contain' }} />
+                    <img alt="icici bank" src='icici.png' style={{ height: '70%', objectFit: 'contain' }} />
                 </a>
             </Container>
 

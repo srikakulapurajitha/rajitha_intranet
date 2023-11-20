@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { Route, Routes, BrowserRouter, Navigate } from 'react-router-dom'
 import Login from './Components/Comman/Login/Login'
 import Dashboard from './Components/Comman/DashBoard/DashBoard'
@@ -22,18 +22,13 @@ import ViewAnnouncements from './Components/Admin/Announcements/ViewAnnoucement'
 import UploadAttendance from './Components/Admin/LeaveManagement/UploadAttendance'
 import ViewAttendance from './Components/Admin/LeaveManagement/ViewAttendance'
 import Attendance from './Components/Comman/Attendance/Attendance'
-
-
-
-
-
-
+import CreateReportingStructure from './Components/Admin/ReportingStructure/CreateReportingStructure'
+import ViewReportingStructure from './Components/Admin/ReportingStructure/ViewReportingStructure'
+import ChangePassword from './Components/Comman/ChangePassword/ChangePassword'
+import ProfileSection from './Components/Comman/ProfileSection/ProfileSection'
 
 export default function App() {
   //console.log(useContext(UserContext))
-
-
-
   return (
     <>
       <BrowserRouter>
@@ -45,6 +40,9 @@ export default function App() {
             <Route path='/' element={<CommanProtectedRoute component={<Dashboard />} />} />
             <Route path='/timezones' element={<CommanProtectedRoute component={<TimeZone />} />} />
             <Route path='/attendance' element={<CommanProtectedRoute component={<Attendance />} />} />
+            <Route path='/changepassword' element={<CommanProtectedRoute component={<ChangePassword />} />} />
+            <Route path='/myprofile' element={<CommanProtectedRoute component={<ProfileSection />} />} />
+            
             {/*----------------------------ADMIN------------------------------------------------------------------------------------ */}
             <Route path='/addcompany' element={<AdminProtectedRoute component={<AddCompany />} />} />
             <Route path='/viewcompany' element={<AdminProtectedRoute component={<ViewCompany />} />} />
@@ -56,6 +54,8 @@ export default function App() {
             <Route path='/viewannouncements' element={<AdminProtectedRoute component={<ViewAnnouncements />} />} />
             <Route path='/uploadattendance' element={<AdminProtectedRoute component={<UploadAttendance />} />} />
             <Route path='/viewattendance' element={<AdminProtectedRoute component={<ViewAttendance />} />} />
+            <Route path='/createreportingstructure' element={<AdminProtectedRoute component={<CreateReportingStructure />} />} />
+            <Route path='/viewreportingstructure' element={<AdminProtectedRoute component={<ViewReportingStructure />} />} />
 
             {/*----------------------------USER------------------------------------------------------------------------------------ */}
 

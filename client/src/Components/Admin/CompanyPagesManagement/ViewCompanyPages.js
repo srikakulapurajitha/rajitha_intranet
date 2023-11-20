@@ -1,6 +1,6 @@
 import React from 'react'
 import NavBar from '../../Comman/NavBar/AdminNavBar';
-import { Box, Card, Divider, Stack, Typography,Button, Drawer, Paper, List, ListItem, ListItemText, Container, DialogActions, Dialog, DialogTitle, DialogContent, FormControl, InputLabel, OutlinedInput, Select, MenuItem, IconButton, Backdrop, TextField } from '@mui/material'
+import { Box, Card, Divider, Stack, Typography,Button, Drawer, Paper, List, ListItem, ListItemText, Container, DialogActions, Dialog, DialogTitle, DialogContent, FormControl, InputLabel, OutlinedInput, Select, MenuItem, IconButton, TextField } from '@mui/material'
 import DataTable, { defaultThemes } from 'react-data-table-component';
 import { useState } from 'react';
 import { useEffect } from 'react';
@@ -9,6 +9,7 @@ import { useMemo } from 'react';
 import { Add, Delete, Search } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 import EditChartUpload from './EditChartUpload';
+import Loader from '../../Comman/Loader';
 
 //table styling
 const customStyles = {
@@ -1104,12 +1105,7 @@ function ViewCompanyPages() {
      </Box>
      {companyPageDetailsView}
 	 {companyPageEditView}
-	<Backdrop
-	sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-	open={loader}
-	>
-		<img src='gif2.gif' alt='loader' style={{ mixBlendMode: 'lighten' }} />
-	</Backdrop>
+	 <Loader loader={loader} /> 
 	 
 	 
     </>

@@ -369,7 +369,7 @@ function AddUser() {
                                     <Stack   direction={{xs:'column',md:'row'}} spacing={{xs:2,sm:1,md:2,lg:2}}  >
                                     <FormControl fullWidth sx={{ mb: 2 }} variant="outlined">
                                         <InputLabel size="small" required >Employee ID</InputLabel>
-                                        <OutlinedInput startAdornment={<InputAdornment position="start">bcg/</InputAdornment>} name='employeeId' value={addUserData.employeeId} onChange={handleUserDataChange}  size="small" required={true} type={"text"}  label="Employee ID"  />      
+                                        <OutlinedInput disabled startAdornment={<InputAdornment position="start">bcg/</InputAdornment>} name='employeeId' value={addUserData.employeeId} onChange={handleUserDataChange}  size="small" required={true} type={"text"}  label="Employee ID"  />      
                                     </FormControl>
                                     <FormControl fullWidth sx={{ mb: 2 }} variant="outlined">
                                         <InputLabel size="small" required >Access</InputLabel>
@@ -379,7 +379,7 @@ function AddUser() {
                                             <MenuItem value="admin">Admin</MenuItem>
                                             <MenuItem value="hr">HR</MenuItem>
                                             <MenuItem value="manager">Manager</MenuItem>
-                                            <MenuItem value="team lead"> Team Lead</MenuItem>
+                                            
                                         </Select>
                                     </FormControl>                                   
 
@@ -477,7 +477,7 @@ function AddUser() {
                                      </Container >
                         
                                 </Container>
-                                <Stack display={'flex'} justifyContent={'center'} direction={'row'} mt={2} spacing={{xs:4,lg:4}}>  
+                                <Stack display={'flex'} justifyContent={'center'} direction={'row'} mt={0.8} spacing={{xs:4,lg:4}}>  
                                     <Button size="small" variant="contained" color='success' type='submit' >ADD</Button>
                                     <Button size="small" variant="contained" color='error' onClick={()=>handleUserDataClear()}  >Clear</Button>
                                 </Stack>

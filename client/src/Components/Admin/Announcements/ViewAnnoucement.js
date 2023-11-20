@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import {
-    Backdrop, Box, Button, Card, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Drawer, FormControl, InputLabel, List, ListItem, ListItemText,
+    Box, Button, Card, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Drawer, FormControl, InputLabel, List, ListItem, ListItemText,
     MenuItem, OutlinedInput, Paper, Select, Stack, TextField, Typography
 } from '@mui/material';
 import DataTable from 'react-data-table-component';
@@ -15,6 +15,7 @@ import EventIcon from '@mui/icons-material/Event';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
+import Loader from '../../Comman/Loader';
 
 
 const customStyles = {
@@ -497,9 +498,7 @@ const ViewAnnouncements = () => {
             {announcementDetailView}
             {AnnouncementEditView}
 
-            <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loader}>
-                <img src='gif2.gif' alt='loader' style={{ mixBlendMode: 'lighten' }} />
-            </Backdrop>
+            <Loader loader={loader} /> 
         </>
     );
 };

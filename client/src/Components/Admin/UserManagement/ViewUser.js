@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import NavBar from '../../Comman/NavBar/AdminNavBar';
-import { Button, Box, Card, Divider, Stack, TextField, Typography, Paper, Drawer, Container, Avatar, ListItem, ListItemText, DialogActions, FormControl, InputLabel, OutlinedInput, IconButton, InputAdornment, MenuItem, Select, DialogContent, DialogTitle, Dialog, Backdrop } from '@mui/material'
+import { Button, Box, Card, Divider, Stack, TextField, Typography, Paper, Drawer, Container, Avatar, ListItem, ListItemText, DialogActions, FormControl, InputLabel, OutlinedInput, IconButton, InputAdornment, MenuItem, Select, DialogContent, DialogTitle, Dialog,  } from '@mui/material'
 import DataTable, { defaultThemes } from 'react-data-table-component'
 import axios from 'axios';
 import { Search, Visibility, VisibilityOff } from '@mui/icons-material';
@@ -11,6 +11,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from "dayjs";
 import { toast } from "react-toastify";
+import Loader from '../../Comman/Loader';
 
 
 
@@ -931,12 +932,7 @@ function ViewUser() {
             </Box>
             {userDetailsView}
             {userEditDetails} 
-            <Backdrop
-            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-            open={loader}
-            >
-                <img src='gif2.gif' alt='loader' style={{ mixBlendMode: 'lighten' }} />
-            </Backdrop>
+            <Loader loader={loader} /> 
         </>
     )
 }

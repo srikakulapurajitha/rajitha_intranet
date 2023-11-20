@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken'
 import bcrypt from "bcrypt";
 import otpGenerator from 'otp-generator'
 import 'dotenv/config'
+import e from "express";
 
 export const login = (req, res) => {
     console.log(req.body)
@@ -119,6 +120,41 @@ export const resetpassword = async(req,res)=>{
 }
 
 
+export const changepassword = (req,res)=>{
+    console.log(req.body)
+    const { oldPassword, newPassword,confirmNewPassword,email} =req.body
 
+    const check_old_password = `select password from usermanagement where email=? and status='active'`
+    db.query(check_old_password,[email],async(err,result)=>{
+        if (err) return res.status(500).json('error occured!')
+        else{
+            if(result.length===0){
+                return res.status(401).json(' Unauthorized User')
+            }
+            else{
+                if (bcrypt.compareSync(oldPassword,result[0].password)){
+                    if(newPassword===confirmNewPassword){
+                        const hash = bcrypt.hashSync(confirmNewPassword,12)
+                        const update_password_query = `update usermanagement set password = ? where email=?`
+                        const update_password_values = [hash,email]
+                        try{
+                            await db.promise().query(update_password_query,update_password_values)
+                            return res.status(200).json(`Password updated successfully`)
+                        }
+                        catch{
+                            return res.status(500).json('error occured!')
+                        }
+                    }
+                    else{
+                        return res.status(406).json(`new password and confirm password doesn't match!`)
+                    }
+                }
+                else{
+                    return res.status(406).json(`Old password doesn't match!`)
+                }
+            }
+        }
+    })
+}
 
 

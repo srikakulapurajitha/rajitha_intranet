@@ -74,7 +74,7 @@ export const adduser = async (req, res) => {
                     //console.log(info)
                     console.log('Message sent: ' + info.response);
                 })
-                res.send('user added successfully')
+                return res.send('user added successfully')
             }
             catch (err) {
                 console.log(err)
