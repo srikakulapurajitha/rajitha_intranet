@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 export const addcompany = (req,res)=>{
     console.log(req.body)
     const companyId = uuidv4()
-    const values=[companyId,req.body.companyName,req.body.companyEmail,req.body.companyAddress,req.body.companyContactNo,req.body.companyStatus]
+    const values=[companyId,req.body.companyName,req.body.companyEmail,req.body.companyAddress,req.body.companyWebsite,req.body.companyContactNo,req.body.companyStatus]
 
     db.query('select * from companymanagement where company_name=?',req.body.companyName,(err,result)=>{
         console.log('res',result)
@@ -59,8 +59,8 @@ export const viewcompany = (req,res)=>{
 
 export const editcompany = (req,res) =>{
     console.log(req.params)
-    const values = [req.body.company_name,req.body.company_email,req.body.company_address,req.body.company_contact_no,req.body.company_status,req.params.id]
-    const q = 'update companymanagement set company_name=?,company_email=?,company_address=?,company_contact_no=?,company_status=? where id=?'
+    const values = [req.body.company_name,req.body.company_email,req.body.company_address,req.body.company_website,req.body.company_contact_no,req.body.company_status,req.params.id]
+    const q = 'update companymanagement set company_name=?,company_email=?,company_address=?,company_website=?,company_contact_no=?,company_status=? where id=?'
     db.query(q,values,(error,result)=>{
         if(error){
             console.log(error)

@@ -16,7 +16,8 @@ function AddAnnouncement() {
         companyName: '',
         description: '',
         title: '',
-        announcementDate: null, // Initialize to null
+        from_date: null, 
+        to_date:null
     });
     const [dateError, setDateError] = useState(false)
     const [companyNames, setCompanyNames] = useState([])
@@ -44,7 +45,8 @@ function AddAnnouncement() {
             companyName: '',
             description: '',
             title: '',
-            announcementDate: null,
+            from_date: null,
+            to_date:null
         });
     };
 
@@ -54,7 +56,7 @@ function AddAnnouncement() {
     const handleSubmitAnnouncementForm = async (e) => {
         e.preventDefault();
         console.log(addAnnouncement)
-        if (!addAnnouncement.announcementDate) {
+        if (!addAnnouncement.from_date) {
             setDateError(true)
         }
         else {
@@ -136,12 +138,13 @@ function AddAnnouncement() {
                                     }}
                                 >
                                     <FormControl sx={{ mb: 2 }} fullWidth variant="outlined">
-                                        <InputLabel required>Select Company</InputLabel>
+                                        <InputLabel size='small' required>Select Company</InputLabel>
                                         <Select
                                             label="Select Company"
                                             name="companyName"
                                             value={addAnnouncement.companyName}
                                             required
+                                            size='small'
                                             onChange={e => {
                                                 const compId = companyNames.filter(c => c.company_name === e.target.value)
                                                 setAddAnnouncement({ ...addAnnouncement, companyName: e.target.value, companyId: compId[0].id })
@@ -152,7 +155,7 @@ function AddAnnouncement() {
                                     </FormControl>
 
                                     <FormControl fullWidth sx={{ mb: 2 }} variant="outlined">
-                                        <InputLabel required>
+                                        <InputLabel size='small' required>
                                             Title
                                         </InputLabel>
                                         <OutlinedInput
@@ -163,12 +166,13 @@ function AddAnnouncement() {
                                             label="Title"
                                             placeholder="Enter Title"
                                             onInput={handleAddFormData}
+                                            size='small'
                                         />
                                     </FormControl>
 
                                     <div>
                                         <FormControl fullWidth sx={{ mb: 2 }} variant="outlined">
-                                            <InputLabel required >
+                                            <InputLabel size='small' required >
                                                 Description
                                             </InputLabel>
                                             <OutlinedInput
@@ -182,20 +186,38 @@ function AddAnnouncement() {
                                                 maxRows={5}
                                                 placeholder="Enter Description"
                                                 onChange={handleAddFormData}
+                                                size='small'
                                             />
                                         </FormControl>
+                                        
+                                        
 
                                         <FormControl fullWidth sx={{ mb: 2 }} variant="outlined">
                                             <LocalizationProvider dateAdapter={AdapterDayjs}>
-
+                                                <Stack direction={{xs:'column',sm:'column',md:'row',lg:'row'}} spacing={2}>
                                                 <DatePicker
-                                                    value={addAnnouncement.announcementDate ? dayjs(addAnnouncement.announcementDate) : null}
-                                                    onChange={e => setAddAnnouncement({ ...addAnnouncement, announcementDate: e.$d.toLocaleDateString('en-CA') })}
-                                                    slotProps={{ textField: { error: dateError, required: true } }}
-                                                    label="Announcement Date"
+                                                
+                                                    value={addAnnouncement.from_date ? dayjs(addAnnouncement.from_date) : null}
+                                                    onChange={e => setAddAnnouncement({ ...addAnnouncement, from_date: e.$d.toLocaleDateString('en-CA') })}
+                                                    slotProps={{ textField: { error: dateError, required: true,size:'small' } }}
+                                                    label="From Date"
                                                     format='DD/MM/YYYY'
+                                                    maxDate={addAnnouncement.to_date ? dayjs(addAnnouncement.to_date) : null}
                                                     startIcon={<EventIcon />} // Calendar icon
                                                 />
+                                                 <DatePicker
+                                                    value={addAnnouncement.from_date ? dayjs(addAnnouncement.to_date) : null}
+                                                    onChange={e => setAddAnnouncement({ ...addAnnouncement, to_date: e.$d.toLocaleDateString('en-CA') })}
+                                                    slotProps={{ textField: { error: dateError, required: true ,size:'small'} }}
+                                                    label="To Date"
+                                                    format='DD/MM/YYYY'
+                                                    minDate={addAnnouncement.from_date ? dayjs(addAnnouncement.from_date) : null}
+                                                    startIcon={<EventIcon />} // Calendar icon
+                                                />
+
+                                                </Stack>
+
+                                               
                                             </LocalizationProvider>
 
                                         </FormControl>

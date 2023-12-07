@@ -1,6 +1,7 @@
 import React, { useCallback,useEffect, useState } from 'react'
 import { Container, Grid, Typography } from '@mui/material'
 import './TimeZone.css'
+import { AccessTime } from '@mui/icons-material'
 
 function TimeZone() {
     const [date, setDate] = useState({
@@ -100,7 +101,11 @@ function TimeZone() {
             
                     <Grid spacing={2} container>
                         <Grid item xs={12} lg={12}>
-                            <Typography textAlign={'center'} component={'h4'} variant='h4'>Time Zone's</Typography>
+                        <Typography variant="p" component="div" sx={{ display: 'flex', justifyContent: 'center', fontSize: 20, alignItems: 'center',m:1 }}>
+                        Time Zones
+                        <AccessTime sx={{m:0.3}} fontSize='medium' />
+                    
+                </Typography>
                         </Grid>
                         {['India', 'Israel', 'Los Angeles', 'New York', 'Chicago', 'Denver', 'UK', 'Germany', 'France', 'Philippines'].map(item => {
                             return (

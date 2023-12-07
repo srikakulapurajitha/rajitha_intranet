@@ -14,6 +14,11 @@
 --- CREATE TABLE announcement (id INT AUTO_INCREMENT PRIMARY KEY,  company_name VARCHAR(100) NOT NULL,  title VARCHAR(100) NOT NULL,  description VARCHAR(300) NOT NULL, announcement_date date NOT NULL, companyId varchar(40) not null,foreign key(companyId) references companymanagement(id) on delete cascade, foreign key(company_name) references companymanagement(company_name) on update cascade);
 8. attendance table
 --- create table attendance(id int auto_increment primary key, emp_id int not null, pdate varchar(10) not null, firstin float not null, lastout float not null, status varchar(5) not null,totalhrs float not null, updated_status varchar(5) default 'AA' not null, foreign key(emp_id) references usermanagement(employee_id));
-
+9. reportingstructure table
+--- create table reportingstructure(id int auto_increment primary key not null, reporting_head int not null, users int not null,foreign key(reporting_head) references usermanagement(employee_id),foreign key(users) references usermanagement(employee_id));
+10. contactinformation table
+--- create table contactinformation(address varchar(300) not null, zip_code int not null, home_phone varchar(20) not null, home_phone_ext varchar(10) not null, office_phone varchar(20) not null, office_phone_ext varchar(10) not null, mobile1 varchar(20) not null, mobile2 varchar(20) not null, mobile3 varchar(20) not null, mobile4 varchar(20) not null, mobile5 varchar(20) not null,msn varchar(100) not null, aol varchar(100) not null, skype varchar(100) not null, yahoo varchar(100) not null, gtalk varchar(100) not null, emp_id int not null, foreign key(emp_id) references usermanagement(employee_id)on delete cascade);
+11. familyinformation table
+--- create table familyinformation(no_of_kids int not null,kids_names varchar(300) not null, anniversary_date date , blood_group varchar(20) not null,emp_id int not null, foreign key(emp_id) references usermanagement(employee_id)on delete cascade);
 ---test---
 select * from companypagesmanagement inner join officeholidays on id=pageId where company_name='Brightcomgroup India' and company_pagename='Holiday list' and holidaylist_title!='weekend' and holidaylist_title='Holiday list 2023' and pageId='a24f2d61-8c82-4ec8-86bb-9b0358db1eb5';

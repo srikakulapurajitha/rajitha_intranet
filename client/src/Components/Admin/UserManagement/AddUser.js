@@ -469,7 +469,7 @@ function AddUser() {
 
                                         <FormControl fullWidth variant="outlined">
                                         <InputLabel size="small" required >Designation</InputLabel>
-                                        <OutlinedInput value={addUserData.designation} onChange={handleUserDataChange}   size="small" name="designation" required={true} type={"text"} label="Designation"  /> 
+                                        <OutlinedInput value={addUserData.designation} multiline minRows={2} onChange={handleUserDataChange}   size="small" name="designation" required={true} type={"text"} label="Designation"  /> 
                                         </FormControl>
                                         
                                         </Stack>

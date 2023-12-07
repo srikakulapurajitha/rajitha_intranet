@@ -25,6 +25,7 @@ function AddComapny() {
     companyName:'',
     companyEmail:'',
     companyAddress:'',
+    companyWebsite:'',
     companyContactNo:'',
     companyStatus:''
     })
@@ -88,7 +89,7 @@ function AddComapny() {
               <Paper elevation={5}  sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: { xs: '30ch', md: '45ch',lg:'50ch' }, height: { xs: '52ch', md: '52ch',lg:'52ch' },p:1 }}>
                 
                 <Box component={'form'} onSubmit={handleSubmitCompForm} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: { xs: '25ch', md: '40ch' }, height: { xs:'55ch', sm: '55ch', md: '55ch',lg:'50ch' }, p: 1 }}>
-                  <FormControl fullWidth sx={{ mb: 2 }} variant="outlined">
+                  <FormControl fullWidth sx={{ mb: 1 }} variant="outlined">
                     <InputLabel size='small' required htmlFor="outlined-adornment-company">Company Name</InputLabel>
                     <OutlinedInput
                     size='small'
@@ -102,7 +103,7 @@ function AddComapny() {
                       onInput={handleAddFormData}
                     />
                   </FormControl>
-                  <FormControl  fullWidth sx={{ mb: 2 }} variant="outlined">
+                  <FormControl  fullWidth sx={{ mb: 1 }} variant="outlined">
                     <InputLabel size='small' required htmlFor="outlined-adornment-comp_email">Email</InputLabel>
                     <OutlinedInput
                     size='small'
@@ -117,7 +118,7 @@ function AddComapny() {
 
                     />
                   </FormControl>
-                  <FormControl fullWidth sx={{ mb: 2 }} variant="outlined">
+                  <FormControl fullWidth sx={{ mb: 1 }} variant="outlined">
                     <InputLabel size='small' required htmlFor="outlined-adornment-comp_addr">Company Address</InputLabel>
                     <OutlinedInput
                     size='small'
@@ -135,7 +136,19 @@ function AddComapny() {
 
                     />
                   </FormControl>
-                  <FormControl fullWidth sx={{ mb: 2 }} variant="outlined">
+                  <FormControl fullWidth sx={{ mb: 1 }} variant="outlined">
+                    <InputLabel size='small'>Company Website</InputLabel>
+                    <OutlinedInput
+                    size='small'
+                      name='companyWebsite'
+                      value={addCompData.companyWebsite}                     
+                      type={'text'}
+                      label="Company Website"
+                      placeholder='enter comapany webiste'
+                      onInput={handleAddFormData}
+                    />
+                  </FormControl>
+                  <FormControl fullWidth sx={{ mb: 1 }} variant="outlined">
                     
                     <TextField
                     size='small'
@@ -168,7 +181,7 @@ function AddComapny() {
                   </FormControl>
 
                   
-                  <FormControl sx={{ mb: 2 }} fullWidth variant="outlined" >
+                  <FormControl sx={{ mb: 1 }} fullWidth variant="outlined" >
                     <InputLabel size='small'  required>Status</InputLabel>
                     <Select
                     size='small'
@@ -186,8 +199,8 @@ function AddComapny() {
 
 
                   <Stack spacing={5} direction="row" sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-                    <Button variant="outlined" color='success' type='submit' >ADD</Button>
-                    <Button variant="outlined" color='error' onClick={handleResetCompForm} >Clear</Button>
+                    <Button size='small' variant="outlined" color='success' type='submit' >ADD</Button>
+                    <Button size='small' variant="outlined" color='error' onClick={handleResetCompForm} >Clear</Button>
                   </Stack>
 
                 </Box>

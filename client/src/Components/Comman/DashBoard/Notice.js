@@ -14,7 +14,7 @@ function Notice() {
         <>
         {notice.length !==0?
         <>
-        <Box sx={{ color: 'red' }}>Notice*</Box>
+        <Box sx={{ color: 'red' }}>Annoucement*</Box>
         <Card>
             <Marquee>
                 {notice?.map((item,index)=><Box  key={index}><span style={{ margin: 10,fontFamily:'arial' }}><span style={{color:'#FF3636',fontWeight:'bold'}}>{index+1}.{item.title}</span>: {item.description}</span></Box>)}

@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Card, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, IconButton, List, ListItem, ListItemAvatar, ListItemText, MobileStepper, Paper, TextField, Typography} from '@mui/material';
+import { Avatar, Box, Button, Card, Container, Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, List, ListItem, ListItemAvatar, ListItemText, MobileStepper, Paper, Stack, TextField, Typography} from '@mui/material';
 import CakeIcon from '@mui/icons-material/Cake';
 import MessageIcon from '@mui/icons-material/Message';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
@@ -15,6 +15,7 @@ const BirthDayList = (props) => {
     const maxSteps = 12;
     const [open, setOpen] =useState(false);
     const [birthdayMsg,setBirthdayMsg] =useState('')
+    const [subject ,setSubject] = useState('')
     const {birthdayData} = props
 
     const {userDetails}  = useContext(UserContext)
@@ -45,6 +46,7 @@ const BirthDayList = (props) => {
 
 
     useEffect(() => {
+        console.log('bir',birthdayData)
         const filteredList = birthdayData.filter((data) => new Date(new Date(data.date_of_birth).toLocaleString('en-CA').slice(0, 10)).getMonth() === activeStep)
         console.log(filteredList)
         const birthdayList = filteredList.map(d => ({ profile: d.profile_pic, name: `${d.first_name} ${d.last_name}`, email: d.email, dob: `${new Intl.DateTimeFormat('en-US', { month: 'short' }).format(new Date(new Date(d.date_of_birth).toLocaleString('en-CA').slice(0, 10)))} ${new Date(new Date(d.date_of_birth).toLocaleString('en-CA').slice(0, 10)).getDate()}` }))
@@ -67,11 +69,13 @@ const BirthDayList = (props) => {
             setOpen(false);
             setSelectedUser({})
             setBirthdayMsg('')
+            setSubject('')
         };
-        const handleSendBirthdayGreeting = ()=>{
+        const handleSendBirthdayGreeting = (e)=>{
             console.log(birthdayMsg)
+            e.preventDefault()
             if(birthdayMsg!==''){
-                toast.promise(axios.post('/api/sendbirthdaywishes',{to:selectedUser.email,from:`${userDetails.first_name} ${userDetails.last_name}`,msg:birthdayMsg}),{
+                toast.promise(axios.post('/api/sendbirthdaywishes',{to:selectedUser.email,name:`${userDetails.first_name} ${userDetails.last_name}`,from:userDetails.email,subject:subject,msg:birthdayMsg}),{
                     pending:{
                         render(){
                             return('sending birthday wishes')
@@ -98,14 +102,14 @@ const BirthDayList = (props) => {
             <Dialog
                 open={open}
                 onClose={handleClose}
-                aria-labelledby="responsive-dialog-title"
+               
             >
                 <DialogTitle >
                     {"Send Birthday Wishes 🥳"}
                 </DialogTitle>
                 
-                <DialogContent sx={{minWidth:'40ch'}}>
-                    <DialogContentText sx={{ m: 1 }}>
+                <DialogContent sx={{minWidth:{xs:'45ch',lg:'50ch'}}}>
+                    {/* <DialogContentText sx={{ m: 1 }}>
                         To: {selectedUser.email}
                     </DialogContentText>
                     <TextField
@@ -115,14 +119,47 @@ const BirthDayList = (props) => {
                         sx={{ m: 1,minWidth:'40ch' }}
                         multiline
                         minRows={4}
-                        maxRows={8}
+                        maxRows={4}
                         helperText='write birthday wishes first'
                         placeholder="write your msg"
                     />
 
                     <DialogContentText sx={{ m: 1 }}>
                         From: {`${userDetails.first_name} ${userDetails.last_name}`}
-                    </DialogContentText>
+                    </DialogContentText> */}
+                     <form id='sendBirthdayMsg' onSubmit={handleSendBirthdayGreeting}>
+                    <Container sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+                    <Box sx={{width:'100%',m:1}}>
+                   
+                    
+                    <Stack spacing={1.5} display={'flex'} alignItems={'center'} justifyContent={'center'}>
+                        <TextField size='small' value={`${userDetails.first_name} ${userDetails.last_name}`} disabled fullWidth label='Sender Name' />
+                        <TextField size='small' value={selectedUser.email} disabled fullWidth label='To' />
+                        <TextField size='small' value={subject} onInput={e => setSubject(e.target.value)} required fullWidth label='Subject' />
+                        <TextField
+                            required
+                            value={birthdayMsg}
+                            onInput={e => setBirthdayMsg(e.target.value)}
+                           
+                            size='small'
+                            multiline
+                            minRows={3}
+                            maxRows={3}
+                            fullWidth
+                            label='Birthday Wish'
+
+
+                           
+                            placeholder="write your msg"
+                        />
+                    </Stack>
+                    
+
+
+                </Box>
+
+            </Container>
+            </form>
 
                 </DialogContent>
                
@@ -130,14 +167,14 @@ const BirthDayList = (props) => {
                     <Button  onClick={handleClose}>
                         Cancel
                     </Button>
-                    <Button onClick={handleSendBirthdayGreeting}>
+                    <Button  type='submit' form='sendBirthdayMsg'  >
                         Send
                     </Button>
                 </DialogActions>
             </Dialog>
 
         )
-    }, [open,userDetails,selectedUser,birthdayMsg])
+    }, [open,userDetails,selectedUser,birthdayMsg,subject])
     return (
         <>
             <Card sx={{ display: 'flex', flexDirection: 'column', height: 390, p: 1 }} >

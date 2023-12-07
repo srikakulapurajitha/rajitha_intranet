@@ -26,6 +26,10 @@ import CreateReportingStructure from './Components/Admin/ReportingStructure/Crea
 import ViewReportingStructure from './Components/Admin/ReportingStructure/ViewReportingStructure'
 import ChangePassword from './Components/Comman/ChangePassword/ChangePassword'
 import ProfileSection from './Components/Comman/ProfileSection/ProfileSection'
+import DirectorySearch from './Components/Comman/DirectorySearch/DirectorySearch'
+import UserProfileSection from './Components/Comman/UserProfile/UserProfileSection'
+import CrossRoadsSection from './Components/Comman/CrossRoads/CrossRoadsSection'
+import TeamsSection from './Components/Comman/Teams/TeamsSection'
 
 export default function App() {
   //console.log(useContext(UserContext))
@@ -42,6 +46,10 @@ export default function App() {
             <Route path='/attendance' element={<CommanProtectedRoute component={<Attendance />} />} />
             <Route path='/changepassword' element={<CommanProtectedRoute component={<ChangePassword />} />} />
             <Route path='/myprofile' element={<CommanProtectedRoute component={<ProfileSection />} />} />
+            <Route path='/directorysearch' element={<CommanProtectedRoute component={<DirectorySearch />} />} />
+            <Route path='/viewuserprofile/:emp_id/info' element={<CommanProtectedRoute component={<UserProfileSection />} />} />
+            <Route path='/crossroads' element={<CommanProtectedRoute component={<CrossRoadsSection />} />} />
+            <Route path='/teams' element={<CommanProtectedRoute component={<TeamsSection />} />} />
             
             {/*----------------------------ADMIN------------------------------------------------------------------------------------ */}
             <Route path='/addcompany' element={<AdminProtectedRoute component={<AddCompany />} />} />

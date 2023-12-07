@@ -1,58 +1,15 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { Container, TextField, Paper, Stack, Typography, Button, InputLabel, FormControl, OutlinedInput, Box, Badge } from '@mui/material';
+import React, { useContext, useState } from 'react'
+import { Container, Stack, Typography, Button, InputLabel, FormControl, OutlinedInput, Box, } from '@mui/material';
 import { toast } from 'react-toastify';
 import axios from 'axios';
-import Loader from '../Loader';
 import UserContext from '../../context/UserContext';
 
 
 function ContactInfo(props) {
-    const [contactInfo, setContactInfo] = useState({
-        address: '',
-        zip_code: '',
-        home_phone: '',
-        home_phone_ext: '',
-        office_phone: '',
-        office_phone_ext: '',
-        mobile1: '',
-        mobile2: '',
-        mobile3: '',
-        mobile4: '',
-        mobile5: '',
-        msn: '',
-        aol: '',
-        skype: '',
-        yahoo: '',
-        gtalk: ''
-
-
-    })
-
-    const [loader, setLoader] = useState(true)
+    const {contactInfo, setContactInfo} = props
+    const [prevData, setPrevData] = useState(contactInfo)
     const { userDetails } = useContext(UserContext)
 
-    useEffect(() => {
-        console.log(userDetails)
-        if (userDetails) {
-            axios.post('/api/getcontactinformation', { emp_id: userDetails.employee_id })
-                .then((res) => {
-                    console.log(res.data)
-                    if (res.data.length !== 0) {
-                        setContactInfo(res.data[0])
-                        setLoader(false)
-                    }
-                    else {
-                        setLoader(false)
-                    }
-                })
-                .catch((err) => {
-                    console.log(err)
-                    setLoader(false)
-                })
-        }
-
-
-    }, [userDetails])
 
     const handleContactInfoChange = (e) => {
         const { name, value } = e.target
@@ -71,24 +28,26 @@ function ContactInfo(props) {
             toast.warning(`please enter valid 6 digit zip code`)
         }
         else {
-            if (userDetails) {
+            if (userDetails && JSON.stringify(prevData)!==JSON.stringify(contactInfo)) {
                 toast.promise(
                     axios.post('/api/addcontactinformation', { ...contactInfo, emp_id: userDetails.employee_id }),
                     {
 
                         pending: {
                             render() {
-                                return ('Adding Conatact Information')
+                                
+                                return('Adding Conatact Information')
                             }
                         },
                         success: {
                             render(res) {
-                                return (res.data.data)
+                                setPrevData(contactInfo)
+                                return(res.data.data)
                             }
                         },
                         error: {
                             render(err) {
-                                return (err.data.response.data)
+                                return(err.data.response.data)
                             }
                         }
                     }
@@ -219,7 +178,7 @@ function ContactInfo(props) {
 
 
             </form>
-            <Loader loader={loader} />
+            {/* <Loader loader={loader} /> */}
         </>
     )
 }

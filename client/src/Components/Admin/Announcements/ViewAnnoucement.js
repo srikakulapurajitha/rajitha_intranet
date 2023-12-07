@@ -65,6 +65,8 @@ const ViewAnnouncements = () => {
     const [dateError, setDateError] = useState(false)
     const [companyNames, setCompanyNames] = useState([])
 
+    const [prevData, setPrevData] = useState(editAnnouncement)
+
     useEffect(() => {
         axios.get('/api/companynames')
             .then(res => {
@@ -94,8 +96,13 @@ const ViewAnnouncements = () => {
             center: true,
         },
         {
-            name: 'Date',
-            selector: (row) => row.announcement_date,
+            name: 'From Date',
+            selector: (row) => row.from_date,
+            center: true,
+        },
+        {
+            name: 'To Date',
+            selector: (row) => row.to_date,
             center: true,
         },
         {
@@ -118,7 +125,7 @@ const ViewAnnouncements = () => {
     useEffect(() => {
         axios.get('/api/viewannouncement/')
             .then((res) => {
-                const data = res.data.map(d => ({ ...d, announcement_date: new Date(d.announcement_date).toLocaleString('en-CA').slice(0, 10) }))
+                const data = res.data.map(d => ({ ...d, from_date: new Date(d.from_date).toLocaleString('en-CA').slice(0, 10), to_date: new Date(d.to_date).toLocaleString('en-CA').slice(0, 10)  }))
                 setData(data); // Set the data state with the fetched data
                 setFilteredAnnouncement(data); // Initialize filteredAnnouncement with the fetched data
                 setLoader(false);
@@ -214,9 +221,28 @@ const ViewAnnouncements = () => {
                                                 color="text.primary"
                                                 mr={0.5}
                                             >
-                                                Date:
+                                                From Date:
                                             </Typography>
-                                            {viewAnnouncement.announcement_date}
+                                            {viewAnnouncement.from_date}
+                                        </>
+                                    }
+                                />
+                            </ListItem>
+
+                            <ListItem alignItems="flex-start">
+                                <ListItemText
+                                    secondary={
+                                        <>
+                                            <Typography
+                                                sx={{ display: 'inline' }}
+                                                component="span"
+                                                variant="body1"
+                                                color="text.primary"
+                                                mr={0.5}
+                                            >
+                                                To Date:
+                                            </Typography>
+                                            {viewAnnouncement.to_date}
                                         </>
                                     }
                                 />
@@ -252,6 +278,7 @@ const ViewAnnouncements = () => {
     const handleEditButton = (row) => {
         //console.log(row);
         setEditDialogOpen(true);
+        setPrevData(row)
         setEditAnnouncement(row);
     };
 
@@ -260,38 +287,47 @@ const ViewAnnouncements = () => {
         const handleEditDialogClose = () => {
             setEditDialogOpen(false);
             setEditAnnouncement({})
+            setPrevData({})
         };
 
         const handleEdit = async (e) => {
             e.preventDefault();
-            if (!editAnnouncement.announcement_date) {
+            if (!editAnnouncement.from_date && !editAnnouncement.to_date) {
                 setDateError(true)
             }
             else {
-                setDateError(false)
-                toast.promise(
-                    axios.put(`/api/updateannouncement`, editAnnouncement),
-                    {
-                        pending: {
-                            render() {
-                                return('Updating announcements');
+                if(JSON.stringify(editAnnouncement)!==JSON.stringify(prevData)){
+                    setDateError(false)
+                    toast.promise(
+                        axios.put(`/api/updateannouncement`, editAnnouncement),
+                        {
+                            pending: {
+                                render() {
+                                    return('Updating announcements');
+                                },
                             },
-                        },
-                        success: {
-                            render(res) {
-                                setEditDialogOpen(false);
-                                return(res.data.data);
+                            success: {
+                                render(res) {
+                                    handleEditDialogClose()
+                                    return(res.data.data);
+                                },
                             },
-                        },
-                        error: {
-                            render(err) {
-                                return(err.data.response.data);
+                            error: {
+                                render(err) {
+                                    return(err.data.response.data);
+                                },
                             },
-                        },
-                    }
-                );
+                        }
+                    );
 
-            }
+                }
+                else{
+                    handleEditDialogClose()
+
+                }
+
+                }
+                
 
         };
 
@@ -324,14 +360,15 @@ const ViewAnnouncements = () => {
                             >
                                 <form id='editannouncement' onSubmit={handleEdit}>
                                     <FormControl fullWidth sx={{ mb: 2 }} variant='outlined'>
-                                        <InputLabel required >
+                                        <InputLabel size='small' required >
                                             Announcement
                                         </InputLabel>
                                         <Select
                                             label="Select Company"
                                             name="company_name"
-                                            value={editAnnouncement.company_name}
+                                            value={editAnnouncement.company_name?editAnnouncement.company_name:''}
                                             required
+                                            size='small'
                                             onChange={e => {
                                                 const compId = companyNames.filter(c => c.company_name === e.target.value)
                                                 setEditAnnouncement({ ...editAnnouncement, company_name: e.target.value, companyId: compId[0].id })
@@ -342,7 +379,7 @@ const ViewAnnouncements = () => {
                                         </Select>
                                     </FormControl>
                                     <FormControl fullWidth sx={{ mb: 2 }} variant='outlined'>
-                                        <InputLabel required htmlFor='outlined-adornment-editannouncementtitle'>
+                                        <InputLabel size='small' required >
                                             Title
                                         </InputLabel>
                                         <OutlinedInput
@@ -350,14 +387,15 @@ const ViewAnnouncements = () => {
                                             value={editAnnouncement.title}
                                             onInput={(e) => setEditAnnouncement({ ...editAnnouncement, title: e.target.value })}
                                             required={true}
-                                            id='outlined-adornment-editannouncementtitle'
+                                            
                                             type={'title'}
                                             label='Title'
                                             placeholder='Enter announcement title'
+                                            size='small'
                                         />
                                     </FormControl>
                                     <FormControl fullWidth sx={{ mb: 2 }} variant='outlined'>
-                                        <InputLabel required htmlFor='outlined-adornment-editannouncementdescription'>
+                                        <InputLabel size='small' required >
                                             Announcement Description
                                         </InputLabel>
                                         <OutlinedInput
@@ -366,28 +404,46 @@ const ViewAnnouncements = () => {
                                             onInput={(e) => setEditAnnouncement({ ...editAnnouncement, description: e.target.value })}
                                             required={true}
                                             multiline
-                                            id='outlined-adornment-editannouncementdescription'
+                                            
                                             type={'text'}
                                             label='Announcement Description'
                                             minRows={4}
                                             maxRows={4}
                                             placeholder='Enter announcement description'
+                                            size='small'
                                         />
                                     </FormControl>
+                                    
+
                                     <FormControl fullWidth sx={{ mb: 2 }} variant="outlined">
-                                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                <Stack direction={{xs:'column',sm:'column',md:'row',lg:'row'}} spacing={2}>
+                                                <DatePicker
+                                                
+                                                    value={editAnnouncement.from_date ? dayjs(editAnnouncement.from_date) : null}
+                                                    onChange={e =>e.$d? setEditAnnouncement({ ...editAnnouncement, from_date: e.$d.toLocaleDateString('en-CA') }):null}
+                                                    slotProps={{ textField: { error: dateError, required: true,size:'small' } }}
+                                                    label="From Date"
+                                                    format='DD/MM/YYYY'
+                                                    maxDate={editAnnouncement.to_date ? dayjs(editAnnouncement.to_date) : null}
+                                                    startIcon={<EventIcon />} // Calendar icon
+                                                />
+                                                 <DatePicker
+                                                    value={editAnnouncement.from_date ? dayjs(editAnnouncement.to_date) : null}
+                                                    onChange={e => e.$d?setEditAnnouncement({ ...editAnnouncement, to_date: e.$d.toLocaleDateString('en-CA') }):null}
+                                                    slotProps={{ textField: { error: dateError, required: true ,size:'small'} }}
+                                                    label="To Date"
+                                                    format='DD/MM/YYYY'
+                                                    minDate={editAnnouncement.from_date ? dayjs(editAnnouncement.from_date) : null}
+                                                    startIcon={<EventIcon />} // Calendar icon
+                                                />
 
-                                            <DatePicker
-                                                value={editAnnouncement.announcement_date ? dayjs(editAnnouncement.announcement_date) : null}
-                                                onChange={e => setEditAnnouncement({ ...editAnnouncement, announcement_date: e.$d.toLocaleDateString('en-CA') })}
-                                                slotProps={{ textField: { error: dateError, required: true } }}
-                                                label="Announcement Date"
-                                                format='DD/MM/YYYY'
-                                                startIcon={<EventIcon />} // Calendar icon
-                                            />
-                                        </LocalizationProvider>
+                                                </Stack>
 
-                                    </FormControl>
+                                               
+                                            </LocalizationProvider>
+
+                                        </FormControl>
 
                                 </form>
                             </Box>
@@ -404,7 +460,7 @@ const ViewAnnouncements = () => {
                 </Dialog>
             </>
         );
-    }, [editDialogOpen, companyNames, dateError, editAnnouncement]);
+    }, [editDialogOpen, companyNames, dateError, editAnnouncement,prevData]);
 
     // Table search bar
     const subHeaderViewannouncementMemo = useMemo(() => {

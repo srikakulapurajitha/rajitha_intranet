@@ -37,16 +37,16 @@ function PersonalInfo(props) {
     useEffect(()=>{
         setUserData(
             {
-                profile_pic:userDetails.profile_pic,
-                first_name:userDetails.first_name,
-                last_name:userDetails.last_name,
-                email:userDetails.email,
-                company_name:userDetails.company_name,
-                designation:userDetails.designation,
-                gender:userDetails.gender,
+                profile_pic:userDetails.profile_pic?userDetails.profile_pic:'',
+                first_name:userDetails.first_name?userDetails.first_name:'',
+                last_name:userDetails.last_name?userDetails.last_name:'',
+                email:userDetails.email?userDetails.email:'',
+                company_name:userDetails.company_name?userDetails.company_name:'',
+                designation:userDetails.designation?userDetails.designation:'',
+                gender:userDetails.gender?userDetails.gender:'',
                 date_of_birth:userDetails.date_of_birth?new Date(userDetails.date_of_birth).toLocaleString('en-CA').slice(0,10):'',
-                country:userDetails.country,
-                about_yourself:userDetails.about_yourself
+                country:userDetails.country?userDetails.country:'',
+                about_yourself:userDetails.about_yourself?userDetails.about_yourself:''
             }
         )
 
@@ -222,7 +222,7 @@ function PersonalInfo(props) {
                             </FormControl>
                             <FormControl fullWidth variant="outlined">
                                 <InputLabel size="small" required >Designation</InputLabel>
-                                <OutlinedInput size="small" name="designation" value={userData.designation} onChange={handleUserDataChange} required={true} type={"text"} label="Designation" />
+                                <OutlinedInput size="small" name="designation" disabled value={userData.designation} onChange={handleUserDataChange} required={true} type={"text"} label="Designation" />
                             </FormControl>
 
                         </Stack>

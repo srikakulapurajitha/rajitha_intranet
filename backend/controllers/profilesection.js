@@ -63,3 +63,108 @@ export const addcontactinformation = async(req,res)=>{
        
 
 }
+
+export const getfamilyinformation = (req,res)=>{
+    console.log(req.body)
+    const q = `select * from familyinformation where emp_id=?`
+    const v = [req.body.emp_id]
+    db.query(q,v,(err,result)=>{
+        if(err) return res.status(500).json('error occured!')
+        else{
+            console.log(result)
+            return res.status(200).json(result)
+        }
+    })
+}
+
+export const addfamilyinformation = async(req,res)=>{
+    console.log(req.body)
+    const {spouse_name,no_of_kids,kids_names,anniversary_date,blood_group,emp_id} = req.body
+    const del_q = `delete from familyinformation where emp_id=?`
+    const del_v = [emp_id]
+    const insert_q = `insert into familyinformation(spouse_name,no_of_kids,kids_names,anniversary_date,blood_group,emp_id) values(?) `
+    const insert_v = [spouse_name,Number(no_of_kids),kids_names,anniversary_date,blood_group,emp_id]
+    try{
+        await db.promise().query(del_q,del_v)
+        await db.promise().query(insert_q,[insert_v])
+        return res.status(200).json('Family information added successfully!')
+        
+    }
+    catch(err){
+        console.log(err)
+        return res.status(500).json('error occured!')
+    }
+    
+       
+
+}
+
+export const getfuninformation = (req,res)=>{
+    console.log(req.body)
+    const q = `select * from funinformation where emp_id=?`
+    const v = [req.body.emp_id]
+    db.query(q,v,(err,result)=>{
+        if(err) return res.status(500).json('error occured!')
+        else{
+            console.log(result)
+            return res.status(200).json(result)
+        }
+    })
+}
+
+export const addfuninformation = async(req,res)=>{
+    console.log(req.body)
+    const {favorite_movie,favorite_place,favorite_sport,favorite_food,favorite_actor,favorite_actress,quote,good_quality,bad_quality,emp_id} = req.body
+    const del_q = `delete from funinformation where emp_id=?`
+    const del_v = [emp_id]
+    const insert_q = `insert into funinformation values(?) `
+    const insert_v = [favorite_movie,favorite_place,favorite_sport,favorite_food,favorite_actor,favorite_actress,quote,good_quality,bad_quality,emp_id]
+    try{
+        await db.promise().query(del_q,del_v)
+        await db.promise().query(insert_q,[insert_v])
+        return res.status(200).json('Fun information added successfully!')
+        
+    }
+    catch(err){
+        console.log(err)
+        return res.status(500).json('error occured!')
+    }
+    
+       
+
+}
+
+export const gettimezoneinformation = (req,res)=>{
+    console.log(req.body)
+    const q = `select * from timezoneinformation where emp_id=?`
+    const v = [req.body.emp_id]
+    db.query(q,v,(err,result)=>{
+        if(err) return res.status(500).json('error occured!')
+        else{
+            console.log(result)
+            return res.status(200).json(result)
+        }
+    })
+}
+
+export const addtimezoneinformation = async(req,res)=>{
+    console.log(req.body)
+    const {timezone,emp_id} = req.body
+    const del_q = `delete from timezoneinformation where emp_id=?`
+    const del_v = [emp_id]
+    const insert_q = `insert into timezoneinformation values(?) `
+    const insert_v = [timezone,emp_id]
+    try{
+        await db.promise().query(del_q,del_v)
+        await db.promise().query(insert_q,[insert_v])
+        return res.status(200).json('Timezone information added successfully!')
+        
+    }
+    catch(err){
+        console.log(err)
+        return res.status(500).json('error occured!')
+    }
+    
+       
+
+}

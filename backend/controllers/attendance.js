@@ -3,7 +3,7 @@ import decompress from "decompress";
 import fs from 'fs'
 import reader from "xlsx";
 import db from "../config/connectiondb.js";
-import e from "express";
+
 
 let uploadedFileName;
 
@@ -86,6 +86,13 @@ function uploadExcelData(name) {
                                 if(['WH','HH'].includes(res.Status)){
                                     status=res.Status
                                 }
+                                if(res.totlhrs<=4){
+                                    res.Status='AA'
+                                    status='AA'
+                                }
+                                else if(res.totlhrs>=9){
+                                    status='XX'
+                                }
 
                                 try {
                                     if (result.length === 0) {
@@ -105,32 +112,32 @@ function uploadExcelData(name) {
                                     return ('error with excel data please check excel file!')
                                 }
 
-                                const current_date = new Date()
+                                const current_date = new Date(res.PDate)
                                 const current_year = current_date.getFullYear()
                                 const current_month = current_date.getMonth()
                                 let from_date, to_date;
                                 //new Date(Date.UTC(current_year,current_month,25)).toLocaleString()===new Date(Date.UTC(current_year,current_month,current_date.getDate())).toLocaleString()
                                 if (current_date.getDate() >= 26) {
                                     from_date = new Date(Date.UTC(current_year, current_month, 26))
-                                    to_date = new Date(Date.UTC(current_year, current_month + 1, 25))
+                                    to_date = new Date(Date.UTC(current_year, current_month + 2, ))
                                 }
                                 else {
                                     from_date = new Date(Date.UTC(current_year, current_month - 1, 26))
-                                    to_date = new Date(Date.UTC(current_year, current_month, 25))
+                                    to_date = new Date(Date.UTC(current_year, current_month+1, 1))
                                 }
                                 console.log('emp_id',res.Emp_code)
                                 const check_status_query = `select * from attendance where pdate>=date(?) and pdate<=date(?) and emp_id = ?`
                                 db.query(check_status_query, [from_date, to_date, res.Emp_code], (err, result) => {
-                                    if (err) console.log(err)
+                                    if (err) return('error occured!')
                                     else {
 
                                         console.log('atte:', result)
-                                        const hr_list = result.map(a => a.totalhrs)
+                                        const hr_list = result.map(a => a.totalhrs<=4?0:a.totalhrs)
                                         console.log(hr_list)
                                         const totalhr = hr_list.reduce((acc, curr_value) => acc + (Math.trunc(curr_value)), 0)
                                         const totalmin = hr_list.reduce((acc, curr_value) => acc + (curr_value % 1).toFixed(2) * 100, 0)
                                         const totalShift = hr_list.length * 9 * 60 //in min
-                                        const totalNonWorked = (hr_list.filter(hr => hr === 0).length) * 9 * 60
+                                        const totalNonWorked = (hr_list.filter(hr => hr <= 4).length) * 9 * 60
                                         const totalWorked = ((totalhr * 60) + totalmin) - (totalShift - totalNonWorked)
                                         const hr_bal = (Math.trunc(totalWorked / 60) + (totalWorked % 60) / 100).toFixed(2)
                                         console.log(hr_bal)
@@ -361,12 +368,12 @@ export const attendancegraphdata = (req, res) => {
             return res.status(500).json('error occured!')
         }
         else {
-            const hr_list = result.map(a => a.totalhrs)
+            const hr_list = result.map(a => a.totalhrs<=4?0:a.totalhrs)
             console.log(hr_list)
             const totalhr = hr_list.reduce((acc, curr_value) => acc + (Math.trunc(curr_value)), 0)
             const totalmin = hr_list.reduce((acc, curr_value) => acc + (curr_value % 1).toFixed(2) * 100, 0)
             const totalShift = hr_list.length * 9 * 60 //in min
-            const totalNonWorked = (hr_list.filter(hr => hr === 0).length) * 9 * 60
+            const totalNonWorked = (hr_list.filter(hr => hr<=4).length) * 9 * 60
             const totalWorked = ((totalhr * 60) + totalmin) - (totalShift - totalNonWorked)
             const hr_bal = (Math.trunc(totalWorked / 60) + (totalWorked % 60) / 100).toFixed(2)
             console.log('bal_hr', hr_bal)

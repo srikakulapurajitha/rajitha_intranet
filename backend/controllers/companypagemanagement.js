@@ -346,3 +346,48 @@ export const deletecompanypages = (req,res) =>{
     })
     //res.send('ok')
 }
+
+
+//----------------------------------------------------------------teams-----------------------------------------------------
+
+export const showcompanypages = (req,res)=>{
+    const q = `select * from companypagesmanagement where company_pagestatus='active'`
+    db.query(q,(err,result)=>{
+        if(err) return res.status(500).json('error occured!')
+        else res.send(result)
+    })
+
+}
+
+export const showcompanypagedata = (req,res)=>{
+    const {id, companyId, company_pagetype} =req.body
+ 
+    console.log(req.body)
+    let q;
+    let values
+    switch (company_pagetype){
+        case 'Holidays':
+             q = 'select * from officeholidays where pageId in (?)'
+             values = [id]
+             break
+        case 'Address':
+            q='select * from companymanagement where id=?'
+            values = [companyId]
+            break
+        case 'Chart':
+            q=`select * from officecharts where id=?`
+            values = [id]
+
+    }
+    //res.send('ok')
+    db.query(q,values,(err,result)=>{
+        if(err) {
+            console.log(err)
+            return res.status(500).json('error occured!')
+        }
+        else{
+            console.log(result)
+            res.send(result)
+        }
+    })
+}

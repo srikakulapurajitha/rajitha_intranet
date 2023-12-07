@@ -28,6 +28,8 @@ import MyPays from './MyPays';
 import MyAccounts from './MyAccounts';
 import Notice from './Notice';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import Loader from '../Loader';
 
 const convertDateFormat = (date) =>{
     let day = date.getDate()
@@ -83,12 +85,15 @@ const Dashboard = () => {
     const [graphData, setGraphData] = useState({date:[],totalhrs:[],bal_hr:0})
     const [birthdayData, setBirthdayData] = useState([])
     const [calenderData, setCalenderData] = useState([])
+    const [loader, setLoader] = useState(true)
+
+    const navigate = useNavigate()
 
     useEffect(()=>{
-        axios.post('/api/attendancegraphdata',{emp_id:userDetails.employee_id})
-        .then(res=>{
-            console.log(res.data)
-            let options = [{ day: 'numeric' }, { month: 'short' }];
+        const fetchData = async()=>{
+            try{
+                const res = await axios.post('/api/attendancegraphdata',{emp_id:userDetails.employee_id})
+                let options = [{ day: 'numeric' }, { month: 'short' }];
                 function join(date, options, separator) {
                     function format(option) {
                         let formatter = new Intl.DateTimeFormat('en', option);
@@ -102,19 +107,22 @@ const Dashboard = () => {
                 const totalhrsData = totalhrs.reverse().slice(0,10).reverse()
                 const bal_hr = res.data.balance
                 setGraphData({date:dateData,totalhrs:totalhrsData,bal_hr:bal_hr})
-        })
-        axios.get('/api/birthdaylist')
-        .then(res => setBirthdayData(res.data))
-        .catch()
-        axios.get('/api/holidaylist')
-        .then(res => {
-              ////console.log('data', res.data)
-            setCalenderData(res.data) // main data
-      
-        })
-        .catch(err => {
-              ////console.log(err)
-        })
+                
+                const holidays = await  axios.get('/api/holidaylist')
+                setCalenderData(holidays.data)
+                const birthdays = await axios.get('/api/birthdaylist')
+                setBirthdayData(birthdays.data)
+                setLoader(false)
+
+
+            }
+            catch{
+                setLoader(false)
+
+            }
+            
+        }
+        fetchData()
     },[userDetails])
 
     const handleChange = (event, newValue) => {
@@ -166,7 +174,7 @@ const Dashboard = () => {
             </Typography>
             <Divider light />
 
-            <Box sx={{ display: 'flex', flexDirection: 'column', height: 305 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', maxHeight: 295 }}>
                 <Tabs value={value} onChange={handleChange} variant='fullWidth' centered  >
                     <Tab label="My Attendace" />
                     <Tab label="My Pays" />
@@ -200,7 +208,7 @@ const Dashboard = () => {
     
     return (
         <>
-            <Box sx={{ display: 'flex' }}>
+            <Box sx={{ display: 'flex', }}>
                 
                 {userDetails.access==='admin'?<AdminNavBar />:<UserNavBar/>}
                 <Box component='main' sx={{ flexGrow: 1, p: 3, mt: 6 }}>
@@ -210,10 +218,10 @@ const Dashboard = () => {
                             <Notice />
                         </Grid>
                         <Grid item xs={12} sm={6} md={8} >
-                            <Card sx={{ display: 'flex', justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center', height: 80, p: 1 }} >
+                            <Card  sx={{ display: 'flex', justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center', height: 80, p: 2 }} >
                                 <CardMedia
                                     component="img"
-                                    sx={{ display: 'flex', maxWidth: 80, maxHeight: 80, borderRadius: '50%', justifyContent: 'center', alignItems: 'center' }}
+                                    sx={{ display: 'flex', maxWidth: 70, maxHeight: 70, borderRadius: '50%', justifyContent: 'center', alignItems: 'center' }}
                                     image={userDetails.profile_pic!==''?userDetails.profile_pic:userDetails.gender==='male'?'maleavatar.png':'femaleavatar.png'}
                                     alt="profile"
                                 />
@@ -237,7 +245,7 @@ const Dashboard = () => {
                                             }
                                         }}
                                             size="small"
-                                            onClick={() => console.log('clicked')}
+                                            onClick={()=>navigate("/teams",{relative:true})}
                                         >
                                             <img className="static" alt='img' src="bcgteams.png" style={{ width: 50, height: 50 }} /><img className="active" alt='imgs' style={{ width: 50, height: 50 }} src="bcgteams.gif" />
                                         </IconButton>
@@ -254,7 +262,10 @@ const Dashboard = () => {
                                             '&:hover, &:focus': {
                                                 bgcolor: 'unset',
                                             }
-                                        }} size="small">
+                                        }} 
+                                        size="small"
+                                        onClick={()=>navigate("/directorysearch",{relative:true})}
+                                        >
                                             <img className="static" alt='img' src="directory.png" style={{ width: 50, height: 50 }} /><img className="active" alt='imgs' style={{ width: 50, height: 50 }} src="directory.gif" />
                                         </IconButton>
                                         <Typography variant="p" component="div" sx={{ textAlign: 'center', fontSize: 12 }}>
@@ -268,7 +279,9 @@ const Dashboard = () => {
                                             '&:hover, &:focus': {
                                                 bgcolor: 'unset',
                                             }
-                                        }} size="small">
+                                        }} size="small"
+                                        onClick={()=>navigate("/crossroads",{relative:true})}
+                                        >
                                             <img className="static" alt='img' src="cross.png" style={{ width: 50, height: 50 }} /><img className="active" alt='imgs' style={{ width: 50, height: 50 }} src="cross.gif" />
                                         </IconButton>
                                         <Typography variant="p" component="div" sx={{ textAlign: 'center', fontSize: 12 }}>
@@ -291,6 +304,7 @@ const Dashboard = () => {
 
                 </Box>
             </Box>
+            <Loader loader={loader} />
         </>
 
     );

@@ -73,7 +73,8 @@ const ViewCompany = () => {
 	})
 	const [loader, setLoader] = useState(true)
 	const [noError, setNoError] = useState(false)
-
+	const [prevData, setPrevData] = useState(editCompData)
+ 
 
 
 	//column names creation
@@ -265,6 +266,24 @@ const ViewCompany = () => {
 												color="text.primary"
 												mr={0.5}
 											>
+												Website:
+											</Typography>
+											{viewCompData.company_website}
+										</>
+									}
+								/>
+							</ListItem>
+							<ListItem alignItems="flex-start">
+								<ListItemText
+									secondary={
+										<>
+											<Typography
+												sx={{ display: 'inline' }}
+												component="span"
+												variant="body1"
+												color="text.primary"
+												mr={0.5}
+											>
 												Contact No:
 											</Typography>
 											{viewCompData.company_contact_no}
@@ -284,6 +303,7 @@ const ViewCompany = () => {
 		console.log(row)
 		setEditDialogOpen(true)
 		setEditCompData(row)
+		setPrevData(row)
 
 	}
 	
@@ -291,14 +311,14 @@ const ViewCompany = () => {
 	const compEditView = useMemo(()=>{
 		const handleEditDialogClose = () =>{
 			setEditDialogOpen(false)
+			setEditCompData({})
+			setPrevData({})
 		}
 		const handleEdit = async(e) =>{
 			e.preventDefault()
 			console.log(editCompData)
-			if(!noError){
-			let msg = ''
-			try {
-				const result = await toast.promise(
+			if(!noError && JSON.stringify(prevData)!==JSON.stringify(editCompData)){
+				toast.promise(
 					axios.put(`/api/editcompany/${editCompData.id}`,editCompData),
 					{
 						pending: {
@@ -307,27 +327,20 @@ const ViewCompany = () => {
 							}
 						},
 						success: {
-							render() {
-								setEditDialogOpen(false)
-								return (`${msg} `)
+							render(res) {
+								handleEditDialogClose()
+								return(res.data.data)
 							}
 						},
 						error: {
-							render() {
-								return (`${msg}`)
+							render(err) {
+								return(err.data.response.data)
 							}
 						}
 					}
 
 				)
-				msg = (result.data)
-				//console.log(result)
-			}
-		
-			catch (err) {
-				msg = (err.response.data)
-
-			}
+				
 			}
 
 		}
@@ -342,9 +355,9 @@ const ViewCompany = () => {
 			>
 				<DialogTitle>Edit Company</DialogTitle>
 				<DialogContent dividers={true}>
-				<Paper elevation={1} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: { sm: '50ch', md: '50ch',lg:'50ch' }, height: { sm: '45ch', md: '45ch' ,lg:'45ch'}}}>
+				<Paper elevation={1} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: { sm: '50ch', md: '50ch',lg:'50ch' }, height: { sm: '45ch', md: '45ch' ,lg:'50ch'}}}>
                 
-                <Box sx={{m:1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: { sm: '45ch', md: '45ch',lg:'45ch' }, height: { sm: '40ch', md: '40ch',lg:'40ch' }, p: 1 }}>
+                <Box sx={{m:1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: { sm: '45ch', md: '45ch',lg:'45ch' }, height: { sm: '40ch', md: '40ch',lg:'45ch' }, p: 1 }}>
                   <form id='editcompany' onSubmit={handleEdit} >
 				  <FormControl fullWidth sx={{mt:1, mb: 2 }} variant="outlined">
                     <InputLabel size='small' required htmlFor="outlined-adornment-editcompany">Company Name</InputLabel>
@@ -394,6 +407,18 @@ const ViewCompany = () => {
                       placeholder="enter company address"
                       
 
+                    />
+                  </FormControl>
+				  <FormControl fullWidth sx={{ mb: 2 }} variant="outlined">
+                    <InputLabel size='small'>Company Website</InputLabel>
+                    <OutlinedInput
+                    size='small'
+                      name='companyWebsite'
+                      value={editCompData.company_website}                     
+                      type={'text'}
+                      label="Company Website"
+                      placeholder='enter comapany webiste'
+                      onInput={e=>setEditCompData({...editCompData,company_website:e.target.value})}
                     />
                   </FormControl>
 				  <FormControl fullWidth sx={{ mb: 2 }} variant="outlined">
@@ -457,7 +482,7 @@ const ViewCompany = () => {
 			</Dialog>
 			</>
 		)
-	},[editDialogOpen,editCompData,noError])
+	},[editDialogOpen,editCompData,noError,prevData])
 
 	//table searchbar
 	const subHeaderViewCompanyMemo = React.useMemo(() => {

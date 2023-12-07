@@ -36,8 +36,8 @@ export const addreportingstructure = (req, res) => {
     console.log(req.body)
     const { head, users } = req.body
     //res.send('ok')
-    const check_query = `select * from reportingstructure where reporting_head =? or users in (?)`
-    const check_value = [head, users]
+    const check_query = `select * from reportingstructure where reporting_head =? or users in (?) or (select reporting_head from reportingstructure where users=?) in (?)`
+    const check_value = [head, users,head,users]
     db.query(check_query, check_value, (err, result) => {
         if (err) {
             console.log(err)
@@ -60,7 +60,7 @@ export const addreportingstructure = (req, res) => {
 
             }
             else {
-                return res.status(406).json('remove users which are alrady exists in other reporting structure')
+                return res.status(406).json('cheack your reporting stucture and change users which is not belongs to other reporting structure and must not add reporting head in users')
             }
         }
     })
@@ -82,8 +82,8 @@ export const updatereportingstructure = (req, res) => {
     const { prevHead, head, users } = req.body
     //res.send('ok')
     if (prevHead === head) {
-        const check_query = `select * from reportingstructure where reporting_head !=? and users in (?)`
-        const check_value = [head, users]
+        const check_query = `select * from reportingstructure where reporting_head !=? and users in (?) or (select reporting_head from reportingstructure where users=?) in (?)`
+        const check_value = [head, users,head, users]
         db.query(check_query, check_value, async(err, result) => {
             if (err) {
                 console.log(err)
@@ -108,7 +108,7 @@ export const updatereportingstructure = (req, res) => {
                     return res.status(200).json('Reporting Structure Added Succefully')
                 }
                 else {
-                    return res.status(500).json('some users already belong to other reporting structure remove them!')
+                    return res.status(500).json('cheack your reporting stucture and change users which is not belongs to other reporting structure and must not add reporting head in users')
                 }
                
             }
