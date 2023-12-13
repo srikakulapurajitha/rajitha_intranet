@@ -10,7 +10,8 @@ import 'react-calendar/dist/Calendar.css';
 import './OfficeCalender.css'
 import { useState, useEffect } from 'react';
 //import axios from 'axios';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, IconButton, InputLabel, MenuItem, Select } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, IconButton, InputLabel, MenuItem, Select, Stack } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 
 export default function OfficeCalender(props) {
@@ -22,7 +23,7 @@ export default function OfficeCalender(props) {
   const [filteredHolidays, setFilteredHolidays] = useState([])
   const [displayHolidays, setDisplayHolidays] = useState([])
 
-  const {data} =props
+  const { data } = props
 
   const onMonthChange = (m, y) => {
     ////console.log(m, y)
@@ -59,10 +60,10 @@ export default function OfficeCalender(props) {
       }
     })
     ////console.log(holidayTitle)
-    const holidays = data.filter((items) => items.holidaylist_title === (choosedTitle===''?holidayTitle[0]:choosedTitle)) //filtering holiday list based on first title
+    const holidays = data.filter((items) => items.holidaylist_title === (choosedTitle === '' ? holidayTitle[0] : choosedTitle)) //filtering holiday list based on first title
     //console.log(holidayTitle,holidays,choosedTitle)
     const holidayDates = holidays.map(item => new Date(item.holiday_date).toLocaleString('en-CA').slice(0, 10))
-   
+
     setHighlightedDays(holidayDates)
     setDisplayHolidays(holidays.filter((holiday) => new Date(holiday.holiday_date).getMonth() === selectedMonthYear.month && new Date(holiday.holiday_date).getFullYear() === selectedMonthYear.year).map(item => ({ ...item, holiday_date: formatDay(item.holiday_date) }))) // on load by current month display holidays
     ////console.log('dibya', holidays)
@@ -70,7 +71,7 @@ export default function OfficeCalender(props) {
     setHolidayTitles(holidayTitle) // unique titles
 
 
-  }, [selectedMonthYear, data,choosedTitle])
+  }, [selectedMonthYear, data, choosedTitle])
 
   const handleHolidayList = useMemo(() => {
     const handleDialogOpen = () => {
@@ -126,14 +127,28 @@ export default function OfficeCalender(props) {
   }, [choosedTitle, data, dialogOpen, holidayTitles, selectedMonthYear])
   return (
     <>
-      <Card sx={{ display: 'flex', flexDirection: 'column', height: 390, p: 1 }}>
-        <Typography variant="p" component="div" sx={{ display: 'flex', justifyContent: 'center', fontSize: 20, alignItems: 'center' }}>
-          Office Calender<IconButton size='small' onClick={() => setDialogOpen(true)}>
-            <CalendarMonthIcon fontSize='8' />
-          </IconButton>
-        </Typography>
+      <Card sx={{ display: 'flex', flexDirection: 'column', height: 390, }}>
+        <Stack direction={'row'} justifyContent={'flex-end'} alignItems={'flex-start'} spacing={4}>
+          <Box sx={{ display: 'flex', flexDirection: 'row', p: 0.5 }}>
+            <Typography variant="p" component="div" sx={{ display: 'flex', justifyContent: 'center', fontSize: 20, alignItems: 'center' }}>
+              Office Calender<IconButton size='small' onClick={() => setDialogOpen(true)}>
+                <CalendarMonthIcon fontSize='8' />
+              </IconButton>
+            </Typography>
+
+          </Box>
+          <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'flex-start', mb: 1 }}>
+            <Link style={{ fontSize: '13px', padding: '2px',color:'#1B4688' }} to={'/teams'}>
+              view more
+            </Link>
+          </Box>
+
+
+
+        </Stack>
+
         <Divider light />
-        <Box sx={{ display: 'flex', justifyContent: 'center', height: 370, alignItems: 'center' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', height: 370, alignItems: 'center', p: 1 }}>
           <Calendar
             defaultActiveStartDate={new Date()}
             //  tileContent={({ date}) =>
@@ -158,7 +173,7 @@ export default function OfficeCalender(props) {
           />
         </Box>
         <Divider light />
-        <Box sx={{ display: 'flex', flexDirection: 'row', maxWidth: '100%' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'row', maxWidth: '100%', p: 1 }}>
           <Typography variant="p" component="div" sx={{ fontSize: 15, fontWeight: 'bold', color: 'GrayText', mr: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             Holidays:
           </Typography>

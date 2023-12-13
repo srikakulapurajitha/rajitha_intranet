@@ -6,6 +6,7 @@ import React, { useContext, useEffect, useMemo, useState } from 'react';
 import axios from 'axios'
 import UserContext from '../../context/UserContext'
 import {toast} from 'react-toastify'
+import { Link } from 'react-router-dom';
 
 const BirthDayList = (props) => {
     const [activeStep, setActiveStep] = useState(new Date().getMonth());
@@ -177,10 +178,24 @@ const BirthDayList = (props) => {
     }, [open,userDetails,selectedUser,birthdayMsg,subject])
     return (
         <>
-            <Card sx={{ display: 'flex', flexDirection: 'column', height: 390, p: 1 }} >
-                <Typography variant="p" component="div" sx={{ display: 'flex', justifyContent: 'center', fontSize: 20, alignItems: 'center' }}>
-                    Birthday List <CakeIcon sx={{m:0.5, color:'gray'}} fontSize='8' />
+            <Card sx={{ display: 'flex', flexDirection: 'column', height: 390, p: 0.1 }} >
+           
+                <Stack  direction={'row'} justifyContent={'flex-end'} alignItems={'flex-start'} spacing={5}>
+                    <Box sx={{display:'flex',flexDirection:'row',p:0.5 }}>
+                    <Typography variant="p" component="div" sx={{ display: 'flex', justifyContent: 'flex-start', fontSize: 20, alignItems: 'center' }}>
+                    Birthday List <CakeIcon sx={{m:0.5, color:'gray'}} fontSize='8' />  
                 </Typography>
+
+                    </Box>
+                    <Box sx={{display:'flex',flexDirection:'row', justifyContent:'flex-end', alignItems:'flex-start',mb:1}}>
+                    <Link style={{fontSize:'13px',padding:'2px',color:'#1B4688'}} to={'/crossroads'}>
+                        view more
+                    </Link>
+                    </Box>
+                
+                
+                
+                    </Stack>
                 <Divider light />
                 <Container sx={{ display: 'flex', justifyContent: 'flex-end', flexDirection: 'row', mt: 1 }} >
                     <Paper sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: 80, height: 20, flexDirection: 'row' }}>
@@ -221,6 +236,7 @@ const BirthDayList = (props) => {
                         steps={maxSteps}
                         position="static"
                         activeStep={activeStep}
+                       
                         nextButton={
                             <Button
                                 size="small"
@@ -237,6 +253,7 @@ const BirthDayList = (props) => {
                             </Button>
                         }
                     />
+                    
                 </Box>
 
             </Card>

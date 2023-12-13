@@ -30,6 +30,7 @@ import DirectorySearch from './Components/Comman/DirectorySearch/DirectorySearch
 import UserProfileSection from './Components/Comman/UserProfile/UserProfileSection'
 import CrossRoadsSection from './Components/Comman/CrossRoads/CrossRoadsSection'
 import TeamsSection from './Components/Comman/Teams/TeamsSection'
+import ApplyLeave from './Components/Comman/Leave/ApplyLeave'
 
 export default function App() {
   //console.log(useContext(UserContext))
@@ -50,6 +51,7 @@ export default function App() {
             <Route path='/viewuserprofile/:emp_id/info' element={<CommanProtectedRoute component={<UserProfileSection />} />} />
             <Route path='/crossroads' element={<CommanProtectedRoute component={<CrossRoadsSection />} />} />
             <Route path='/teams' element={<CommanProtectedRoute component={<TeamsSection />} />} />
+            <Route path='/applyleave' element={<CommanProtectedRoute component={<ApplyLeave />} />} />
             
             {/*----------------------------ADMIN------------------------------------------------------------------------------------ */}
             <Route path='/addcompany' element={<AdminProtectedRoute component={<AddCompany />} />} />

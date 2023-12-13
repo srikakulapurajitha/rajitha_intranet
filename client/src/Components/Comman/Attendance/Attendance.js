@@ -172,11 +172,12 @@ const Attendance = () => {
 
     return (
         <>
+           
+            <Container sx={{ height:'auto', width:'100%'}}>
             {userDetails.access==='admin'?<AdminNavBar />:<UserNavBar/>}
-            <Container>
-                <Box component='main' sx={{ flexGrow: 1, p: 3, mt: 8, ml: { xs: 8 } }}>
+                <Box component='main' sx={{ flexGrow: 1, p: 3, mt: 8, ml: { xs: 8 }, }}>
 
-                    <Paper elevation={10} square={false} sx={{ height: 'auto' }} >
+                    <Paper elevation={10}  sx={{ height: 'auto' }} >
 
                         <DataTable
                             title={<Typography component={'h3'} variant='p'>Attendance</Typography>}

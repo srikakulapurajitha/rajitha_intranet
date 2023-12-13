@@ -1,20 +1,23 @@
 import React, { useContext, useEffect, useState } from 'react'
 import Loader from '../Loader'
-import { Box, Button, Collapse, Container, Grid, IconButton, List, ListItem, ListItemButton, ListItemText, Paper, Typography } from '@mui/material'
+import { Box, Collapse, Grid, IconButton, List, ListItem, ListItemButton, ListItemText, Paper, Typography } from '@mui/material'
 import AdminNavBar from '../NavBar/AdminNavBar'
 import UserNavBar from '../NavBar/UserNavBar'
 import UserContext from '../../context/UserContext'
 import { Add, Remove } from '@mui/icons-material'
 import axios from 'axios'
 import Address from './Address'
+import Charts from './Charts'
+import Holidays from './Holidays'
+import Welcome from './Welcome'
 
 function TeamsSection() {
   const { userDetails } = useContext(UserContext)
   const [expandedCompany, setExpandedCompany] = useState('');
-  const [loader, setLoader] = useState(false)
+  const [loader, setLoader] = useState(true)
   const [companyPages, setCompanyPages] = useState([])
   const [companyPageData, setCompanyPageData] = useState([])
-  const [pageDetails, setPageDetails] = useState({pageName:'',pageType:'',pageData:[]})
+  const [pageDetails, setPageDetails] = useState({ pageName: '', pageType: '', pageData: [] })
   const [companies, setCompanies] = useState([])
 
   useEffect(() => {
@@ -25,8 +28,10 @@ function TeamsSection() {
         setCompanies(Array.from(new Set(res.data.map(page => page.company_name))))
 
         setCompanyPages(res.data)
+        setLoader(false)
       }
       catch {
+        setLoader(false)
 
       }
     }
@@ -41,23 +46,23 @@ function TeamsSection() {
 
   };
 
-  const handlePageSelection= async(page,selectedCompany)=>{
-    console.log(page,selectedCompany)
-    const filter = companyPages.filter(data=>data.company_pagename===page&&data.company_name===selectedCompany)
+  const handlePageSelection = async (page, selectedCompany) => {
+    console.log(page, selectedCompany)
+    const filter = companyPages.filter(data => data.company_pagename === page && data.company_name === selectedCompany)
     let fetchData;
-    if(filter[0]['company_pagetype']==='Holidays'){
-      fetchData = {...filter[0],id:filter.map(data=>data.id)}
+    if (filter[0]['company_pagetype'] === 'Holidays') {
+      fetchData = { ...filter[0], id: filter.map(data => data.id) }
 
     }
-    else{
-      fetchData=filter[0]
+    else {
+      fetchData = filter[0]
     }
-    try{
-      const pageData = await axios.post('/api/showcompanypagedata',fetchData)
+    try {
+      const pageData = await axios.post('/api/showcompanypagedata', fetchData)
       console.log(pageData.data)
-      setPageDetails({pageName:filter[0].company_pagename,pageType:filter[0].company_pagetype,pageData:pageData.data})
+      setPageDetails({ pageName: filter[0].company_pagename, pageType: filter[0].company_pagetype, pageData: pageData.data })
     }
-    catch{
+    catch {
 
     }
     //console.log(x)
@@ -77,13 +82,13 @@ function TeamsSection() {
           >
             <Grid
               container
-              spacing={2}
+              spacing={4}
 
             >
               <Grid display={'flex'} justifyContent={'center'} flexDirection={'column'} alignItems={'center'} item xs={12} sm={12} lg={3} md={4}>
 
-                <Paper sx={{width:'100%', minHeight: "350px", "&:hover": { boxShadow: 10 }, borderRadius: 10, backgroundImage:'linear-gradient(135deg, #E3FDF5 10%, #FFE6FA 100%);' }}>
-                  <Typography textAlign={'center'} fontSize={20} fontWeight={'bold'}  pt={1}>Teams</Typography>
+                <Paper sx={{ width: '100%', minHeight: "80vh", "&:hover": { boxShadow: 10 }, borderRadius: 10, backgroundImage: 'linear-gradient(135deg, #E3FDF5 10%, #FFE6FA 100%);' }}>
+                  <Typography textAlign={'center'} fontSize={20} fontWeight={'bold'} pt={1}>Teams</Typography>
                   <Box sx={{ display: "flex", flexDirection: 'column', justifyContent: 'center', alignItems: 'center', }}>
                     <List sx={{ width: '100%' }}>
                       {companies.map((company, index) => (
@@ -98,11 +103,7 @@ function TeamsSection() {
                                 {expandedCompany === company ? <Remove color='info' /> : <Add color='info' />}
 
                               </IconButton>
-
-
                             }
-
-
                           >
 
                             <ListItemText primary={company} />
@@ -111,10 +112,10 @@ function TeamsSection() {
                             <List dense disablePadding>
                               {companyPageData.map((page, index) => (
                                 <ListItemButton
-                                key={index}
+                                  key={index}
                                   onClick={() => handlePageSelection(page, expandedCompany)}
                                 >
-                                  <ListItem disablePadding  style={{ marginLeft: '40px' }}>
+                                  <ListItem disablePadding style={{ marginLeft: '40px' }}>
                                     <ListItemText primary={`${page} `} />
                                   </ListItem>
                                 </ListItemButton>
@@ -128,34 +129,14 @@ function TeamsSection() {
                         </Box>
                       ))}
                     </List>
-
-
                   </Box>
-
-
-
-
-                  
-
-
-
-
                 </Paper>
-
               </Grid>
               <Grid item xs={12} sm={9} lg={9}>
-             
-              <Paper sx={{ height: "80vh", "&:hover": { boxShadow: 10 }, borderRadius: 10,backgroundImage:'linear-gradient(135deg, #E3FDF5 10%, #FFE6FA 100%);' }}>
-                
-              {pageDetails.pageType==='Address'?<Address pageDetails={pageDetails} />:null}
+
+                <Paper sx={{ height: "80vh", "&:hover": { boxShadow: 10 }, borderRadius: 10, backgroundImage: 'linear-gradient(135deg, #dfe9f3 10%, #ffffff 100%);' }}>
+                  {pageDetails.pageType === 'Address' ? <Address pageDetails={pageDetails} /> : pageDetails.pageType === 'Chart' ? <Charts pageDetails={pageDetails} /> : pageDetails.pageType === 'Holidays' ? <Holidays pageDetails={pageDetails} /> : <Welcome />}
                 </Paper>
-               
-
-
-
-
-
-
               </Grid>
             </Grid>
           </div>

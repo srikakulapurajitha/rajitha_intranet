@@ -12,6 +12,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from "dayjs";
 import { toast } from "react-toastify";
 import Loader from '../../Comman/Loader';
+import { Link } from 'react-router-dom';
 
 
 
@@ -569,7 +570,7 @@ function ViewUser() {
     const userDetailsView = useMemo(() => {
         const handleViewButtonDrawerToggleClosing = () => {
             setViewUserData({})
-            setViewDrawerOpen(false);
+            setViewDrawerOpen(!viewDrawerOpen);
 
         };
 
@@ -592,12 +593,17 @@ function ViewUser() {
                         <Paper elevation={5} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: { xs: '40ch', md: '45ch', lg: '100ch' }, height: { xs: '100%', md: '52ch', lg: '52ch', }, p: 1 }}>
 
                             <Typography variant='h5' component={'h5'} m={1} p={1}  >User Details</Typography>
-                            <Container sx={{m:2, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+                            <Container sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                                 {viewUserData.profile_pic ?
                                     <Avatar src={viewUserData.profile_pic} sx={{ width: 86, height: 86, }} /> :
                                     <Avatar sx={{ width: 86, height: 86, }} />
                                 }
                             </Container>
+                            <Box sx={{mb:1}}>
+                                <Link to={`/viewuserprofile/${viewUserData.employee_id}/info`} style={{color:'#1B4688'}}>
+                                View complete details
+                                </Link>
+                            </Box>
 
                             <Container sx={{ display: 'flex', flexDirection: { xs: 'column', lg: 'row' }, justifyContent: 'center' }}>
                                 <Container sx={{ borderRight: { xs: 'none', lg: '1px solid black' }, borderBottom: { xs: '1px solid black', lg: 'none' } }}>
@@ -909,15 +915,17 @@ function ViewUser() {
     return (
         <>
             <NavBar />
-            <Box component='main' sx={{ flexGrow: 1, p: 3, mt: 8, ml: { xs:8 } }}>
+            <Box component='main' sx={{ flexGrow: 1, p: 3, mt: 5, ml: { xs:8 } }}>
                 <div style={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                     <Typography variant='h5' component={'h5'} m={2} textAlign={'center'} >View Users</Typography>
                     <div style={{ height: '400px', width: '95%' }}>
-                        <Card>
+                        <Card >
+                            <Container>
                             <DataTable
                                 title=" "
                                 fixedHeader={true}
-                                fixedHeaderScrollHeight='250px'
+                            
+                                fixedHeaderScrollHeight='300px'
                                 columns={columns}
                                 data={filterUserData}
                                 pagination
@@ -926,6 +934,9 @@ function ViewUser() {
                                 subHeaderComponent={subHeaderSearchbar}
                                 customStyles={customStyles}
                             />
+
+                            </Container>
+                            
                         </Card>
                     </div>
                 </div>

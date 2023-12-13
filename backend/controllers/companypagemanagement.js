@@ -375,7 +375,7 @@ export const showcompanypagedata = (req,res)=>{
             values = [companyId]
             break
         case 'Chart':
-            q=`select * from officecharts where id=?`
+            q=`select * from officecharts where pageId=?`
             values = [id]
 
     }

@@ -359,6 +359,7 @@ export default function AdminNavBar(props) {
           {['Dashboard', 'Attendance'].map((text, index) => (
             <ListItem key={text} disablePadding sx={{ display: 'block' }} onClick={() => handleNavigation(index)}>
               <ListItemButton
+              title={text}
                 sx={{
                   minHeight: 48,
                   justifyContent: 'initial',
@@ -383,6 +384,7 @@ export default function AdminNavBar(props) {
           {/*------------------------company management---------------------- */}
           <ListItem disablePadding sx={{ display: 'block' }} onClick={()=>handleSubMenuOpen('company management')}>
             <ListItemButton
+            title='Company Management'
               sx={{
                 minHeight: 48,
                 justifyContent: 'initial',
@@ -409,6 +411,7 @@ export default function AdminNavBar(props) {
           {/*------------------------company pages management---------------------- */}
           <ListItem disablePadding sx={{ display: 'block' }} onClick={()=>handleSubMenuOpen('company pages management')}>
             <ListItemButton
+            title='Company Pages Management'
               sx={{
                 minHeight: 48,
                 justifyContent: 'initial',
@@ -435,6 +438,7 @@ export default function AdminNavBar(props) {
           {/*------------------------user management---------------------- */}
           <ListItem disablePadding sx={{ display: 'block' }} onClick={()=>handleSubMenuOpen('user management')}>
             <ListItemButton
+            title='User Management'
               sx={{
                 minHeight: 48,
                 justifyContent: 'initial',
@@ -461,6 +465,7 @@ export default function AdminNavBar(props) {
           {/*--------------------announcement-------------------------- */}
           <ListItem disablePadding sx={{ display: 'block' }} onClick={()=>handleSubMenuOpen('announcement')}>
             <ListItemButton
+            title='Announcement'
               sx={{
                 minHeight: 48,
                 justifyContent: 'initial',
@@ -488,6 +493,7 @@ export default function AdminNavBar(props) {
           {/*------------------------leave management---------------------- */}
           <ListItem disablePadding sx={{ display: 'block' }} onClick={()=>handleSubMenuOpen('leave management')}>
             <ListItemButton
+            title='Leave Management'
               sx={{
                 minHeight: 48,
                 justifyContent: 'initial',

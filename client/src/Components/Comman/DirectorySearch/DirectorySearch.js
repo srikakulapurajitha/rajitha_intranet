@@ -92,7 +92,7 @@ function DirectorySearch() {
     
     const alphabet = Array.from({ length: 26 }, (_, index) => String.fromCharCode('A'.charCodeAt(0) + index));
     return (
-        <Box sx={{ display: 'flex', backgroundColor: '#F5F5F5' }}>
+        <Box sx={{ display: 'flex', backgroundColor: '#F5F5F5', height:'100vh', overflow:'hidden' }}>
             {userDetails.access === 'admin' ? <AdminNavBar /> : <UserNavBar />}
             <Box component='main' sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', p: 3, height: '90vh', mt: 6 }}>
                 <Typography variant="h4" align="center" gutterBottom>

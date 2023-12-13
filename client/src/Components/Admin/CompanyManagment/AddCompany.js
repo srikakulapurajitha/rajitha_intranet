@@ -85,11 +85,11 @@ function AddComapny() {
         <div style={{ height: '80vh', width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
           <Grid container sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
             <Grid item sm={12} lg={12} md={12}>
-            <Typography variant='h5' component={'h5'} m={1} p={1} textAlign={'center'} >Add Company</Typography>
+            <Typography variant='h5' component={'h5'} m={1}  textAlign={'center'} >Add Company</Typography>
               <Paper elevation={5}  sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: { xs: '30ch', md: '45ch',lg:'50ch' }, height: { xs: '52ch', md: '52ch',lg:'52ch' },p:1 }}>
                 
                 <Box component={'form'} onSubmit={handleSubmitCompForm} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: { xs: '25ch', md: '40ch' }, height: { xs:'55ch', sm: '55ch', md: '55ch',lg:'50ch' }, p: 1 }}>
-                  <FormControl fullWidth sx={{ mb: 1 }} variant="outlined">
+                  <FormControl fullWidth sx={{ mb: 1,mt:1 }} variant="outlined">
                     <InputLabel size='small' required htmlFor="outlined-adornment-company">Company Name</InputLabel>
                     <OutlinedInput
                     size='small'
