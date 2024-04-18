@@ -9,7 +9,7 @@ function Holidays(props) {
     //const [pageData, setPageData] = useState([])
     const [holidayCalender, setHolidayCalender] = useState({})
     const [holidayTitles, setHolidayTitles] = useState([])
-    console.log('details', pageDetails)
+    //console.log('details', pageDetails)
 
     useEffect(() => {
         if (pageDetails) {
@@ -20,7 +20,7 @@ function Holidays(props) {
                 holidayList[tit] = pageDetailsData.filter(data => data.holidaylist_title === tit)
             })
             //Object.assign(titles.map(tit=>({[tit]:pageDetails.pageData.filter(data=>data.holidaylist_title===tit)})))
-            console.log('title', holidayList)
+            //console.log('title', holidayList)
             setHolidayCalender(holidayList)
             setHolidayTitles(titles)
 

@@ -82,14 +82,17 @@ function EditChartUpload(props) {
             'image/png': ['.png'],
             'image/jpeg': ['.jpeg', '.jpg'],
         },
-        maximgFile: 1,
+        maxFiles:1,
         onDrop: async(acceptedImgFile) => {
             //console.log(acceptedImgFile)
             setImgFile(acceptedImgFile.map(file => Object.assign(file, {
                 preview: URL.createObjectURL(file)
             })));
-            const url = await convertBase64(acceptedImgFile[0])
+            if(acceptedImgFile.length!==0){
+                const url = await convertBase64(acceptedImgFile[0])
             handleImage(url)
+            }
+            
         }
     });
 
@@ -121,7 +124,7 @@ function EditChartUpload(props) {
         <div className="container">
             <div {...getRootProps({ style })}>
                 <input {...getInputProps()} />
-                <p>Drag 'n' drop some JPEG or PNG imgFile here, or click to select.</p>
+                <p>Drag 'n' drop Only one JPEG or PNG imgFile here, or click to select.</p>
                 <Typography component={'p'} variant='p'>Pre-view</Typography>
                 <div style={thumbsContainer}>
 

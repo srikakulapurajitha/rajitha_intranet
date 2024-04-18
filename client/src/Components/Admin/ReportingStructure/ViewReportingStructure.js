@@ -1,12 +1,12 @@
 import { Avatar, Box, Button, Card,  Container, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Drawer, FormControl,  IconButton, InputLabel, List, ListItem, ListItemAvatar, ListItemText, MenuItem, Paper, Select, Stack, TextField, Typography } from '@mui/material'
 import React, { useEffect, useMemo, useState } from 'react'
-import AdminNavBar from '../../Comman/NavBar/AdminNavBar'
 import axios from 'axios'
 import DataTable, { defaultThemes } from 'react-data-table-component'
 import { Delete, Search, South } from '@mui/icons-material'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 import { toast } from 'react-toastify'
 import Loader from '../../Comman/Loader'
+import AccessNavBar from '../../Comman/NavBar/AccessNavBar'
 
 const customStyles = {
     header: {
@@ -157,7 +157,7 @@ function ViewReportingStructure() {
                 <div style={{ height: '90vh', width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                     <Paper elevation={5} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '90%', height: '55ch' }}>
 
-                        <Typography variant='h5' component={'h5'} m={1} p={1} border={'1px solid black'} >Reporting Strucure</Typography>
+                        <Typography variant='h5' component={'h5'} m={1} p={1} border={'1px solid black'} >Reporting Structure</Typography>
 
                         <Container sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center', width: '90%', height: '400px', }}>
                             <Container sx={{ display: 'flex', justifyContent: 'center', }}>
@@ -247,21 +247,21 @@ function ViewReportingStructure() {
 
     //edit button
     const handleEditButton = (row) => {
-        console.log(row)
+        //console.log(row)
         
         setSelectedRepordingHead([row])
         setPrevReportingHead(row.employee_id)
 
         axios.post('/api/editreportingstructuredata', { 'head': row.reporting_head })
             .then(res => {
-                console.log(res.data)
+                //console.log(res.data)
                 setSelectedUser(res.data)
                 setLoader(false)
                 setEditDialogOpen(true)
             })
-            .catch(()=>{
+            .catch((err)=>{
                 setLoader(false)
-                toast.error('unable to procced your request!')
+                toast.error(err.response.data)
             })
         //setEditCompData(row)
 
@@ -276,7 +276,7 @@ function ViewReportingStructure() {
 
         const handleSearchUser = (e) => {
             e.preventDefault()
-            console.log(searchData)
+            //console.log(searchData)
             axios.post('/api/getreportinguser', searchData)
                 .then(res => {
                     //setUserData(res.data)
@@ -287,13 +287,13 @@ function ViewReportingStructure() {
         }
         const handleDelete = (index, section) => {
             if (section === 'reportingHead') {
-                console.log(index, selectedRepordingHead)
+                //console.log(index, selectedRepordingHead)
 
                 setSelectedRepordingHead([])
                 // console.log(selectedRepordingHead)
             }
             else {
-                console.log(selectedUser)
+                //console.log(selectedUser)
                 const items = Array.from(selectedUser);
                 const [reorderedItem] = items.splice(index, 1);
 
@@ -312,7 +312,7 @@ function ViewReportingStructure() {
             setSearchData({ searchBy: '', field: '' })
         }
         const handleUpdateReportingData = () => {
-            console.log(selectedRepordingHead, selectedUser)
+            //console.log(selectedRepordingHead, selectedUser)
             if (selectedRepordingHead.length !== 0 && selectedUser.length !== 0) {
                 const reportingHead = selectedRepordingHead[0].employee_id
                 const users = selectedUser.map(u => u.employee_id)
@@ -347,20 +347,22 @@ function ViewReportingStructure() {
         }
 
         function handleOnDragEnd(result) {
-            console.log(result)
+            //console.log(result)
 
 
             const { destination, source } = result
             const data = filterUserData[source.index]
-            console.log(data)
+            //console.log(data)
             //console.log(userData)
 
             if (!result.destination) return;
             else {
                 if (destination.droppableId === 'reportingHead' && source.droppableId !== "selectedUser") {
 
-                    // console.log(selectedUser)
-                    if (selectedUser.map(user => JSON.stringify(user)).includes(JSON.stringify([filterUserData[source.index]][0]))) {
+                     //console.log(selectedUser,source.index)
+                     //console.log(filterUserData,filterUserData[source.index][0])
+                     //console.log('res',data.employee_id,selectedUser.map(user => user.employee_id),selectedUser.map(user => user.employee_id).includes(data.employee_id))
+                    if (selectedUser.map(user => user.employee_id).includes(data.employee_id)) {
                         toast.warning('user already added in Users Section')
                     }
                     else {
@@ -378,13 +380,13 @@ function ViewReportingStructure() {
                 }
                 else if (destination.droppableId === 'selectedUser' && source.droppableId === 'UserList') {
                     // console.log(Array.from(new Set(selectedUser.map(str=>JSON.stringify(str)))).map(res=>JSON.parse(res)))
-                    if (selectedRepordingHead.map(user => JSON.stringify(user)).includes(JSON.stringify([filterUserData[source.index]][0]))) {
+                    if (selectedRepordingHead.map(user => user.employee_id).includes(data.employee_id)) {
                         toast.warning('user already added in reporting Head Section')
                     }
                     else {
-                        console.log(Array.from(new Set([...selectedUser, data].map(str => JSON.stringify(str)))).map(res => JSON.parse(res)))
+                        //console.log(Array.from(new Set([...selectedUser, data].map(str => JSON.stringify(str)))).map(res => JSON.parse(res)))
                         const check_data = selectedUser.filter(d=>d.employee_id===data.employee_id).length
-                        console.log('check',check_data,selectedUser.filter(d=>d.employee_id===data.employee_id))
+                        //console.log('check',check_data,selectedUser.filter(d=>d.employee_id===data.employee_id))
                         if(check_data===0){
                             setSelectedUser([...selectedUser,data])
 
@@ -392,7 +394,7 @@ function ViewReportingStructure() {
                         
                         //setSelectedUser(Array.from(new Set([...selectedUser, data].map(str => JSON.stringify(str)))).map(res => JSON.parse(res)))//(Array.from(new Set([...selectedUser,userData[source.index]].map(str=>JSON.stringify(str)))).map(res=>JSON.parse(res)))
                         //userData.splice(result.source.index, 1)
-                        console.log('u->selUs', data)
+                        //console.log('u->selUs', data)
                         setFilterUserData(filterUserData.filter(d => d.employee_id!==data.employee_id))
                     }
 
@@ -644,7 +646,7 @@ function ViewReportingStructure() {
 
 
             <Box sx={{ display: 'flex' }}>
-                <AdminNavBar />
+               <AccessNavBar />
                 <Box component='main' sx={{ flexGrow: 1, p: 3, mt: 8, }}>
                     <div style={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                         <Typography variant='h5' component={'h5'} m={2} textAlign={'center'} >View Reporting Structure</Typography>

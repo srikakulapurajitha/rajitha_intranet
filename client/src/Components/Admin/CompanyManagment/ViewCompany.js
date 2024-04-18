@@ -1,20 +1,20 @@
 // referenece: 1.https://www.npmjs.com/package/react-data-table-ViewCompany 2.https://react-data-table-ViewCompany.netlify.app/
 
-
-import { Box, Button, Card, Container, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Drawer, FormControl, InputLabel, List, ListItem, ListItemText, MenuItem, OutlinedInput, Paper, Select, Stack, TextField, Typography } from '@mui/material';
+import { Avatar, Box, Button, Card, Container, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Drawer, FormControl, IconButton, InputLabel, List, ListItem, ListItemText, MenuItem, OutlinedInput, Paper, Select, Stack, TextField, Typography, styled } from '@mui/material';
 import React, { useEffect } from 'react';
 import DataTable from 'react-data-table-component';
 import { defaultThemes } from 'react-data-table-component';
-import NavBar from '../../Comman/NavBar/AdminNavBar';
+
 import SearchIcon from '@mui/icons-material/Search';
 import axios from 'axios';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-import { Delete } from '@mui/icons-material';
+import { Business, Delete } from '@mui/icons-material';
 import { useMemo } from 'react';
-
 import phone from 'phone';
 import Loader from '../../Comman/Loader';
+import AccessNavBar from '../../Comman/NavBar/AccessNavBar';
+
 
 
 
@@ -63,18 +63,28 @@ const ViewCompany = () => {
 	const [viewDrawerOpen, setViewDrawerOpen] = useState(false)
 	const [editDialogOpen, setEditDialogOpen] = useState(false)
 	const [filteredCompany, setFilteredCompany] = useState(data)
-	const [viewCompData, setViewCompData] = useState({})
+	const [viewCompData, setViewCompData] = useState({
+		company_name: '',
+		company_email: '',
+		company_address: '',
+		company_contact_no: '',
+		company_status: '',
+		company_logo: ''
+	})
 	const [editCompData, setEditCompData] = useState({
-		company_name:'',
-		company_email:'',
-		company_address:'',
-		company_contact_no:'',
-		company_status:''
+		company_name: '',
+		company_email: '',
+		company_address: '',
+		company_contact_no: '',
+		company_status: '',
+		company_logo: ''
 	})
 	const [loader, setLoader] = useState(true)
 	const [noError, setNoError] = useState(false)
 	const [prevData, setPrevData] = useState(editCompData)
- 
+	const [logo, setLogo] = useState({})
+	const [updates, setUpdates] = useState(0)
+
 
 
 	//column names creation
@@ -98,7 +108,7 @@ const ViewCompany = () => {
 		},
 		{
 			name: 'Action',
-			cell: (row) => <Stack display={'flex'} spacing={1} direction={'row'} height={25}><Button variant='outlined' size='small' onClick={()=>handleEditButton(row)} >EDIT</Button> <Divider orientation="vertical" flexItem /><Button color='success' variant='outlined' size='small' onClick={() => handleViewButton(row)}>View</Button></Stack>,
+			cell: (row) => <Stack display={'flex'} spacing={1} direction={'row'} height={25}><Button variant='outlined' size='small' onClick={() => handleEditButton(row)} >EDIT</Button> <Divider orientation="vertical" flexItem /><Button color='success' variant='outlined' size='small' onClick={() => handleViewButton(row)}>View</Button></Stack>,
 			ignoreRowClick: true,
 			allowOverflow: true,
 			center: true,
@@ -116,10 +126,11 @@ const ViewCompany = () => {
 				setLoader(false)
 			})
 			.catch(err => {
-				console.log(err)
+				//console.log(err)
+				toast.error(err.response.data)
 				setLoader(false)
 			})
-	}, [toggleCleared,editDialogOpen])
+	}, [updates])
 
 
 
@@ -154,15 +165,21 @@ const ViewCompany = () => {
 				}}
 			>
 				<div style={{ height: '90vh', width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-					<Paper elevation={5} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: { xs: '35ch', md: '35ch' }, height: { xs: '55ch', sm: '55ch', md: '55ch' } }}>
+					<Paper elevation={5} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: { xs: '35ch', lg: '35ch' }, height: 'auto' }}>
 
-						<Typography variant='h5' component={'h5'} m={1} p={1} border={'1px solid black'} >Company Details</Typography>
+						<Typography variant='h5' component={'h5'} m={0.5} p={1} border={'1px solid black'} >Company Details</Typography>
 
-						<List sx={{ width: '100%', display: "flex", margin: 0, flexDirection: 'column' }}>
+						<List sx={{ width: '100%', display: "flex", margin: 0, flexDirection: 'column' }} dense >
 							<ListItem sx={{ display: 'flex', justifyContent: 'flex-end' }}>
 
 								<ListItemText
-								>
+								>	<Container sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+										{viewCompData.company_logo ?
+											<img src={process.env.REACT_APP_BACKEND_SERVER + viewCompData.company_logo} alt='logo' style={{ width: 'auto', height: '50px', backgroundColor:'#E0E0E0',}} /> :
+											<Avatar sx={{ width: 86, height: 86, }} />
+										}
+
+									</Container>
 									<Container sx={{ display: 'flex', justifyContent: 'flex-end' }}>
 										<Typography
 											sx={{ display: 'inline' }}
@@ -236,7 +253,7 @@ const ViewCompany = () => {
 								/>
 							</ListItem>
 
-							
+
 							<ListItem alignItems="flex-start">
 								<ListItemText
 									secondary={
@@ -299,27 +316,87 @@ const ViewCompany = () => {
 	}, [viewDrawerOpen, viewCompData])
 
 	//edit button
-	const handleEditButton = (row) =>{
-		console.log(row)
+	const handleEditButton = (row) => {
+		//console.log(row)
 		setEditDialogOpen(true)
 		setEditCompData(row)
 		setPrevData(row)
 
 	}
-	
+
 	//company edit view
-	const compEditView = useMemo(()=>{
-		const handleEditDialogClose = () =>{
+	const compEditView = useMemo(() => {
+
+		const VisuallyHiddenInput = styled('input')({
+			clip: 'rect(0 0 0 0)',
+			clipPath: 'inset(50%)',
+			height: 1,
+			overflow: 'hidden',
+			position: 'absolute',
+			bottom: 0,
+			left: 0,
+			whiteSpace: 'nowrap',
+			width: 1,
+		});
+
+		const handleEditDialogClose = () => {
 			setEditDialogOpen(false)
-			setEditCompData({})
-			setPrevData({})
+			setEditCompData({
+				company_name: '',
+				company_email: '',
+				company_address: '',
+				company_contact_no: '',
+				company_status: '',
+				company_logo: ''
+			})
+			setPrevData({
+				company_name: '',
+				company_email: '',
+				company_address: '',
+				company_contact_no: '',
+				company_status: '',
+				company_logo: ''
+			})
+			setLogo({})
 		}
-		const handleEdit = async(e) =>{
+
+		const convertBase64 = (file) => {
+			return new Promise((resolve, reject) => {
+				const fileReader = new FileReader();
+				fileReader.readAsDataURL(file);
+
+				fileReader.onload = () => {
+					resolve(fileReader.result);
+				};
+
+				fileReader.onerror = (error) => {
+
+					reject(error);
+				};
+			});
+		};
+
+		const handleCapture = async (e) => {
+			setLogo(e.target.files[0])
+			const url = await convertBase64(e.target.files[0])
+			//console.log(e.target.files[0])
+			setEditCompData({ ...editCompData, company_logo: url })
+		}
+
+		const handleEdit = async (e) => {
 			e.preventDefault()
-			console.log(editCompData)
-			if(!noError && JSON.stringify(prevData)!==JSON.stringify(editCompData)){
+			//console.log(editCompData)
+			if (!noError && JSON.stringify(prevData) !== JSON.stringify(editCompData)) {
+				const formData = new FormData()
+				formData.append('file', logo)
+				formData.append('editCompData', JSON.stringify(editCompData))
+				formData.append('prevEditCompData', JSON.stringify(prevData))
 				toast.promise(
-					axios.put(`/api/editcompany/${editCompData.id}`,editCompData),
+					axios.put(`/api/editcompany/${editCompData.id}`, formData, {
+						headers: {
+							'Content-Type': 'multipart/form-data',
+						}
+					}),
 					{
 						pending: {
 							render() {
@@ -329,160 +406,199 @@ const ViewCompany = () => {
 						success: {
 							render(res) {
 								handleEditDialogClose()
-								return(res.data.data)
+								setUpdates(prev => prev + 1)
+								return (res.data.data)
 							}
 						},
 						error: {
 							render(err) {
-								return(err.data.response.data)
+								return (err.data.response.data)
 							}
 						}
 					}
 
 				)
-				
+
 			}
 
 		}
-		return(
+		return (
 			<>
-			<Dialog
-			open={editDialogOpen}
-			onClose={handleEditDialogClose}
-			
-			
-			
-			>
-				<DialogTitle>Edit Company</DialogTitle>
-				<DialogContent dividers={true}>
-				<Paper elevation={1} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: { sm: '50ch', md: '50ch',lg:'50ch' }, height: { sm: '45ch', md: '45ch' ,lg:'50ch'}}}>
-                
-                <Box sx={{m:1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: { sm: '45ch', md: '45ch',lg:'45ch' }, height: { sm: '40ch', md: '40ch',lg:'45ch' }, p: 1 }}>
-                  <form id='editcompany' onSubmit={handleEdit} >
-				  <FormControl fullWidth sx={{mt:1, mb: 2 }} variant="outlined">
-                    <InputLabel size='small' required htmlFor="outlined-adornment-editcompany">Company Name</InputLabel>
-                    <OutlinedInput
-					size='small'
-                      required={true}
-                      id="outlined-adornment-editcompany"
-                      type={'text'}
-                      label="Company Name"
-					  name="companyName"
-					  value={editCompData.company_name}
-					  onInput={(e)=>setEditCompData({...editCompData,company_name:e.target.value})}
-                      placeholder='enter comapany name'
-                      
-                    />
-                  </FormControl>
-                  <FormControl fullWidth sx={{ mb: 2 }} variant="outlined">
-                    <InputLabel size='small' required htmlFor="outlined-adornment-editcomp_email">Email</InputLabel>
-                    <OutlinedInput
-					size='small'
-                      name='companyEmail'
-					  value={editCompData.company_email}
-					  onInput={(e)=>setEditCompData({...editCompData,company_email:e.target.value})}
-                      required={true}
-                      id="outlined-adornment-editcomp_email"
-                      type={'email'}
-                      label="Email"
-                      placeholder='enter company email'
-                      
+				<Dialog
+					open={editDialogOpen}
+					onClose={handleEditDialogClose}
+					maxWidth='800px'
 
-                    />
-                  </FormControl>
-                  <FormControl fullWidth sx={{ mb: 2 }} variant="outlined">
-                    <InputLabel size='small' required htmlFor="outlined-adornment-editcomp_addr">Company Address</InputLabel>
-                    <OutlinedInput
-					size='small'
-                      name='companyAddress'
-					  value={editCompData.company_address}
-					  onInput={(e)=>setEditCompData({...editCompData,company_address:e.target.value})}
-                      required={true}
-                      multiline
-                      id="outlined-adornment-editcomp_addr"
-                      type={'text'}
-                      label="Company Address"
-                      minRows={4}
-                      maxRows={4}
-                      placeholder="enter company address"
-                      
 
-                    />
-                  </FormControl>
-				  <FormControl fullWidth sx={{ mb: 2 }} variant="outlined">
-                    <InputLabel size='small'>Company Website</InputLabel>
-                    <OutlinedInput
-                    size='small'
-                      name='companyWebsite'
-                      value={editCompData.company_website}                     
-                      type={'text'}
-                      label="Company Website"
-                      placeholder='enter comapany webiste'
-                      onInput={e=>setEditCompData({...editCompData,company_website:e.target.value})}
-                    />
-                  </FormControl>
-				  <FormControl fullWidth sx={{ mb: 2 }} variant="outlined">
-                    
-                    <TextField
-					size='small'
-                      error={noError}
-                      name='companyContactNo'
-                      value={editCompData.company_contact_no}
-                      helperText="Please enter contact no. with country code ex:+91xxx..."
-                      required={true}
-                      id="outlined-adornment-companycontactno"
-                      type='text'
-                      label="Company Contact No"
-                      placeholder='enter comapany contact no'
-                      onChange={e=>{
-                        
-                        const val= e.target.value
-                        if(phone(val).isValid || val===''){
-							setNoError(false)
-							setEditCompData({...editCompData,company_contact_no:val})
-						  }
-						  else{
-							setEditCompData({...editCompData,company_contact_no:val})
-							setNoError(true)
-						  }
-                        
-                      }}
-                      
-                      
-                    />
-                  </FormControl>
+				>
+					<DialogTitle>Edit Company</DialogTitle>
+					<DialogContent dividers={true}>
+						<Paper elevation={1} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '100%', height: 'auto' }}>
 
-                  
-                  <FormControl sx={{ mb: 2 }} fullWidth variant="outlined" >
-                    <InputLabel size='small' required>Status</InputLabel>
-                    <Select
-					size='small'
-					  name='companyStatus'
-                      label="Status"
-                      required
-					  value={editCompData.company_status}
-					  onChange={(e)=>setEditCompData({...editCompData,company_status:e.target.value})}
-                    >
-                      <MenuItem value="active">Active</MenuItem>
-                      <MenuItem value="denied">Denied</MenuItem>
-                    </Select>
-                  </FormControl>
+							<Box sx={{ m: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '100%', height: 'auto', p: 1 }}>
+								<form id='editcompany' onSubmit={handleEdit} >
+									<Container sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+										{editCompData.company_logo ?
+											
+											<img src={logo.name !== undefined ? editCompData.company_logo : process.env.REACT_APP_BACKEND_SERVER + editCompData.company_logo} alt='logo' style={{ width: 'auto', height: '60px', backgroundColor:'#E0E0E0',}} />:
+											<Business sx={{ fontSize: '60px', mt: 1, mb: 0 }} />
+										}
+										<Stack direction={'row'} spacing={0.1}>
+											<Button type="file" size="small" component="label"  > Upload Logo <VisuallyHiddenInput type="file" onInput={handleCapture} accept="image/png, image/jpeg" /> </Button>
+											{
+												editCompData.company_logo ?
+													<IconButton size='small' color='error' onClick={() => {
+														setLogo([])
+														setEditCompData({ ...editCompData, company_logo: '' })
+													}}>
+														<Delete fontSize='15px' />
+													</IconButton>
+													: null
 
-				  </form>
-                  
+											}
 
-                </Box>
-              </Paper>
-				</DialogContent>
-				<DialogActions>
-					<Button  color='error' onClick={handleEditDialogClose}>Cancel</Button>
-					<Button  color='success' type='submit' form='editcompany' >Update</Button>
-				</DialogActions>
+										</Stack>
 
-			</Dialog>
+
+									</Container>
+									<Container sx={{ display: 'flex', flexDirection: { xs: 'column', lg: 'row' }, justifyContent: 'center' }}>
+
+										<Container sx={{ borderRight: { xs: 'none', lg: '1px solid black' }, borderBottom: { xs: '1px solid black', lg: 'none' } }}>
+											<Stack spacing={2}>
+
+												<FormControl fullWidth variant="outlined">
+													<InputLabel size='small' required htmlFor="outlined-adornment-editcompany">Company Name</InputLabel>
+													<OutlinedInput
+														size='small'
+														required={true}
+														id="outlined-adornment-editcompany"
+														type={'text'}
+														label="Company Name"
+														name="companyName"
+														value={editCompData.company_name}
+														onInput={(e) => setEditCompData({ ...editCompData, company_name: e.target.value })}
+														placeholder='enter comapany name'
+
+													/>
+												</FormControl>
+												<FormControl fullWidth variant="outlined">
+													<InputLabel size='small' required htmlFor="outlined-adornment-editcomp_email">Email</InputLabel>
+													<OutlinedInput
+														size='small'
+														name='companyEmail'
+														value={editCompData.company_email}
+														onInput={(e) => setEditCompData({ ...editCompData, company_email: e.target.value })}
+														required={true}
+														id="outlined-adornment-editcomp_email"
+														type={'email'}
+														label="Email"
+														placeholder='enter company email'
+
+
+													/>
+												</FormControl>
+												<FormControl fullWidth variant="outlined">
+													<InputLabel size='small' required htmlFor="outlined-adornment-editcomp_addr">Company Address</InputLabel>
+													<OutlinedInput
+														size='small'
+														name='companyAddress'
+														value={editCompData.company_address}
+														onInput={(e) => setEditCompData({ ...editCompData, company_address: e.target.value })}
+														required={true}
+														multiline
+														id="outlined-adornment-editcomp_addr"
+														type={'text'}
+														label="Company Address"
+														minRows={4}
+														maxRows={4}
+														placeholder="enter company address"
+
+
+													/>
+												</FormControl>
+
+
+											</Stack>
+
+										</Container>
+										<Container >
+											<Stack spacing={2}>
+												<FormControl fullWidth variant="outlined">
+													<InputLabel size='small'>Company Website</InputLabel>
+													<OutlinedInput
+														size='small'
+														name='companyWebsite'
+														value={editCompData.company_website}
+														type={'text'}
+														label="Company Website"
+														placeholder='enter comapany webiste'
+														onInput={e => setEditCompData({ ...editCompData, company_website: e.target.value })}
+													/>
+												</FormControl>
+												<FormControl fullWidth variant="outlined">
+
+													<TextField
+														size='small'
+														error={noError}
+														name='companyContactNo'
+														value={editCompData.company_contact_no}
+														helperText="Please enter contact no. with country code ex:+91xxx..."
+														required={true}
+														id="outlined-adornment-companycontactno"
+														type='text'
+														label="Company Contact No"
+														placeholder='enter comapany contact no'
+														onChange={e => {
+
+															const val = e.target.value
+															if (phone(val).isValid || val === '') {
+																setNoError(false)
+																setEditCompData({ ...editCompData, company_contact_no: val })
+															}
+															else {
+																setEditCompData({ ...editCompData, company_contact_no: val })
+																setNoError(true)
+															}
+
+														}}
+
+
+													/>
+												</FormControl>
+
+
+												<FormControl fullWidth variant="outlined" >
+													<InputLabel size='small' required>Status</InputLabel>
+													<Select
+														size='small'
+														name='company_status'
+														label="Status"
+														required
+														value={editCompData.company_status}
+														onChange={(e) => setEditCompData({ ...editCompData, company_status: e.target.value })}
+													>
+														<MenuItem value="active">Active</MenuItem>
+														<MenuItem value="denied">Denied</MenuItem>
+													</Select>
+												</FormControl>
+
+											</Stack>
+
+										</Container>
+									</Container>
+								</form>
+							</Box>
+						</Paper>
+					</DialogContent>
+					<DialogActions>
+						<Button color='error' onClick={handleEditDialogClose}>Cancel</Button>
+						<Button color='success' type='submit' form='editcompany' >Update</Button>
+					</DialogActions>
+
+				</Dialog>
 			</>
 		)
-	},[editDialogOpen,editCompData,noError,prevData])
+	}, [editDialogOpen, editCompData, noError, prevData, logo])
 
 	//table searchbar
 	const subHeaderViewCompanyMemo = React.useMemo(() => {
@@ -511,38 +627,28 @@ const ViewCompany = () => {
 	//handling selected row operation
 	const contextActions = React.useMemo(() => {
 		const handleDelete = async () => {
-			//console.log(selectedRows.map(details => details.id))
-			let msg = ''
-			try {
-				const result = await toast.promise(
-					axios.post(`/api/deletecompany/`, { id: selectedRows.map(details => details.id) }),
-					{
-						pending: {
-							render() {
-								return ('Deleting Company')
-							}
-						},
-						success: {
-							render() {
-								setToggleCleared(!toggleCleared)
-								return (`${msg} `)
-							}
-						},
-						error: {
-							render() {
-								return (`${msg}`)
-							}
+			toast.promise(axios.post(`/api/deletecompany/`, { id: selectedRows.map(details => details.id), logos: selectedRows.map(details => details.company_logo) }),
+				{
+					pending: {
+						render() {
+							return ('Deleting Company')
+						}
+					},
+					success: {
+						render(res) {
+							setToggleCleared(!toggleCleared)
+							setUpdates(prev => prev + 1)
+							return (res.data.data)
+						}
+					},
+					error: {
+						render(err) {
+							return (err.data.response.data)
 						}
 					}
+				}
 
-				)
-				msg = (result.data)
-				//console.log(result)
-			}
-			catch (err) {
-				msg = (err.response.data)
-
-			}
+			)
 		}
 
 		return (
@@ -554,7 +660,7 @@ const ViewCompany = () => {
 
 	return (
 		<>
-			<NavBar />
+			<AccessNavBar />
 			<Box component='main' sx={{ flexGrow: 1, p: 3, mt: 8, ml: { xs: 8 } }}>
 				<div style={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
 					<Typography variant='h5' component={'h5'} m={2} textAlign={'center'} >View Company</Typography>
@@ -584,7 +690,7 @@ const ViewCompany = () => {
 			</Box>
 			{compDetailView}
 			{compEditView}
-			<Loader loader={loader} /> 
+			<Loader loader={loader} />
 		</>
 	);
 };

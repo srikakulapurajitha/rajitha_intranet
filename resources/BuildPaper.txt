@@ -1,0 +1,15 @@
+--- To build react app
+npm run build
+---- To run build file
+1. dependancy
+npm install -g serve
+2. run
+serve -s build
+ or
+serve -s build -l 4000 // with port no
+
+successfull output:
+Serving!                                 
+   │                                            │
+   │   - Local:    http://localhost:3000        │
+   │   - Network:  http://192.168.30.121:3000 

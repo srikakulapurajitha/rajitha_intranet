@@ -21,7 +21,7 @@ function MyAccounts() {
         }
 
         //setVisible({...visible,acctype:!visible[acctype]})
-        console.log(visible)
+        //console.log(visible)
 
 
     }
@@ -35,7 +35,7 @@ function MyAccounts() {
                         {
                             visible['uan'] ?
                                 <>
-                                    <ListItemText secondary="1234567890" />
+                                    <ListItemText secondary="0000000000000" />
                                     <IconButton edge="end" aria-label="comments" onClick={() => handleVisibility('uan')}>
                                         <ListItemAvatar>
                                             <Visibility sx={{ color: 'gray' }} />
@@ -63,7 +63,7 @@ function MyAccounts() {
                         {
                             visible['policy'] ?
                                 <>
-                                    <ListItemText secondary="4101230200000205-00" />
+                                    <ListItemText secondary="0000000000000000-00" />
                                     <IconButton edge="end" aria-label="comments" onClick={() => handleVisibility('policy')}>
                                         <ListItemAvatar>
                                             <Visibility sx={{ color: 'gray' }} />
@@ -91,7 +91,7 @@ function MyAccounts() {
                         {
                             visible['acc'] ?
                                 <>
-                                    <ListItemText secondary="793601500083" />
+                                    <ListItemText secondary="000000000000" />
                                     <IconButton edge="end" aria-label="comments" onClick={() => handleVisibility('acc')}>
                                         <ListItemAvatar>
                                             <Visibility sx={{ color: 'gray' }} />

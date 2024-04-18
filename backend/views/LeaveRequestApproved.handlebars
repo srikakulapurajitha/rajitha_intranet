@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>request</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: auto;
+        }
+        p{
+            font-size: 15px;
+        }
+        span{
+            margin-left: 5px;
+        }
+        
+        .request-container {
+            max-width: 600px;
+            width: 100%;
+            border: 1px solid rgb(160, 152, 152);
+            padding: '50px';
+        }
+        
+        .request-data {
+            padding: 20px;
+        }
+        
+        .header-img {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        
+        header {
+            background-image: linear-gradient(135deg, #cc208e 10%, #6713d2 100%);
+            padding: 10px;
+            color: #fff;
+            text-align: center;
+        }
+        
+        .request-details {
+            display: flex;
+            width: 80%;
+            margin: 0 auto;
+        }
+        
+        .request-details div {
+            margin-left: 20px;
+        }
+        
+        .request-types {
+            display: flex;
+        }
+        
+        .request-types p {
+            margin-right: 20px;
+        }
+        
+        .reason-box,
+        .date-box {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+        
+        .dates-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .date-box {
+            display: inline-block;
+            border: 1px solid #ccc;
+            padding: 10px;
+            width: 50%;
+            border-radius: 5px;
+            background-color: #fff;
+            margin-right: 10px;
+            text-align: center;
+        }
+        
+        .status-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+        
+        .status-container p {
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="request-container">
+        <header>
+            <h2>Your Request is Approved</h2>
+        </header>
+        <div class="request-data">
+            <div class="header-img">
+                <img style="max-width: 180px;max-height:50px;margin-left:auto;margin-right:0;" src='https://www.brightcomgroup.com/wp-content/uploads/2021/02/logo.png' alt="logo" />
+
+            </div>
+            <p><strong>Dear {{to}},</strong></p>
+
+            <div>
+                <div class="dates-container">
+                    <div class="date-box">
+                        <p><strong>From Date: </strong><span>{{from_date}}</span></p>
+                    </div>
+                    <div class="date-box">
+                        <p><strong>To Date: </strong><span>{{to_date}}</span></p>
+                    </div>
+
+                </div>
+                <div class="reason-box">
+                    <div class="request-types">
+                        <p><strong>Leave Type: </strong><span>{{leave_type}}</span></p>
+                        <p><strong>Leave Option: </strong><span>{{leave_option}}</span></p>
+
+                    </div>
+                    <p><strong>Full Days:</strong></p>
+                    <p>
+                        {{full_days}}
+                    </p>
+                    <p><strong>Half Days:</strong></p>
+                    <p>
+                        {{half_days}}
+
+                    </p>
+                    <p>
+                        <Strong>No. of Day: </Strong>{{total_leaves}}
+                    </p>
+
+
+
+                </div>
+
+
+
+
+                <div class="status-container">
+                    <p>
+                        <Strong>Approved By:</Strong><span>{{approved_by}}</span></p>
+
+                    <p><strong>Leave Status:</strong><span style="color: green; font-size:15px; font-weight:bold;">{{status}}</span></p>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</body>
+
+</html>

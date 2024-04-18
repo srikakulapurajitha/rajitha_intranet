@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Chip, Container, Paper, Stack, FormControl, Button, Typography, Backdrop, OutlinedInput, InputLabel } from '@mui/material'
+import { Box, Chip, Container, Paper, Stack, FormControl, Button, Typography,  OutlinedInput, InputLabel } from '@mui/material'
 import DataTable from 'react-data-table-component';
 import { DatePicker } from '@mui/x-date-pickers';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import axios from 'axios';
-import AdminNavBar from '../../Comman/NavBar/AdminNavBar';
 import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
 import Loader from '../../Comman/Loader';
+import AccessNavBar from '../../Comman/NavBar/AccessNavBar';
 
 const customStyles = {
     rows: {
@@ -57,7 +57,7 @@ const columns = [
     },
     {
         name: 'Status',
-        selector: row => <Chip sx={{ fontSize: 12, p: 0.2, backgroundColor: row.status === 'XX' ? '#3FA8FC' : row.status === 'XA' ? '#FF9D36' : row.status === 'WH' ? '88888882' : '#FF6868', color: 'white' }} size='small' label={row.status} />,
+        selector: row => <Chip sx={{ fontSize: 12, p: 0.2, backgroundColor: row.status === 'XX' ? '#037700' : row.status === 'XA' ? '#FF9D36' : (row.status === 'WH' || row.status === 'HH') ? '#9777A5' : '#FF6868', color: 'white' }} size='small' label={row.status} />,
         center: 'true',
     },
     {
@@ -67,7 +67,7 @@ const columns = [
     },
     {
         name: 'Updated Status',
-        selector: row => <Chip sx={{ fontSize: 12, p: 0.2, backgroundColor: row.updated_status === 'XX' ? '#3FA8FC' : row.updated_status === 'XA' ? '#FF9D36' : row.updated_status === 'WH' ? '88888882' : '#FF6868', color: 'white' }} size='small' label={row.updated_status} />,
+        selector: row => <Chip sx={{ fontSize: 12, p: 0.2, backgroundColor: row.updated_status === 'XX' ? '#037700' : row.updated_status === 'XA' ? '#FF9D36' : (row.updated_status === 'WH' || row.updated_status === 'HH') ? '#9777A5' : (row.updated_status === 'XL' || row.updated_status === 'EL') ? '#3FA8FC' : '#FF6868', color: 'white' }} size='small' label={row.updated_status} />,
         center: 'true',
 
     },
@@ -97,16 +97,16 @@ const ViewAttendance = () => {
                 setData(data)
                 //console.log(res.data)
             })
-            .catch(() => {
+            .catch((err) => {
                 setLoader(false)
-                toast.error('unable to fetch data')
+                toast.error(err.response.data)
             })
     }, [])
 
     const subHeaderViewCompanyMemo = React.useMemo(() => {
         const handleFilterAttendace = (e) => {
             e.preventDefault()
-            console.log(date)
+            //console.log(date)
 
             setLoader(true)
             axios.post(`/api/filterattendance`, {...date,emp_id:empId})
@@ -184,14 +184,14 @@ const ViewAttendance = () => {
 
     return (
         <>
-            <AdminNavBar />
+           <AccessNavBar />
             <Container>
                 <Box component='main' sx={{ flexGrow: 1, p: 3, mt: 8, ml: { xs: 8 } }}>
 
                     <Paper elevation={10} square={false} sx={{ height: 'auto' }} >
 
                         <DataTable
-                            title={<Typography component={'h3'} variant='p'>Attendance</Typography>}
+                            title={<Typography component={'h3'} variant='p'>View Attendance</Typography>}
                             columns={columns}
                             data={data}
                             fixedHeader

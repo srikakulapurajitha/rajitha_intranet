@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
@@ -9,16 +9,12 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import './OfficeCalender.css'
 import { useState, useEffect } from 'react';
-//import axios from 'axios';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, IconButton, InputLabel, MenuItem, Select, Stack } from '@mui/material';
+import {  Stack, Tooltip } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 
 export default function OfficeCalender(props) {
   const [selectedMonthYear, setSelectedMonthYearYear] = useState({ month: new Date().getMonth(), year: new Date().getFullYear() })
-  const [choosedTitle, setChoosedTitle] = useState('');
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [holidayTitles, setHolidayTitles] = useState([])
   const [highlightedDays, setHighlightedDays] = useState([])
   const [filteredHolidays, setFilteredHolidays] = useState([])
   const [displayHolidays, setDisplayHolidays] = useState([])
@@ -60,84 +56,34 @@ export default function OfficeCalender(props) {
       }
     })
     ////console.log(holidayTitle)
-    const holidays = data.filter((items) => items.holidaylist_title === (choosedTitle === '' ? holidayTitle[0] : choosedTitle)) //filtering holiday list based on first title
+    //const holidays = data.filter((items) => items.holidaylist_title === (choosedTitle === '' ? holidayTitle[0] : choosedTitle)) //filtering holiday list based on first title
     //console.log(holidayTitle,holidays,choosedTitle)
+    const holidays = data
     const holidayDates = holidays.map(item => new Date(item.holiday_date).toLocaleString('en-CA').slice(0, 10))
 
     setHighlightedDays(holidayDates)
     setDisplayHolidays(holidays.filter((holiday) => new Date(holiday.holiday_date).getMonth() === selectedMonthYear.month && new Date(holiday.holiday_date).getFullYear() === selectedMonthYear.year).map(item => ({ ...item, holiday_date: formatDay(item.holiday_date) }))) // on load by current month display holidays
     ////console.log('dibya', holidays)
     setFilteredHolidays(holidays) //filtred holidays
-    setHolidayTitles(holidayTitle) // unique titles
+    
 
+  }, [selectedMonthYear, data])
 
-  }, [selectedMonthYear, data, choosedTitle])
-
-  const handleHolidayList = useMemo(() => {
-    const handleDialogOpen = () => {
-      setDialogOpen(!dialogOpen)
-      setChoosedTitle('')
-    };
-    const handleTitleSelect = () => {
-      //console.log(choosedTitle)
-      const holidays = data.filter((items) => items.holidaylist_title === choosedTitle) //filtering holiday list based on first title
-      //console.log('fil:', holidays)
-      const holidayDates = holidays.map(item => new Date(item.holiday_date).toLocaleString('en-CA').slice(0, 10))
-      setHighlightedDays(holidayDates)
-      setDisplayHolidays(holidays.filter((holiday) => new Date(holiday.holiday_date).getMonth() === selectedMonthYear.month && new Date(holiday.holiday_date).getFullYear() === selectedMonthYear.year).map(item => ({ ...item, holiday_date: formatDay(item.holiday_date) }))) // on load by current month display holidays
-      setFilteredHolidays(holidays) //filtred holidays
-      setDialogOpen(false)
-    }
-
-
-    return (
-      <>
-        <Dialog disableEscapeKeyDown open={dialogOpen} onClose={handleDialogOpen}>
-          <DialogTitle>Select Holiday List Title</DialogTitle>
-          <DialogContent sx={{ width: '45ch' }}>
-            <Box component="form" sx={{ display: 'flex', flexWrap: 'wrap' }}>
-              <FormControl fullWidth sx={{ m: 1, }}>
-                <InputLabel >Select</InputLabel>
-                <Select
-
-                  value={choosedTitle}
-                  onChange={e => {
-                    //console.log(e.target.value)
-                    setChoosedTitle(e.target.value)
-                  }}
-                  label='Select'
-
-                >
-                  {holidayTitles.map((holiday) => (
-                    <MenuItem key={holiday} value={holiday}>
-                      {holiday}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Box>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleDialogOpen}>Cancel</Button>
-            <Button onClick={handleTitleSelect}>Ok</Button>
-          </DialogActions>
-        </Dialog>
-      </>
-    )
-  }, [choosedTitle, data, dialogOpen, holidayTitles, selectedMonthYear])
+  
   return (
     <>
-      <Card sx={{ display: 'flex', flexDirection: 'column', height: 390, }}>
+      <Card className='office-calender' sx={{ display: 'flex', flexDirection: 'column', height: 390, }}>
         <Stack direction={'row'} justifyContent={'flex-end'} alignItems={'flex-start'} spacing={4}>
           <Box sx={{ display: 'flex', flexDirection: 'row', p: 0.5 }}>
             <Typography variant="p" component="div" sx={{ display: 'flex', justifyContent: 'center', fontSize: 20, alignItems: 'center' }}>
-              Office Calender<IconButton size='small' onClick={() => setDialogOpen(true)}>
+              {/* Office Calender<IconButton size='small' onClick={() => setDialogOpen(true)}>
                 <CalendarMonthIcon fontSize='8' />
-              </IconButton>
+              </IconButton> */}
+              Office Calendar<CalendarMonthIcon sx={{m:0.5, color:'gray'}} fontSize='8' />
             </Typography>
 
           </Box>
-          <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'flex-start', mb: 1 }}>
+          <Box className='view-link-calender' sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'flex-start', mb: 1 }}>
             <Link style={{ fontSize: '13px', padding: '2px',color:'#1B4688' }} to={'/teams'}>
               view more
             </Link>
@@ -168,8 +114,30 @@ export default function OfficeCalender(props) {
               if (highlightedDays.length !== 0 && highlightedDays.includes(day)) {
                 return 'highlight'; // your class name
               }
-
+              
             }}
+            tileContent={({ date, view }) => {
+              const day = date.toLocaleString('en-CA').slice(0, 10);
+              const holiday = displayHolidays.find(
+                (item) => item.holiday_date === formatDay(day)
+              );
+
+              return (
+                <Tooltip title={holiday ? holiday.holiday_title : ''} arrow>
+                  <div
+                    className={`calendar-day ${highlightedDays.includes(day) ? 'highlight' : ''}`}
+                  >
+                    {holiday ? (
+                      <div className="tooltip">
+                        {view !== 'month' && holiday.holiday_date}
+                      </div>
+                    ) : null}
+                  </div>
+                </Tooltip>
+              );
+            }}
+
+            
           />
         </Box>
         <Divider light />
@@ -185,7 +153,7 @@ export default function OfficeCalender(props) {
           </Marquee>
         </Box>
       </Card>
-      {handleHolidayList}
+
     </>
   );
 };

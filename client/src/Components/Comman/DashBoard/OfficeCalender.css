@@ -107,3 +107,25 @@ abbr[title] {
     background: #6f48eb;
     color: white;
 }
+
+.calendar-day {
+    position: relative;
+}
+
+.calendar-day.highlight {
+    background-color: #ffcccb;
+    /* Set your desired highlight color */
+}
+
+.tooltip {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: white;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    font-size: 14px;
+}

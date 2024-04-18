@@ -83,7 +83,7 @@ function ChartUpload(props) {
             'image/png': ['.png'],
             'image/jpeg': ['.jpeg', '.jpg'],
         },
-        maximgFile: 1,
+        maxFiles:1,
         onDrop: (acceptedImgFile) => {
             //console.log(acceptedImgFile)
             setImgFile(acceptedImgFile.map(file => Object.assign(file, {
@@ -163,7 +163,7 @@ function ChartUpload(props) {
         <div className="container">
             <div {...getRootProps({ style })}>
                 <input {...getInputProps()} />
-                <p>Drag 'n' drop some JPEG or PNG imgFile here, or click to select.</p>
+                <p>Drag 'n' drop Only one JPEG or PNG imgFile here, or click to select.</p>
                 <Typography component={'p'} variant='p'>Pre-view</Typography>
                 <div style={thumbsContainer}>
 

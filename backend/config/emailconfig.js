@@ -4,13 +4,16 @@ import path from 'path'
 import 'dotenv/config'
 
 // initialize nodemailer
-var transporter = nodemailer.createTransport(
+export const transporter = nodemailer.createTransport(
     {
         service: 'gmail',
     auth: {
         user: process.env.GMAIL,
         pass: process.env.GMAIL_PASSWORD
-    }
+    },
+    tls: {
+        rejectUnauthorized: false
+      }
     }
 );
 
@@ -26,4 +29,15 @@ const handlebarOptions = {
 // use a template file with nodemailer
 transporter.use('compile', hbs(handlebarOptions))
 
-export default transporter
+export const basictransporter = nodemailer.createTransport(
+    {
+        service: 'gmail',
+    auth: {
+        user: process.env.GMAIL,
+        pass: process.env.GMAIL_PASSWORD
+    },
+    tls: {
+        rejectUnauthorized: false
+      }
+    }
+);

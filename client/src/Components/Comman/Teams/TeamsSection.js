@@ -1,22 +1,23 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Loader from '../Loader'
 import { Box, Collapse, Grid, IconButton, List, ListItem, ListItemButton, ListItemText, Paper, Typography } from '@mui/material'
-import AdminNavBar from '../NavBar/AdminNavBar'
-import UserNavBar from '../NavBar/UserNavBar'
-import UserContext from '../../context/UserContext'
+
 import { Add, Remove } from '@mui/icons-material'
 import axios from 'axios'
 import Address from './Address'
 import Charts from './Charts'
 import Holidays from './Holidays'
 import Welcome from './Welcome'
+import { toast } from 'react-toastify'
+import AccessNavBar from '../NavBar/AccessNavBar'
 
 function TeamsSection() {
-  const { userDetails } = useContext(UserContext)
+
   const [expandedCompany, setExpandedCompany] = useState('');
   const [loader, setLoader] = useState(true)
   const [companyPages, setCompanyPages] = useState([])
-  const [companyPageData, setCompanyPageData] = useState([])
+  const [companyPageData, setCompanyPageData] = useState({})
+  const [holidayPageData, setHolidayPageData] = useState([])
   const [pageDetails, setPageDetails] = useState({ pageName: '', pageType: '', pageData: [] })
   const [companies, setCompanies] = useState([])
 
@@ -25,13 +26,16 @@ function TeamsSection() {
       try {
         const res = await axios.get('/api/showcompanypages')
 
+
         setCompanies(Array.from(new Set(res.data.map(page => page.company_name))))
+        //console.log(Array.from(new Set(res.data.map(page => page.company_name))))
 
         setCompanyPages(res.data)
         setLoader(false)
       }
-      catch {
+      catch(err) {
         setLoader(false)
+        toast.error(err.response.data)
 
       }
     }
@@ -40,29 +44,38 @@ function TeamsSection() {
   }, [])
 
   const handleExpand = (company) => {
-    //console.log(company, expandedCompany)
-    setCompanyPageData(Array.from(new Set(companyPages.filter(data => data.company_name === company).map(d => d.company_pagename))))
+    //console.log('expand',company, expandedCompany)
+    const selectedCompanyPages = companyPages.filter(data => data.company_name === company)
+    //console.log('set',companyPages.filter(data => data.company_name === company).map(d => ({company_pagename:d.company_pagename,company_type:d.company_pagetype})))
+    const addr = selectedCompanyPages.filter(page=>page.company_pagetype==='Address')
+    const charts = selectedCompanyPages.filter(page=>page.company_pagetype==='Chart')
+    const holidays = selectedCompanyPages.filter(page=>page.company_pagetype==='Holidays')
+    const holidayPages = Array.from(new Set(holidays.map(p=>p.company_pagename))).map(name=>holidays.filter(p=>p.company_pagename===name)[0])
+    setCompanyPageData({addr:addr,charts:charts,holidays:holidayPages})
+
+    setHolidayPageData(holidays)
+    
     setExpandedCompany(expandedCompany === company ? '' : company);
 
   };
 
   const handlePageSelection = async (page, selectedCompany) => {
-    console.log(page, selectedCompany)
-    const filter = companyPages.filter(data => data.company_pagename === page && data.company_name === selectedCompany)
+    //console.log(page,selectedCompany,holidayPageData.filter(data=>data.company_pagename===page.company_pagename).map(page=>page.id))
     let fetchData;
-    if (filter[0]['company_pagetype'] === 'Holidays') {
-      fetchData = { ...filter[0], id: filter.map(data => data.id) }
-
+    if(page.company_pagetype==='Holidays'){
+      fetchData ={...page, id:holidayPageData.filter(data=>data.company_pagename===page.company_pagename).map(page=>page.id)}
     }
-    else {
-      fetchData = filter[0]
+    else{
+      fetchData =page
     }
+    
     try {
       const pageData = await axios.post('/api/showcompanypagedata', fetchData)
-      console.log(pageData.data)
-      setPageDetails({ pageName: filter[0].company_pagename, pageType: filter[0].company_pagetype, pageData: pageData.data })
+      //console.log(pageData.data)
+      setPageDetails({ pageName: page.company_pagename, pageType: page.company_pagetype, pageData: pageData.data })
     }
-    catch {
+    catch(err) {
+      toast.error(err.response.data)
 
     }
     //console.log(x)
@@ -71,7 +84,7 @@ function TeamsSection() {
   return (
     <>
       <Box sx={{ height: '100vh', width: "auto", display: 'flex', backgroundColor: '#F5F5F5' }}>
-        {userDetails.access === 'admin' ? <AdminNavBar /> : <UserNavBar />}
+        <AccessNavBar />
         <Box component="main" sx={{ flexGrow: 1, p: 3, mt: 8, ml: { xs: 2 }, backgroundColor: '#F5F5F5' }}>
           <div
             style={{
@@ -110,16 +123,20 @@ function TeamsSection() {
                           </ListItem>
                           <Collapse in={expandedCompany === company} timeout="auto" unmountOnExit>
                             <List dense disablePadding>
-                              {companyPageData.map((page, index) => (
-                                <ListItemButton
+                              {Object.keys(companyPageData).map((page, index) => (
+                                companyPageData[page].map((data,index)=>(
+                                  <ListItemButton
                                   key={index}
-                                  onClick={() => handlePageSelection(page, expandedCompany)}
+                                  onClick={() => handlePageSelection(data, expandedCompany)}
                                 >
                                   <ListItem disablePadding style={{ marginLeft: '40px' }}>
-                                    <ListItemText primary={`${page} `} />
+                                    <ListItemText primary={`${data.company_pagename} `} />
                                   </ListItem>
                                 </ListItemButton>
-                              ))}
+
+                                ))
+                                
+))}
 
                             </List>
 

@@ -1,5 +1,5 @@
 import db from "../config/connectiondb.js";
-import transporter from "../config/emailconfig.js";
+import {transporter} from "../config/emailconfig.js";
 import 'dotenv/config'
 
 export const birthdaylist  = (req,res)=>{

@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import Loader from '../Loader';
+import { toast } from 'react-toastify';
 
 function BirthDayCalender() {
 
@@ -19,17 +20,18 @@ function BirthDayCalender() {
             try {
                 const birthdays = await axios.get('/api/birthdaylist')
                 setBirthdayData(birthdays.data)
-                console.log(birthdays.data)
+                //console.log(birthdays.data)
                 const compNames = Array.from(new Set(birthdays.data.map(data => data.company_name)))
-                console.log('names', compNames)
+                //console.log('names', compNames)
                 setCompanyName(compNames)
                 const monthCal = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map(m => ({ [m]: birthdays.data.filter(data => new Date(data.date_of_birth).getMonth() === m) }))
                 setFilterBirthDays(monthCal)
                 setLoader(false)
 
             }
-            catch {
+            catch(err) {
                 setLoader(false)
+                toast.err(err)
             }
 
         }
@@ -45,9 +47,9 @@ function BirthDayCalender() {
         setSelectedCompany(val)
         if (val !== 'All') {
             const filterData = birthdayData.filter(data => data.company_name === val)
-            console.log(filterData)
+            //console.log(filterData)
             const monthCal = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map(m => ({ [m]: filterData.filter(data => new Date(data.date_of_birth).getMonth() === m) }))
-            console.log(monthCal)
+            //console.log(monthCal)
             setFilterBirthDays(monthCal)
 
 
@@ -55,7 +57,7 @@ function BirthDayCalender() {
         else {
             const monthCal = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map(m => ({ [m]: birthdayData.filter(data => new Date(data.date_of_birth).getMonth() === m) }))
             setFilterBirthDays(monthCal)
-            console.log(monthCal[0][1])
+            //console.log(monthCal[0][1])
         }
     }
 
@@ -77,7 +79,7 @@ function BirthDayCalender() {
 
     return (
         <>
-            <Container >
+            <Container  >
                 <Box sx={{ display: 'flex', justifyContent: 'flex-start', maxWidth: "25ch" }}>
                     <FormControl fullWidth>
                         <InputLabel size='small'>Company Name</InputLabel>
@@ -91,6 +93,8 @@ function BirthDayCalender() {
                     </FormControl>
 
                 </Box>
+
+                
 
                 <Typography variant="p" component="div" sx={{ display: 'flex', justifyContent: 'center', fontSize: 20, alignItems: 'center', m: 1 }}>
                     Birthday Calender

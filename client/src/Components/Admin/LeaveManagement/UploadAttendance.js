@@ -1,5 +1,4 @@
 import React from 'react'
-import AdminNavBar from '../../Comman/NavBar/AdminNavBar';
 import { Box, Button, Card, Chip, Container, Stack, Typography } from '@mui/material'
 import { useState } from 'react';
 import { useDropzone } from 'react-dropzone';
@@ -8,6 +7,7 @@ import { useMemo } from 'react';
 import { CloudUpload, FileUpload } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import AccessNavBar from '../../Comman/NavBar/AccessNavBar';
 
 
 
@@ -57,7 +57,7 @@ function UploadAttendance() {
 		  maxFiles:1,
 	
     onDrop: (acceptedFiles) => {
-		console.log(acceptedFiles)
+		//console.log(acceptedFiles)
       setFiles(acceptedFiles.map(file => Object.assign(file, {
         preview: URL.createObjectURL(file)
       })));
@@ -84,7 +84,7 @@ function UploadAttendance() {
 
   // handling uploading files
   const handleUploadFile = async()=>{
-	console.log(files)
+	//console.log(files)
 	if (files.length===0){
 		toast.warning('Select file to upload!');
 	}
@@ -122,7 +122,7 @@ function UploadAttendance() {
         }
       })
 	  msg=(result.data)
-	  console.log(result)
+	  //console.log(result)
 	  
 	}
    catch (err){
@@ -134,9 +134,10 @@ function UploadAttendance() {
 
   return (
 	<>
-	<AdminNavBar />
+	<AccessNavBar />
 	<Box component='main' sx={{ flexGrow: 1, p: 3, mt: 8, ml: { xs: 8 } }}>
 		<div style={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+		<Typography variant='h5' component={'h5'} m={1} textAlign={'center'} >Upload Attendance</Typography>
 			<Container sx={{  width: '100%' }}>
 				<Card sx={{p:2,height:{xs:400,md:350}}}>
 					

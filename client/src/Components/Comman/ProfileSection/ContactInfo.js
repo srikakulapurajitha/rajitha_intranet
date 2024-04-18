@@ -6,7 +6,7 @@ import UserContext from '../../context/UserContext';
 
 
 function ContactInfo(props) {
-    const {contactInfo, setContactInfo} = props
+    const { contactInfo, setContactInfo } = props
     const [prevData, setPrevData] = useState(contactInfo)
     const { userDetails } = useContext(UserContext)
 
@@ -17,7 +17,7 @@ function ContactInfo(props) {
     }
     const handleContactInfoSubmit = (e) => {
         e.preventDefault()
-        console.log(contactInfo)
+        //console.log(contactInfo)
         if (contactInfo.mobile1 === '' && contactInfo.mobile2 === '' && contactInfo.mobile3 === '' && contactInfo.mobile4 === '' && contactInfo.mobile5 === '') {
             toast.warning('please fill atleast one field of Mobile')
         }
@@ -27,34 +27,62 @@ function ContactInfo(props) {
         else if (String(contactInfo.zip_code).length !== 6) {
             toast.warning(`please enter valid 6 digit zip code`)
         }
-        else {
-            if (userDetails && JSON.stringify(prevData)!==JSON.stringify(contactInfo)) {
-                toast.promise(
-                    axios.post('/api/addcontactinformation', { ...contactInfo, emp_id: userDetails.employee_id }),
-                    {
 
-                        pending: {
-                            render() {
-                                
-                                return('Adding Conatact Information')
-                            }
-                        },
-                        success: {
-                            render(res) {
-                                setPrevData(contactInfo)
-                                return(res.data.data)
-                            }
-                        },
-                        error: {
-                            render(err) {
-                                return(err.data.response.data)
+        else {
+            const varify = /^\+?[0-9]{6,14}$/;
+            if (contactInfo.home_phone !== '' && !varify.test(contactInfo.home_phone)) {
+                toast.warning(`Home Phone number is not valid`)
+            }
+            else if (contactInfo.office_phone !== '' && !varify.test(contactInfo.office_phone)) {
+                toast.warning(`Office Phone number is not valid`)
+            }
+            else if (contactInfo.mobile1 !== '' && !varify.test(contactInfo.mobile1)) {
+                toast.warning(`Mobile 1 Phone number is not valid`)
+            }
+            else if (contactInfo.mobile2 !== '' && !varify.test(contactInfo.mobile2)) {
+                toast.warning(`Mobile 2 Phone number is not valid`)
+            }
+            else if (contactInfo.mobile3 !== '' && !varify.test(contactInfo.mobile3)) {
+                toast.warning(`Mobile 3 Phone number is not valid`)
+            }
+            else if (contactInfo.mobile4 !== '' && !varify.test(contactInfo.mobile4)) {
+                toast.warning(`Mobile 4 Phone number is not valid`)
+            }
+            else if (contactInfo.mobile5 !== '' && !varify.test(contactInfo.mobile5)) {
+
+                toast.warning(`Mobile 5 Phone number is not valid`)
+            }
+            else {
+
+                if (userDetails && JSON.stringify(prevData) !== JSON.stringify(contactInfo)) {
+                    toast.promise(
+                        axios.post('/api/addcontactinformation', { ...contactInfo, emp_id: userDetails.employee_id }),
+                        {
+
+                            pending: {
+                                render() {
+
+                                    return ('Adding Conatact Information')
+                                }
+                            },
+                            success: {
+                                render(res) {
+                                    setPrevData(contactInfo)
+                                    return (res.data.data)
+                                }
+                            },
+                            error: {
+                                render(err) {
+                                    return (err.data.response.data)
+                                }
                             }
                         }
-                    }
 
-                )
+                    )
 
+                }
             }
+
         }
 
     }
@@ -116,7 +144,7 @@ function ContactInfo(props) {
                                 <Stack spacing={1.7}>
                                     <FormControl variant="outlined">
                                         <InputLabel size="small"  >Mobile 1</InputLabel>
-                                        <OutlinedInput size="small" name="mobile1" value={contactInfo.mobile1} onChange={handleContactInfoChange} type={"tel"} label="Mobile 1" />
+                                        <OutlinedInput inputProps={{ pattern: "[0-9]{5}[-][0-9]{7}[-][0-9]{1}" }} size="small" name="mobile1" value={contactInfo.mobile1} onChange={handleContactInfoChange} type={"tel"} label="Mobile 1" />
                                     </FormControl>
                                     <FormControl variant="outlined">
                                         <InputLabel size="small"  >Mobile 2</InputLabel>

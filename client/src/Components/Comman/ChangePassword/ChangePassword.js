@@ -1,13 +1,12 @@
 import React, { useContext, useState } from 'react';
-import { Box, Button, FormControl, Grid, IconButton, InputAdornment, InputLabel, MenuItem, OutlinedInput, Paper, Select, Stack, Typography } from '@mui/material';
-import UserNavBar from '../NavBar/UserNavBar';
-import AdminNavBar from '../NavBar/AdminNavBar';
-import axios from 'axios';
+import { Box, Button, FormControl,  IconButton, InputAdornment, InputLabel,OutlinedInput, Paper,Typography } from '@mui/material';
 
-import { ToastContainer, toast } from 'react-toastify';
+import axios from 'axios';
 import UserContext from '../../context/UserContext';
-import { LockOpen, LockReset, Visibility, VisibilityOff } from '@mui/icons-material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import AccessNavBar from '../NavBar/AccessNavBar';
+import { toast } from 'react-toastify';
 
 function ChangePassword() {
     const [formData, setFormData] = useState({
@@ -122,7 +121,7 @@ function ChangePassword() {
     return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
 
-            {userDetails.access === 'admin' ? <AdminNavBar /> : <UserNavBar />}
+            <AccessNavBar />
 
             <Paper elevation={10} sx={{ p: 4, mt: 4, maxWidth: 400, margin: '0 auto' }}>
                 <Typography textAlign={'center'} variant="h5" component="div" sx={{ mb: 2 }}>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leave Approval</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: auto;
+        }
+        
+        .leave-container {
+            max-width: 600px;
+            width: 100%;
+            border: 1px solid rgb(160, 152, 152);
+            padding: '50px';
+        }
+        
+        .leave-data {
+            padding: 20px;
+        }
+        
+        .header-img {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        
+        header {
+            background-image: linear-gradient(135deg, #cc208e 10%, #6713d2 100%);
+            padding: 10px;
+            color: #fff;
+            text-align: center;
+        }
+        
+        .leave-details {
+            display: flex;
+            width: 80%;
+            margin: 0 auto;
+        }
+        
+        .leave-details div {
+            margin-left: 20px;
+        }
+        
+        .leave-types {
+            display: flex;
+        }
+        
+        .leave-types p {
+            margin-right: 20px;
+        }
+        
+        button {
+            display: block;
+            margin: 10px auto;
+            padding: 10px;
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 130px;
+        }
+        
+        .reason-box,
+        .date-box {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 60%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        a{
+            color: rgb(255, 255, 255);
+        }
+        
+    </style>
+</head>
+
+<body>
+    <div class="leave-container">
+        <header>
+            <h2>Cancel The Leave Request</h2>
+        </header>
+        <div class="leave-data">
+            <div class="header-img">
+                <img style="max-width: 180px;max-height:50px;margin-left:auto;margin-right:0;" src='https://www.brightcomgroup.com/wp-content/uploads/2021/02/logo.png' alt="logo" />
+
+            </div>
+            <p>Dear {{reporting_head}},</p>
+            <div> 
+                <p><strong style="color: #045888;">{{applicant_name}} (bcg/{{applicant_emp_id}}) </strong>already applied for <strong style="color: #045888; ; ">{{total_leaves}} leaves</strong> want to cancel his/her application which already approved for the following dates:</p>
+
+                <p><strong>Balance Leaves:</strong> {{balence_leaves}}</p>
+            </div>
+            <div>
+                <div class="reason-box">
+                    <p><strong>Reason:</strong></p>
+                    <p>
+                        {{reason}}
+                    </p>
+                    
+                </div>
+                <div class="leave-types">
+                    <p><strong>Leave Type: </strong>{{leave_type}}</p>
+                    <p><strong>Leave Option: </strong>{{leave_option}}</p>
+
+                </div>
+
+                <p><strong>Full Days:</strong></p>
+                <p>
+                   {{selected_dates}}
+                </p>
+                <p><strong>Half Days:</strong></p>
+                <p>
+                    <span>{{half_day}}</span>
+
+                </p>
+                <p>Please review the leave request and take appropriate action.</p>
+                <div class="button-container">
+                    <button style="background-color: rgb(172, 1, 1);"><a style="text-decoration: none;color:rgb(255, 255, 255);" href={{cancel_request}}>Cancel</a></button>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</body>
+
+</html>

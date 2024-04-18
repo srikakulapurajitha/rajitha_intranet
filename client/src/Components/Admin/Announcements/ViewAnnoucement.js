@@ -1,21 +1,22 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import {
-    Box, Button, Card, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Drawer, FormControl, InputLabel, List, ListItem, ListItemText,
-    MenuItem, OutlinedInput, Paper, Select, Stack, TextField, Typography
+    Autocomplete,
+    Box, Button, Card, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Drawer, FormControl, FormControlLabel, FormLabel, InputLabel, List, ListItem, ListItemText,
+    MenuItem, OutlinedInput, Paper, Radio, RadioGroup, Select, Stack, TextField, Typography
 } from '@mui/material';
 import DataTable from 'react-data-table-component';
 import { defaultThemes } from 'react-data-table-component';
-import AdminNavBar from '../../Comman/NavBar/AdminNavBar';
 import SearchIcon from '@mui/icons-material/Search';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { Delete } from '@mui/icons-material';
+import { CheckBox, CheckBoxOutlineBlank, Delete } from '@mui/icons-material';
 import { DatePicker } from '@mui/x-date-pickers';
 import EventIcon from '@mui/icons-material/Event';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import Loader from '../../Comman/Loader';
+import AccessNavBar from '../../Comman/NavBar/AccessNavBar';
 
 
 const customStyles = {
@@ -64,6 +65,7 @@ const ViewAnnouncements = () => {
     const [loader, setLoader] = useState(true);
     const [dateError, setDateError] = useState(false)
     const [companyNames, setCompanyNames] = useState([])
+    const [inputValue, setInputValue] = useState('')
 
     const [prevData, setPrevData] = useState(editAnnouncement)
 
@@ -76,6 +78,8 @@ const ViewAnnouncements = () => {
             .catch(() => toast.error('unable to get company names!'))
     }, [])
 
+    
+
 
     // Column names creation
     const columns = [
@@ -86,15 +90,17 @@ const ViewAnnouncements = () => {
             center: true,
         },
         {
+            name: 'Department',
+            selector: (row) => row.department,
+            
+            center: true,
+        },
+        {
             name: 'Title',
             selector: (row) => row.title,
             center: true,
         },
-        {
-            name: 'Description',
-            selector: (row) => row.description,
-            center: true,
-        },
+        
         {
             name: 'From Date',
             selector: (row) => row.from_date,
@@ -105,6 +111,7 @@ const ViewAnnouncements = () => {
             selector: (row) => row.to_date,
             center: true,
         },
+        
         {
             name: 'Action',
             cell: (row) => (
@@ -121,7 +128,7 @@ const ViewAnnouncements = () => {
         },
     ];
 
-    // Taking announcement data from API
+    // Taking Data from API
     useEffect(() => {
         axios.get('/api/viewannouncement/')
             .then((res) => {
@@ -143,9 +150,9 @@ const ViewAnnouncements = () => {
         setViewAnnouncement(row);
     };
 
-    // announcement details view
+    // Details view
     const announcementDetailView = useMemo(() => {
-        console.log(viewAnnouncement)
+        //console.log(viewAnnouncement)
         const handleViewButtonDrawerToggleClosing = () => {
             setViewDrawerOpen(!viewDrawerOpen);
             setViewAnnouncement({});
@@ -166,9 +173,9 @@ const ViewAnnouncements = () => {
                 }}
             >
                 <div style={{ height: '90vh', width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                    <Paper elevation={5} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: { xs: '35ch', md: '35ch' }, height: { xs: '55ch', sm: '55ch', md: '55ch' } }}>
+                    <Paper elevation={5} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', minWidth: { xs: '35ch', md: '35ch' }, minHeight: { xs: '55ch', sm: '55ch', md: '55ch' } }}>
 
-                        <Typography variant='h5' component={'h5'} m={1} p={1} border={'1px solid black'} >Announcement Details</Typography>
+                        <Typography variant='h5' component={'h5'} m={1} p={1} border={'1px solid black'} >Details</Typography>
 
                         <List sx={{ width: '100%', display: "flex", margin: 0, flexDirection: 'column' }}>
 
@@ -188,6 +195,26 @@ const ViewAnnouncements = () => {
                                                 Company Name:
                                             </Typography>
                                             {viewAnnouncement.company_name}
+                                        </>
+                                    }
+                                />
+                            </ListItem>
+                            <ListItem alignItems="flex-start" >
+
+                                <ListItemText
+
+                                    secondary={
+                                        <>
+                                            <Typography
+                                                sx={{ display: 'inline' }}
+                                                component="span"
+                                                variant="body1"
+                                                color="text.primary"
+                                                mr={0.5}
+                                            >
+                                                Department:
+                                            </Typography>
+                                            {viewAnnouncement.department}
                                         </>
                                     }
                                 />
@@ -267,6 +294,27 @@ const ViewAnnouncements = () => {
                                 />
                             </ListItem>
 
+                            <ListItem alignItems="flex-start" >
+
+                                <ListItemText
+
+                                    secondary={
+                                        <>
+                                            <Typography
+                                                sx={{ display: 'inline' }}
+                                                component="span"
+                                                variant="body1"
+                                                color="text.primary"
+                                                mr={0.5}
+                                            >
+                                                Notified:
+                                            </Typography>
+                                            {viewAnnouncement.notify}
+                                        </>
+                                    }
+                                />
+                            </ListItem>
+
                         </List>
                     </Paper>
                 </div>
@@ -274,24 +322,60 @@ const ViewAnnouncements = () => {
             </Drawer>
         );
     }, [viewDrawerOpen, viewAnnouncement]);
-
+    
+    const options = [{ name:'Management', value:'management' },
+    {  name:'Software', value:'software' },
+    { name: 'AI Labelling', value: 'ai labelling' },
+    { name:'Accounts', value:'accounts'},
+    { name:'HR', value:'hr' },
+    { name:'IT', value:'it' },
+    ]
     const handleEditButton = (row) => {
         //console.log(row);
         setEditDialogOpen(true);
-        setPrevData(row)
-        setEditAnnouncement(row);
+        
+        setPrevData({...row,department:options.filter(dep=>row.department.split(',').includes(dep.value))})
+        setEditAnnouncement({...row,department:options.filter(dep=>row.department.split(',').includes(dep.value))});
     };
 
     // Announcement edit view
     const AnnouncementEditView = useMemo(() => {
+        const options = [{ name:'Management', value:'management' },
+    {  name:'Software', value:'software' },
+    { name: 'AI Labelling', value: 'ai labelling' },
+    { name:'Accounts', value:'accounts'},
+    { name:'HR', value:'hr' },
+    { name:'IT', value:'it' },
+    ]
         const handleEditDialogClose = () => {
             setEditDialogOpen(false);
-            setEditAnnouncement({})
-            setPrevData({})
+            setEditAnnouncement({
+                id:'',
+                company_name:'',
+                department:[],
+                title:'',
+                description:'',
+                from_date:null,
+                to_date:'',
+                notify:'no',
+                companyId:''
+            })
+            setPrevData({
+                id:'',
+                company_name:'',
+                department:[],
+                title:'',
+                description:'',
+                from_date:null,
+                to_date:'',
+                notify:'no',
+                companyId:''
+            })
         };
 
         const handleEdit = async (e) => {
             e.preventDefault();
+            //console.log({...editAnnouncement,department:editAnnouncement.department.map(dep=>dep.value)})
             if (!editAnnouncement.from_date && !editAnnouncement.to_date) {
                 setDateError(true)
             }
@@ -299,7 +383,7 @@ const ViewAnnouncements = () => {
                 if(JSON.stringify(editAnnouncement)!==JSON.stringify(prevData)){
                     setDateError(false)
                     toast.promise(
-                        axios.put(`/api/updateannouncement`, editAnnouncement),
+                        axios.put(`/api/updateannouncement`, {...editAnnouncement,department:editAnnouncement.department.map(dep=>dep.value)}),
                         {
                             pending: {
                                 render() {
@@ -309,6 +393,7 @@ const ViewAnnouncements = () => {
                             success: {
                                 render(res) {
                                     handleEditDialogClose()
+                                    setPrevData(editAnnouncement)
                                     return(res.data.data);
                                 },
                             },
@@ -343,8 +428,7 @@ const ViewAnnouncements = () => {
                                 flexDirection: 'column',
                                 justifyContent: 'center',
                                 alignItems: 'center',
-                                width: { sm: '50ch', md: '50ch' },
-                                height: { sm: '30ch', md: '45ch' },
+                               
                             }}
                         >
                             <Box
@@ -353,15 +437,14 @@ const ViewAnnouncements = () => {
                                     flexDirection: 'column',
                                     justifyContent: 'center',
                                     alignItems: 'center',
-                                    width: { sm: '45ch', md: '40ch' },
-                                    height: { sm: '25ch', md: '45ch' },
+                                    
                                     p: 1,
                                 }}
                             >
                                 <form id='editannouncement' onSubmit={handleEdit}>
                                     <FormControl fullWidth sx={{ mb: 2 }} variant='outlined'>
                                         <InputLabel size='small' required >
-                                            Announcement
+                                        Select Company
                                         </InputLabel>
                                         <Select
                                             label="Select Company"
@@ -378,6 +461,42 @@ const ViewAnnouncements = () => {
                                             {companyNames.map((name, index) => <MenuItem key={index} value={name.company_name}>{name.company_name}</MenuItem>)}
                                         </Select>
                                     </FormControl>
+                                    <FormControl fullWidth sx={{ mb: 2 }} variant="outlined">
+                                            
+                                            <Autocomplete
+                                                multiple
+                                                options={options}
+                                                inputValue={inputValue}
+                                                disableCloseOnSelect
+                                                value={editAnnouncement.department}
+                                                isOptionEqualToValue={(option,value) => option.value===value.value}
+                                                onChange={(_, newValue) => {
+                                                    //console.log(newValue);
+                                                    setEditAnnouncement({...editAnnouncement,department:newValue})
+                                                  }}
+                                                  onInputChange={(_, newInputValue) => {
+                                                    //console.log(newInputValue)
+                                                    setInputValue(newInputValue)
+                                                  }}
+                                            
+                                                getOptionLabel={(option) => option.name}
+                                                renderOption={(props, option, { selected }) => (
+                                                    <li {...props}>
+                                                        <Checkbox
+                                                            icon={<CheckBoxOutlineBlank fontSize="small" />}
+                                                            checkedIcon={<CheckBox fontSize="small" />}
+                                                            style={{ marginRight: 8 }}
+                                                            checked={selected}
+                                                        />
+                                                        {option.name}
+                                                    </li>
+                                                )}
+                                                style={{ width: 'auto' }}
+                                                renderInput={(params) => (
+                                                    <TextField required={editAnnouncement.department.length===0}  {...params} size='small' label="Department"  />
+                                                )}
+                                            />
+                                        </FormControl>
                                     <FormControl fullWidth sx={{ mb: 2 }} variant='outlined'>
                                         <InputLabel size='small' required >
                                             Title
@@ -396,20 +515,20 @@ const ViewAnnouncements = () => {
                                     </FormControl>
                                     <FormControl fullWidth sx={{ mb: 2 }} variant='outlined'>
                                         <InputLabel size='small' required >
-                                            Announcement Description
+                                            Description
                                         </InputLabel>
                                         <OutlinedInput
-                                            name='announcement description'
+                                            name='Description'
                                             value={editAnnouncement.description}
                                             onInput={(e) => setEditAnnouncement({ ...editAnnouncement, description: e.target.value })}
                                             required={true}
                                             multiline
                                             
                                             type={'text'}
-                                            label='Announcement Description'
+                                            label='Description'
                                             minRows={4}
                                             maxRows={4}
-                                            placeholder='Enter announcement description'
+                                            placeholder='Enter Description'
                                             size='small'
                                         />
                                     </FormControl>
@@ -444,6 +563,24 @@ const ViewAnnouncements = () => {
                                             </LocalizationProvider>
 
                                         </FormControl>
+                                        <Stack direction={'row'} display={'flex'} justifyContent={'flex-start'} alignItems={'center'} spacing={3}>
+                                                <FormLabel  required>Do you like to Notify through mail?</FormLabel>
+                                                <FormControl>
+
+                                                    <RadioGroup
+                                                        row
+                                                        value={editAnnouncement.notify}
+                                                        name='notify'
+                                                        onChange={e=>setEditAnnouncement({...editAnnouncement,notify:e.target.value})}
+
+
+                                                    >
+                                                        <FormControlLabel value="yes" control={<Radio size="small" />} label="Yes" />
+                                                        <FormControlLabel value="no" control={<Radio size="small" />} label="No" />
+                                                    </RadioGroup>
+                                                </FormControl>
+
+                                            </Stack>
 
                                 </form>
                             </Box>
@@ -460,7 +597,7 @@ const ViewAnnouncements = () => {
                 </Dialog>
             </>
         );
-    }, [editDialogOpen, companyNames, dateError, editAnnouncement,prevData]);
+    }, [editDialogOpen, companyNames, dateError, editAnnouncement,prevData,inputValue]);
 
     // Table search bar
     const subHeaderViewannouncementMemo = useMemo(() => {
@@ -523,7 +660,7 @@ const ViewAnnouncements = () => {
 
     return (
         <>
-            <AdminNavBar />
+           <AccessNavBar />
             <Box component='main' sx={{ flexGrow: 1, p: 3, mt: 8, ml: { xs: 8 } }}>
                 <div style={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                     <Typography variant='h5' component={'h5'} m={2} textAlign={'center'}>

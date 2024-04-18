@@ -27,7 +27,7 @@ function FamilyInfo(props) {
 
     const handleInfoSubmit = (e) => {
         e.preventDefault();
-        console.log(familyData)
+        //console.log(familyData)
         //console.log(JSON.stringify(prevData)===JSON.stringify(familyData))
         if (userDetails && JSON.stringify(prevData)!==JSON.stringify(familyData)){
             
@@ -89,6 +89,7 @@ function FamilyInfo(props) {
                             size='small'
                             name='no_of_kids'
                             value={familyData.no_of_kids}
+                            inputProps={{min:0}}
                             onChange={handleInfoChange}
                         />
                         <TextField
@@ -118,7 +119,7 @@ function FamilyInfo(props) {
                                         onChange={e => {
 
                                             if (e !== null) {
-                                                console.log(new Date(e.$d).toLocaleString('en-CA').slice(0, 10))
+                                                //console.log(new Date(e.$d).toLocaleString('en-CA').slice(0, 10))
                                                 setFamilyData({ ...familyData, anniversary_date: new Date(e.$d).toLocaleString('en-CA').slice(0, 10) })
                                             }
                                         }
@@ -149,10 +150,9 @@ function FamilyInfo(props) {
                     <Button type="submit"size='small' variant="contained" color='success' >
                         Submit
                     </Button>
-                </Box>
-                
+                </Box>  
             </form>
-            {/* <Loader loader={loader} /> */}
+
         </>
 
 

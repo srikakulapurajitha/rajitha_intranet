@@ -1,5 +1,5 @@
 import { Business } from '@mui/icons-material'
-import { Box, Container, Typography } from '@mui/material'
+import {  Box, Container, Typography } from '@mui/material'
 import React from 'react'
 
 function Address(props) {
@@ -9,7 +9,17 @@ function Address(props) {
             <Container sx={{ display: "flex", flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '90%' }}>
                 <Typography textAlign={'center'} component={'p'} variant='p' fontSize={20} fontWeight={'bold'}>{pageDetails.pageName}</Typography>
                 <Box sx={{ display: "flex", flexDirection: 'column', justifyContent: 'flex-start', width: "100%", height: '70%', border: '1px solid gray', m: 2, p: 1 }}>
+                    <Container sx={{display:'flex', justifyContent:'space-between'}}>
                     <Business sx={{ fontSize: 80, mt: 1, mb: 0 }} />
+                    {pageDetails.pageData[0]['company_logo'] ?
+                        
+                        <img src={process.env.REACT_APP_BACKEND_SERVER + pageDetails.pageData[0]['company_logo']} alt='logo' style={{ maxWidth: '200px', height: '60px',marginTop:'8px'}} />
+                        :
+                        null
+                    }
+                    </Container>
+                    
+
                     <Typography fontSize={25} fontWeight={'bold'}   >{pageDetails.pageData[0]['company_name']}</Typography>
                     <Typography fontSize={15} fontWeight={'bold'} ml={3} color={'#4B4B4B'} >{pageDetails.pageData[0]['company_address']}</Typography>
 

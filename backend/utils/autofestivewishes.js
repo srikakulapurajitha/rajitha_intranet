@@ -1,6 +1,6 @@
 import db from "../config/connectiondb.js";
 import cron from "node-cron"
-import transporter from "../config/emailconfig.js";
+import {transporter} from "../config/emailconfig.js";
 
 
 

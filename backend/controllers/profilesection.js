@@ -1,5 +1,5 @@
 import db from "../config/connectiondb.js";
-
+import cloudinary from "../config/cloudinaryconfig.js";
 
 export const updatepersonalinfo = async(req, res) => {
     console.log(req.body)
