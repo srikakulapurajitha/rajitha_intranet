@@ -1114,6 +1114,7 @@ function ViewCompanyPages() {
 						success: {
 							render() {
 								setToggleCleared(!toggleCleared)
+								setUpdated(prev=>prev+1)
 								return (`${msg} `)
 							}
 						},

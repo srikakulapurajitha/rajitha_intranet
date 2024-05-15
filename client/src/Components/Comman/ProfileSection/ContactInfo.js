@@ -100,7 +100,7 @@ function ContactInfo(props) {
                             </FormControl>
                             <FormControl fullWidth variant="outlined">
                                 <InputLabel size="small" required  >Zip Code</InputLabel>
-                                <OutlinedInput size="small" name="zip_code" value={contactInfo.zip_code} onChange={e => (e.target.value).length <= 6 ? setContactInfo({ ...contactInfo, zip_code: e.target.value }) : null} type={"number"} label="Zip Code" placeholder='enter your area 6-digit zip code' required />
+                                <OutlinedInput size="small" name="zip_code" value={contactInfo.zip_code} onChange={e => (e.target.value).length <= 6 ? setContactInfo({ ...contactInfo, zip_code: e.target.value }) : null} type={"number"} inputProps={{min:0}} label="Zip Code" placeholder='enter your area 6-digit zip code' required />
                             </FormControl>
 
                             <Stack direction={{ xs: 'column', md: 'row' }} spacing={{ xs: 2, sm: 1, md: 2, lg: 2 }}  >

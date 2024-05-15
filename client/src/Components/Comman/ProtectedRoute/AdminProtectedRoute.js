@@ -16,7 +16,7 @@ function AdminProtectedRoute(props) {
   const departmentAccess = {
     accounts:['salarymanagement'],
     it:['uploadattendance','viewattendance'],
-    hr:['addcompanypages','viewcompanypages','adduser','viewusers','experience','addannouncement','viewannouncements','uploadgallery','viewgallery','uploadattendance','viewattendance','createreportingstructure','viewreportingstructure','historylogadmin','managebalanceleaves']
+    hr:['addcompanypages','viewcompanypages','adduser','viewusers','experience','addannouncement','viewannouncements','uploadgallery','viewgallery','uploadattendance','viewattendance','createreportingstructure','viewreportingstructure','historylogadmin','managebalanceleaves','employeedetailsmanagement']
   }
 
   let pages = []

@@ -38,6 +38,7 @@ import { Steps } from 'intro.js-react';
 import "intro.js/introjs.css";
 import { UserAccessContext } from '../../context/UserAccessContext';
 import AccessNavBar from '../NavBar/AccessNavBar';
+import CryptoJS from 'crypto-js';
 
 
 
@@ -54,12 +55,13 @@ const Dashboard = () => {
     const [stepsEnabled, setStepsEnabled] = useState(false);
     const [startTour, setStartTour] = useState(false);
     const { pagesToBeNotAccessed } = useContext(UserAccessContext)
+    const [employeeInfo, setEmployeeInfo] = useState({ uan: '', pan_number: '', account_number: '' })
 
     const steps = [
         {
             element: '.notice',
             intro: 'All announcements will be displayed here',
-            restrict: notice.length===0?'no announcement':null
+            restrict: notice.length === 0 ? 'no announcement' : null
         },
         {
             element: ".profile-section",
@@ -186,6 +188,11 @@ const Dashboard = () => {
                 setBirthdayData(birthdays.data)
                 const intro = await axios.post('/api/checkuserintrodetails', { employee_id: userDetails.employee_id })
                 setStepsEnabled(intro.data)
+                const employeeDetailsResult = await axios.get('/api/employeedetails', { params: { emp_id: userDetails.employee_id } })
+                const decrypted_data = JSON.parse(CryptoJS.AES.decrypt(employeeDetailsResult.data, process.env.REACT_APP_DATA_ENCRYPTION_SECRETE).toString(CryptoJS.enc.Utf8))
+                if (decrypted_data.length !== 0) {
+                    setEmployeeInfo(decrypted_data[0])
+                }
                 //console.log('intro', intro)
 
 
@@ -234,7 +241,7 @@ const Dashboard = () => {
     const onExit = async (stepIndex) => {
         //console.log('onexit', stepIndex,startTour)
         setStepsEnabled(false);
-        if (!startTour&&stepIndex!==-1) {
+        if (!startTour && stepIndex !== -1) {
             await axios.post('/api/adduserintro', { employee_id: userDetails.employee_id })
         }
 
@@ -256,7 +263,7 @@ const Dashboard = () => {
                 </Tabs>
                 <Box sx={{ height: 290, width: '100%', display: 'flex', flexDirection: 'column' }}>
                     {
-                        value === 0 ? <AttendanceGraph graphData={graphData} /> : value === 1 ? <MyPays salaryData={salaryData} /> : value === 2 ? <MyAccounts /> : null
+                        value === 0 ? <AttendanceGraph graphData={graphData} /> : value === 1 ? <MyPays salaryData={salaryData} /> : value === 2 ? <MyAccounts employeeInfo={employeeInfo}/> : null
                     }
                 </Box>
             </Box>
@@ -285,7 +292,7 @@ const Dashboard = () => {
     return (
         <>
             <Box sx={{ display: 'flex', }}>
-                <AccessNavBar userIntroTour={userIntroTour}/>
+                <AccessNavBar userIntroTour={userIntroTour} />
                 <Box component='main' sx={{ flexGrow: 1, p: 2.5, mt: 6, }}>
 
                     <Grid container spacing={{ xs: 2, md: 2 }} style={{ display: 'flex', }}>
@@ -406,7 +413,7 @@ const Dashboard = () => {
             />
             <Steps
                 enabled={stepsEnabled}
-                steps={steps.filter(st => (!pagesToBeNotAccessed.includes(st.restrict)&&st.restrict!=='no announcement'))}
+                steps={steps.filter(st => (!pagesToBeNotAccessed.includes(st.restrict) && st.restrict !== 'no announcement'))}
                 initialStep={0}
                 onExit={onExit}
                 options={{ doneLabel: 'Done', exitOnOverlayClick: false, exitOnEsc: false }}

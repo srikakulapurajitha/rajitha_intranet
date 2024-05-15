@@ -1,8 +1,9 @@
 import { Visibility, VisibilityOff } from '@mui/icons-material'
-import { Box, Divider, IconButton, List, ListItem, ListItemAvatar, ListItemText, Paper } from '@mui/material'
+import { Box, Divider, IconButton, List, ListItem, ListItemText, Paper } from '@mui/material'
 import React, { useState } from 'react'
 
-function MyAccounts() {
+function MyAccounts(props) {
+    const {employeeInfo} = props
     const [visible, setVisible] = useState({ 'uan': false, 'policy': false, 'acc': false })
     const handleVisibility = (acctype) => {
         //console.log(visible[acctype])
@@ -29,28 +30,28 @@ function MyAccounts() {
         <Box sx={{ display: 'flex', width: '100%',height: '100%', flexDirection: 'column', justifyContent: 'center' }}>
 
             <Paper elevation={1} >
-                <List>
+                <List dense>
                     <ListItem  >
                         <ListItemText primary="UAN:" />
                         {
                             visible['uan'] ?
                                 <>
-                                    <ListItemText secondary="0000000000000" />
-                                    <IconButton edge="end" aria-label="comments" onClick={() => handleVisibility('uan')}>
-                                        <ListItemAvatar>
+                                    <ListItemText secondary={employeeInfo.uan===''?'None':employeeInfo.uan} />
+                                    <IconButton edge="end"size='small' onClick={() => handleVisibility('uan')}>
+                                        
                                             <Visibility sx={{ color: 'gray' }} />
 
-                                        </ListItemAvatar>
+                                        
                                     </IconButton>
 
                                 </> :
                                 <>
                                     <ListItemText secondary="xxxxxxxxxxxxx" />
-                                    <IconButton edge="end" aria-label="comments" onClick={() => handleVisibility('uan')}>
-                                        <ListItemAvatar>
+                                    <IconButton edge="end" size='small'  onClick={() => handleVisibility('uan')}>
+                                        
                                             <VisibilityOff sx={{ color: 'gray' }} />
 
-                                        </ListItemAvatar>
+                                       
                                     </IconButton>
 
                                 </>
@@ -59,27 +60,27 @@ function MyAccounts() {
                     </ListItem>
                     <Divider light />
                     <ListItem >
-                        <ListItemText primary="Policy No:" />
+                        <ListItemText primary="Health Policy No:" />
                         {
                             visible['policy'] ?
                                 <>
                                     <ListItemText secondary="0000000000000000-00" />
-                                    <IconButton edge="end" aria-label="comments" onClick={() => handleVisibility('policy')}>
-                                        <ListItemAvatar>
+                                    <IconButton edge="end" size='small'  onClick={() => handleVisibility('policy')}>
+                                        
                                             <Visibility sx={{ color: 'gray' }} />
 
-                                        </ListItemAvatar>
+                                       
                                     </IconButton>
 
                                 </> :
                                 <>
 
                                     <ListItemText secondary="xxxxxxxxxxxxx" />
-                                    <IconButton edge="end" aria-label="comments" onClick={() => handleVisibility('policy')}>
-                                        <ListItemAvatar>
+                                    <IconButton edge="end" size='small' onClick={() => handleVisibility('policy')}>
+                                        
                                             <VisibilityOff sx={{ color: 'gray' }} />
 
-                                        </ListItemAvatar>
+                                        
                                     </IconButton>
 
                                 </>
@@ -91,22 +92,22 @@ function MyAccounts() {
                         {
                             visible['acc'] ?
                                 <>
-                                    <ListItemText secondary="000000000000" />
-                                    <IconButton edge="end" aria-label="comments" onClick={() => handleVisibility('acc')}>
-                                        <ListItemAvatar>
+                                    <ListItemText secondary={employeeInfo.account_number===''?'None':employeeInfo.account_number} />
+                                    <IconButton edge="end" size='small'  onClick={() => handleVisibility('acc')}>
+                                        
                                             <Visibility sx={{ color: 'gray' }} />
 
-                                        </ListItemAvatar>
+                                        
                                     </IconButton>
 
                                 </> :
                                 <>
 
                                     <ListItemText secondary="xxxxxxxxxxxxx" />
-                                    <IconButton edge="end" aria-label="comments" onClick={() => handleVisibility('acc')}>
-                                        <ListItemAvatar>
+                                    <IconButton edge="end" size='small'  onClick={() => handleVisibility('acc')}>
+                                        
                                             <VisibilityOff sx={{ color: 'gray' }} />
-                                        </ListItemAvatar>
+                                       
                                     </IconButton>
 
                                 </>

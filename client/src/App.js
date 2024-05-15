@@ -48,6 +48,7 @@ import UserAccessManagement from './Components/Admin/UserManagement/UserAccessMa
 import { UserAccessProvider } from './Components/context/UserAccessContext'
 import SalaryManagement from './Components/Accounts/SalaryManagement/SalaryManagement'
 import GenerateAttendance from './Components/Admin/LeaveManagement/GenerateAttendance'
+import EmployeeDetailsManagement from './Components/Admin/UserManagement/EmployeeDetailsManagement'
 
 
 export default function App() {
@@ -97,6 +98,7 @@ export default function App() {
               <Route path='/view-gallery' element={<AdminProtectedRoute component={<ViewGallery />} />} />
               <Route path='/salary-management' element={<AdminProtectedRoute component={<SalaryManagement />} />} />
               <Route path='/generate-attendance' element={<AdminProtectedRoute component={<GenerateAttendance />} />} />
+              <Route path='/employee-details-management' element={<AdminProtectedRoute component={<EmployeeDetailsManagement />} />} />
 
               
             </Routes>

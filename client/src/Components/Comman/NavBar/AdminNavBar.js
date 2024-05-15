@@ -31,7 +31,7 @@ import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
 //import CssBaseline from '@mui/material/CssBaseline';
 import BusinessIcon from '@mui/icons-material/Business';
-import { AccountBalanceWallet, AccountBox, AddAPhoto, AddAlert, AddPhotoAlternate, AdsClick, Announcement, BadgeRounded, Balance, BrowseGallery, Campaign, CardTravel, CreditScore, Description, EventAvailable, ExpandLess, ExpandMore, ForwardToInbox, GroupAdd, Insights, Key, LocalLibrary, LockOpen, LockReset, Logout, ManageHistory, ModelTraining, MoreTime, NoteAdd, Paid, Payments, PersonAdd, RequestQuote, Send, Settings, SupervisedUserCircle, TrendingUp, UploadFile, WorkHistory, WorkOff, Wysiwyg } from '@mui/icons-material';
+import { AccountBalanceWallet, AccountBox, AddAPhoto, AddAlert, AddPhotoAlternate, AdsClick, Announcement, BadgeRounded, Balance, BrowseGallery, Campaign, CardTravel, Contacts, CreditScore, Description, EventAvailable, ExpandLess, ExpandMore, ForwardToInbox, GroupAdd, Insights, Key, LocalLibrary, LockOpen, LockReset, Logout, ManageHistory, ModelTraining, MoreTime, NoteAdd, Paid, Payments, PersonAdd, RequestQuote, Send, Settings, SupervisedUserCircle, TrendingUp, UploadFile, WorkHistory, WorkOff, Wysiwyg } from '@mui/icons-material';
 
 
 import { CgListTree } from 'react-icons/cg'
@@ -1287,6 +1287,38 @@ export default function AdminNavBar(props) {
                           : null
 
                       }
+
+{
+                            pagesToBeNotAccessed !== null && !pagesToBeNotAccessed.includes('EmployeeDetailsManagement') ?
+                              <ListItem disablePadding sx={{ display: 'block' }} onClick={() => navigate("/employee-details-management")}>
+
+                                <ListItemButton
+                                  sx={{
+                                    minHeight: 45,
+                                    justifyContent: 'center',
+                                    px: 1.5,
+                                  }}
+                                >
+                                  <ListItemIcon
+                                    sx={{
+                                      minWidth: 0,
+                                      mr: 3,
+                                      ml: 3,
+                                      justifyContent: 'center',
+
+                                    }}
+
+                                  >
+                                    <Contacts />
+                                  </ListItemIcon>
+                                  <ListItemText primary={<Typography sx={{ fontSize: 15 }}>Employee Details Management</Typography>} />
+                                </ListItemButton>
+                              </ListItem>
+
+
+                              : null
+
+                          }
 
                       {
                         pagesToBeNotAccessed !== null && !pagesToBeNotAccessed.includes('UserAccessManagement') ?

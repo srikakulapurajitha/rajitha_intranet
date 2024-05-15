@@ -1,7 +1,7 @@
-import { Box, Button, Container, FormControl, FormControlLabel, Grid, InputLabel, MenuItem, OutlinedInput, Paper, Select, Stack, Switch, Typography, styled, Collapse, IconButton, Fade } from '@mui/material'
+import { Box, Button, Container, FormControl, FormControlLabel, Grid, InputLabel, MenuItem, OutlinedInput, Paper, Select, Stack, Switch, Typography, styled, Collapse, IconButton, Fade, Card } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import AccessNavBar from '../../Comman/NavBar/AccessNavBar'
-import { Delete, FileDownload, ModelTraining } from '@mui/icons-material'
+import { FileDownload, ModelTraining } from '@mui/icons-material'
 import { toast } from 'react-toastify';
 import axios from 'axios';
 //import DataTable, { defaultThemes } from 'react-data-table-component'
@@ -9,7 +9,7 @@ import 'primereact/resources/themes/lara-light-indigo/theme.css';   // theme
 import 'primereact/resources/primereact.css';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import swal from 'sweetalert'
+
 
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
@@ -60,202 +60,7 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
     },
 }));
 
-// const baseStyle = {
-//     flex: 1,
-//     display: "flex",
-//     flexDirection: "column",
-//     alignItems: "center",
-//     padding: "20px",
-//     borderWidth: 2,
-//     borderRadius: 2,
-//     borderColor: "#eeeeee",
-//     borderStyle: "dashed",
-//     backgroundColor: "#fafafa",
-//     color: "#bdbdbd",
-//     outline: "none",
-//     transition: "border .24s ease-in-out",
-//     height: "200px",
-// };
 
-// const focusedStyle = {
-//     borderColor: "#2196f3",
-// };
-
-// const acceptStyle = {
-//     borderColor: "#00e676",
-// };
-
-// const rejectStyle = {
-//     borderColor: "#ff1744",
-// };
-
-// const customStyles = {
-//     header: {
-//         style: {
-//             minHeight: '56px',
-//         },
-//     },
-//     headRow: {
-//         style: {
-//             borderTopStyle: 'solid',
-//             borderTopWidth: '1px',
-//             borderTopColor: defaultThemes.default.divider.default,
-//         },
-//     },
-//     headCells: {
-//         style: {
-//             fontSize: '14px',
-//             '&:not(:first-of-type)': {
-//                 borderRightStyle: 'solid',
-//                 borderRightWidth: '1px',
-//                 borderRightColor: defaultThemes.default.divider.default,
-//                 borderLeftStyle: 'solid',
-//                 borderLeftWidth: '1px',
-//                 borderLeftColor: defaultThemes.default.divider.default,
-//             },
-//             '&:not(:last-of-type)': {
-//                 borderRightStyle: 'solid',
-//                 borderRightWidth: '1px',
-//                 borderRightColor: defaultThemes.default.divider.default,
-//                 borderLeftStyle: 'solid',
-//                 borderLeftWidth: '1px',
-//                 borderLeftColor: defaultThemes.default.divider.default,
-//             },
-//         },
-//     },
-//     cells: {
-//         style: {
-//             fontSize: '14px',
-//             '&:not(:first-of-type)': {
-//                 borderRightStyle: 'solid',
-//                 borderRightWidth: '1px',
-//                 borderRightColor: defaultThemes.default.divider.default,
-//                 borderLeftStyle: 'solid',
-//                 borderLeftWidth: '1px',
-//                 borderLeftColor: defaultThemes.default.divider.default,
-//             },
-//             '&:not(:last-of-type)': {
-//                 borderRightStyle: 'solid',
-//                 borderRightWidth: '1px',
-//                 borderRightColor: defaultThemes.default.divider.default,
-//                 borderLeftStyle: 'solid',
-//                 borderLeftWidth: '1px',
-//                 borderLeftColor: defaultThemes.default.divider.default,
-//             },
-//         },
-//     },
-// };
-
-const IOSSwitch = styled((props) => (
-    <Switch title='Enable/Disable Attendance to All' size='small' focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
-))(({ theme }) => ({
-    width: 38,
-    height: 22,
-    padding: 0,
-    '& .MuiSwitch-switchBase': {
-        padding: 0,
-        margin: 2,
-        transitionDuration: '300ms',
-        '&.Mui-checked': {
-            transform: 'translateX(16px)',
-            color: '#fff',
-            '& + .MuiSwitch-track': {
-                backgroundColor: theme.palette.mode === 'dark' ? '#2ECA45' : '#65C466',
-                opacity: 1,
-                border: 0,
-            },
-            '&.Mui-disabled + .MuiSwitch-track': {
-                opacity: 0.5,
-            },
-        },
-        '&.Mui-focusVisible .MuiSwitch-thumb': {
-            color: '#33cf4d',
-            border: '6px solid #fff',
-        },
-        '&.Mui-disabled .MuiSwitch-thumb': {
-            color:
-                theme.palette.mode === 'light'
-                    ? theme.palette.grey[100]
-                    : theme.palette.grey[600],
-        },
-        '&.Mui-disabled + .MuiSwitch-track': {
-            opacity: theme.palette.mode === 'light' ? 0.7 : 0.3,
-        },
-    },
-    '& .MuiSwitch-thumb': {
-        boxSizing: 'border-box',
-        width: 17,
-        height: 17,
-    },
-    '& .MuiSwitch-track': {
-        borderRadius: 26 / 2,
-        backgroundColor: theme.palette.mode === 'light' ? '#E9E9EA' : '#39393D',
-        opacity: 1,
-        transition: theme.transitions.create(['background-color'], {
-            duration: 500,
-        }),
-    },
-}));
-
-
-const columns = [
-    {
-        name: "Emp Id",
-        selector: (row) => row.emp_id,
-        center: true,
-        sortable: true
-    },
-
-    {
-        name: "Employee Name",
-        selector: (row) => row.emp_name,
-        center: true,
-
-    },
-
-    {
-        name: "Present Days",
-        selector: (row) => row.present_days,
-        center: true,
-    },
-    {
-        name: "Absent Days",
-        selector: (row) => row.absent_days,
-        center: true,
-    },
-    {
-        name: "Appr Leaves",
-        selector: (row) => row.approved_leaves,
-        center: true,
-    },
-    {
-        name: "Unappr Leaves",
-        selector: (row) => row.unapproved_leaves,
-        center: true,
-    },
-    {
-        name: "Open Leaves",
-        selector: (row) => row.open_leaves,
-        center: true,
-    },
-    {
-        name: "New Added Leaves",
-        selector: (row) => row.new_leaves_added,
-        center: true,
-    }, {
-        name: "Adjusted Leaves",
-        selector: (row) => row.adjusted_leaves,
-        center: true,
-    }, {
-        name: "LOP",
-        selector: (row) => row.lop,
-        center: true,
-    }, {
-        name: "Balance Leaves",
-        selector: (row) => row.balance_leaves,
-        center: true,
-    },
-];
 
 function GenerateAttendance() {
     const [mode, setMode] = useState('generate')
@@ -303,8 +108,8 @@ function GenerateAttendance() {
             }
             //console.log(sat,sun)
             setmonthInfo({ total: totalDays, sun: sun.length, sat: sat.length })
-            const deduction = sun.length>sat.length?sat.length:sun.length
-            setGenerateSelection({...generateSelection, fiveDaysWorkingDays:totalDays-deduction, sixDaysWorkingDays:totalDays-(sat.length+sun.length)})
+            const deduction = sun.length > sat.length ? sat.length : sun.length
+            setGenerateSelection({ ...generateSelection, fiveDaysWorkingDays: totalDays - (sat.length + sun.length), sixDaysWorkingDays: totalDays - deduction })
 
 
         }
@@ -403,40 +208,40 @@ function GenerateAttendance() {
         }
     }
 
-    const handleDeleteData = () => {
-        swal({
-            title: "Do you want to Delete Generated Attendance?",
-            icon: "warning",
-            buttons: true,
-            dangerMode: true,
+    // const handleDeleteData = () => {
+    //     swal({
+    //         title: "Do you want to Delete Generated Attendance?",
+    //         icon: "warning",
+    //         buttons: true,
+    //         dangerMode: true,
 
-        })
-            .then((willDelete) => {
-                if (willDelete) {
-                    toast.promise(axios.put('/api/deletegeneratedattendance', viewSelection), {
-                        pending: {
-                            render() {
-                                return 'Deleting  Generated Attendance'
-                            }
-                        },
-                        success: {
-                            render(res) {
-                                setViewSelection({month:'', year:''})
-                                setAttendanceData([])
-                                //handleViewSalaryModeClear()
-                                return res.data.data
-                            }
-                        },
-                        error: {
-                            render(err) {
-                                return (err.data.response.data)
-                            }
-                        }
-                    })
-                }
-            });
+    //     })
+    //         .then((willDelete) => {
+    //             if (willDelete) {
+    //                 toast.promise(axios.put('/api/deletegeneratedattendance', viewSelection), {
+    //                     pending: {
+    //                         render() {
+    //                             return 'Deleting  Generated Attendance'
+    //                         }
+    //                     },
+    //                     success: {
+    //                         render(res) {
+    //                             setViewSelection({month:'', year:''})
+    //                             setAttendanceData([])
+    //                             //handleViewSalaryModeClear()
+    //                             return res.data.data
+    //                         }
+    //                     },
+    //                     error: {
+    //                         render(err) {
+    //                             return (err.data.response.data)
+    //                         }
+    //                     }
+    //                 })
+    //             }
+    //         });
 
-    }
+    // }
 
     return (
         <>
@@ -459,7 +264,7 @@ function GenerateAttendance() {
                                             <Typography component={'h4'} variant='p'>{mode === 'generate' ? 'Generate Attendance' : 'View Attendance'}</Typography>
                                             <FormControlLabel
                                                 control={<MaterialUISwitch sx={{ m: 1 }} onChange={e => {
-                                                    setGenerateSelection({month: '', year: '', sixDaysWorkingDays: '',fiveDaysWorkingDays: ''})
+                                                    setGenerateSelection({ month: '', year: '', sixDaysWorkingDays: '', fiveDaysWorkingDays: '' })
                                                     setmonthInfo({ total: 0, sun: 0, sat: 0 })
                                                     setViewSelection({ month: '', year: '' })
                                                     atteandanceData.length !== 0 && setAttendanceData([])
@@ -467,9 +272,6 @@ function GenerateAttendance() {
                                                 }}
 
                                                 />}
-                                            //labelPlacement='start'
-
-                                            //label={mode==='generate'?'Switch To {   View   }':'Switch To {Generate}'}
                                             />
                                         </Container>
                                         <Container sx={{ p: 2, width: '100%' }}>
@@ -513,7 +315,7 @@ function GenerateAttendance() {
                                                                     name='fiveDaysWorkingDays'
                                                                     value={generateSelection.fiveDaysWorkingDays}
                                                                     disabled
-                                                                    //onChange={handleSelection}
+                                                                //onChange={handleSelection}
                                                                 />
                                                             </FormControl>
                                                             <FormControl fullWidth variant="outlined">
@@ -527,7 +329,7 @@ function GenerateAttendance() {
                                                                     name='sixDaysWorkingDays'
                                                                     value={generateSelection.sixDaysWorkingDays}
                                                                     disabled
-                                                                    //onChange={handleSelection}
+                                                                //onChange={handleSelection}
                                                                 />
                                                             </FormControl>
 
@@ -544,6 +346,16 @@ function GenerateAttendance() {
                                                                 <Button type='submit' size='small' color='success' variant='contained' endIcon={<ModelTraining />}>Genarate</Button>
                                                             </Box>
                                                         </Stack>
+
+                                                        <Card sx={{ p: 1 }}>
+                                                            <Typography component={'h5'} variant='p' color={'red'}  >Note*</Typography>
+                                                            <Typography>1. Before generating attendance, ensure all active employees' attendance until the 25th of the selected month must be there.</Typography>
+                                                            <Typography>2. Make sure all attendance updation done before the generation.</Typography>
+                                                            <Typography>3. All application requests like (leaves, miss-punch, etc.) should fullfiled before generation.</Typography>
+                                                            {/* <Typography>4. Auto-Generate Attendance will work on 1st of every month.</Typography> */}
+
+
+                                                        </Card>
                                                     </Stack>
                                                 </Collapse>
                                             </Box>
@@ -582,8 +394,8 @@ function GenerateAttendance() {
                                                                 atteandanceData.length !== 0 &&
                                                                 <Fade in={atteandanceData.length !== 0} timeout={1000} >
                                                                     <Stack direction={'row'} spacing={0.2}>
-                                                                       
-                                                                        <IconButton title='Delete Generated Attendance' color="error"  onClick={handleDeleteData}> <Delete /> </IconButton>
+
+                                                                        {/* <IconButton title='Delete Generated Attendance' color="error"  onClick={handleDeleteData}> <Delete /> </IconButton> */}
                                                                         {/* <FormControlLabel
                                                                             control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
                                                                         /> */}

@@ -25,6 +25,7 @@ import "jspdf-autotable";
 import { toast } from "react-toastify";
 import Loader from "../Loader";
 import AccessNavBar from "../NavBar/AccessNavBar";
+import CryptoJS from "crypto-js";
 
 
 function createData(
@@ -53,6 +54,7 @@ const PaySlips = () => {
   const [companyDetails, setCompanyDetails] = useState({ company_logo: '', company_address: '' })
   const [viewDetailsFields, setViewDetailsFields] = useState({ year: '', month: '' })
   const [salaryData, setSalaryData] = useState(null)
+  const [employeeInfo, setEmployeeInfo] = useState({uan:'',pan_number:''})
 
   
   const currentYear = new Date().getFullYear();
@@ -105,11 +107,11 @@ const PaySlips = () => {
       { maxWidth: 60, align: "justify" }
     );
     const empName = userDetails.first_name + " " + userDetails.last_name;
-    const empCode = 'bcg/' + userDetails.employee_id;
+    const empCode = 'BCG' + userDetails.employee_id;
     const desg = userDetails.designation
     const monthYear = viewDetailsFields.month + " " + viewDetailsFields.year;
     doc.text(
-      `\nName of the Employee: ${empName} \nEmployee Code: ${empCode} \nDesignation: ${desg} \nPF Number: null \nPAN Number: null \n\nPay slip for the month of ${monthYear}`,
+      `\nName of the Employee: ${empName} \nEmployee Code: ${empCode} \nDesignation: ${desg} \nPF Number: ${employeeInfo.uan===''?'null':employeeInfo.uan} \nPAN Number:  ${employeeInfo.pan_number===''?'null':employeeInfo.pan_number} \n\nPay slip for the month of ${monthYear}`,
       30,
       40
     );
@@ -138,9 +140,17 @@ const PaySlips = () => {
         populateTable(salaryResult.data[0])
       }
       setSalaryData(salaryResult.data)
-      const compnayResult = await axios.post('/api/companydetails', { emp_id: userDetails.employee_id })
-      setCompanyDetails(compnayResult.data[0])
+      const companyResult = await axios.post('/api/companydetails', { emp_id: userDetails.employee_id })
+      setCompanyDetails(companyResult.data[0])
+
+      const employeeDetailsResult = await axios.get('/api/employeedetails', { params:{ emp_id: userDetails.employee_id } })
+      //console.log(employeeDetailsResult)
+      const decrypted_data = JSON.parse(CryptoJS.AES.decrypt(employeeDetailsResult.data, process.env.REACT_APP_DATA_ENCRYPTION_SECRETE).toString(CryptoJS.enc.Utf8))
+      if(decrypted_data.length!==0){
+        setEmployeeInfo(decrypted_data[0])
+      }
       setLoader(false)
+
     }
     catch(err){
       //console.log(err)
