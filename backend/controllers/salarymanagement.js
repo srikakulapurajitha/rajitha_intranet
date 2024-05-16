@@ -195,3 +195,28 @@ export const deletesalartdetails = async (req, res) => {
     }
 }
 
+export const employeedetails = async (req, res) => {
+    if (req.checkAuth.isAuth) {
+        const employee_details_query = `select uan, pan_number, account_number  from employeedetails where emp_id=?`
+        //console.log('params',req.params,req.query)
+        const {emp_id} = req.query
+        
+        db.query(employee_details_query,[emp_id],(err,result)=>{
+            if(err){
+                console.log(err)
+                return res.status(500).json('error occured!')
+            }
+            else{
+                const encryptData = CryptoJS.AES.encrypt(JSON.stringify(result),process.env.DATA_ENCRYPTION_SECRETE).toString()
+                return res.send(encryptData)
+                //return res.send(result)
+            }
+        })
+
+       
+    }
+    else {
+        return res.status(401).json(`Unauthorized User can't perform action!`)
+    }
+}
+

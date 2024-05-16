@@ -12,6 +12,8 @@ const leaveTypes = {
     'Special': 'SL'
 }
 
+const months = { 0: 'January', 1: 'February', 2: 'March', 3: 'April', 4: 'May', 5: 'June', 6: 'July', 7: 'August', 8: 'September', 9: 'October', 10: 'November', 11: 'December' }
+
 
 export const getreportinghead = (req, res) => {
     const { emp_id } = req.body
@@ -220,10 +222,13 @@ export const reportingheadlogin = (req, res) => {
                                         let anyError;
                                         try {
 
+
+
+                                           
                                             await db.promise().query(update_application_query, update_application_values)
                                             const dates = [...selected_dates.split(','), half_day].filter(date => date !== '')
-
-                                            // console.log('cancel application', 'coming', application_status)
+                                            console.log('dates', dates)
+                                            
                                             if (application_status === 'approved') {
                                                 // console.log('approval')
                                                 let total = 0
@@ -231,31 +236,90 @@ export const reportingheadlogin = (req, res) => {
                                                     total = result[0].total_leaves
                                                 }
                                                 let update_balance_query_params = []
-
+            
                                                 const update_balance_values = []
                                                 //let total = result[0].total_leaves
-
-                                                dates.forEach(date => {
-                                                    // console.log(date)
-                                                    if (date !== '') {
+            
+            
+                                                // dates.forEach(date => {
+                                                //     // console.log(date)
+                                                //     if (date !== '') {
+                                                //         update_balance_query_params.push('(?)')
+                                                //         if (dates[dates.length - 1] === date && half_day !== "") {
+                                                //             total = total - 0.5
+                                                //             update_balance_values.push([emp_id, 0, 0.5, date, total, id])
+                                                //         }
+                                                //         else {
+                                                //             total = total - 1
+                                                //             update_balance_values.push([emp_id, 0, 1, date, total, id])
+                                                //         }
+                                                //     }
+            
+                                                // })
+            
+                                                //const update_generated_attendance_for_days = []
+                                                for(let x of dates){
+                                                    const date = new Date(x)
+                                                    let month, year;
+                                                    if(date.getDate()<=25){
+                                                        month = months[date.getMonth()]
+                                                        year = date.getFullYear()
+                                                    }
+                                                    else{
+                                                        const new_date = new Date(date.getFullYear(),date.getMonth()+1,1)
+                                                        month = months[new_date.getMonth()]
+                                                        year = new_date.getFullYear()
+                                                    }
+                                                    console.log('month/year:', month, year)
+                                                    const check_generated_attendace_query = `select * from monthattendance where month = ? and year =? and emp_id=?`
+                                                    const check_generated_attendace_values = [month,year,emp_id]
+                                                    const check_generated_attendace_result = await db.promise().query(check_generated_attendace_query, check_generated_attendace_values)
+                                                    const check_result = check_generated_attendace_result[0]
+                                                    console.log('check_result',check_result.length)
+                                                    if(check_result.length===0){
                                                         update_balance_query_params.push('(?)')
-                                                        if (dates[dates.length - 1] === date && half_day !== "") {
+                                                        console.log('consider', x)
+                                                        if (dates[dates.length - 1] === x && half_day !== "") {
                                                             total = total - 0.5
-                                                            update_balance_values.push([emp_id, 0, 0.5, date, total, id])
+                                                            update_balance_values.push([emp_id, 0, 0.5, x, total, id])
                                                         }
                                                         else {
                                                             total = total - 1
-                                                            update_balance_values.push([emp_id, 0, 1, date, total, id])
+                                                            update_balance_values.push([emp_id, 0, 1, x, total, id])
                                                         }
                                                     }
-
-                                                })
+                                                    else{
+                                                        console.log('wont consider', x)
+                                                        //update_generated_attendance_for_days.push(x)
+                                                        let total_leaves = 0;
+                                                        if (dates[dates.length - 1] === x && half_day !== "") {
+                                                            total_leaves = 0.5
+                                                            
+                                                        }
+                                                        else {
+                                                            total_leaves =  1
+                                                            
+                                                        }
+                                                        const {approved_leaves, unapproved_leaves} = check_result[0]
+                                                        const update_generated_attendace_query = `update monthattendance set approved_leaves=?, unapproved_leaves=?  where month = ? and year =? and emp_id=?`
+                                                        const update_generated_attendace_values = [approved_leaves+total_leaves, unapproved_leaves-1,month,year, emp_id]
+            
+                                                        const update_leave_status_query = `update balanceleaves set reference=? where reference=? and emp_id=?`
+                                                        const update_leave_status_values = [`${id} + ${month},${year} Unapproved-Leaves Deduction`, `${month},${year} Unapproved-Leaves Deduction`, emp_id]
+            
+                                                        await db.promise().query(update_generated_attendace_query, update_generated_attendace_values)
+                                                        await db.promise().query(update_leave_status_query, update_leave_status_values)
+                                                        
+            
+                                                    }
+                                                }
+                                                console.log('add',update_balance_values)
                                                 // const delete_balance_query =`delete from balanceleaves where debit!=0 and emp_id=? and date in(?)`
                                                 // const delete_balance_value = [emp_id,dates.filter(date=>date!=='')]
                                                 const update_balance_query = `insert into balanceleaves(emp_id,credit,debit,date,total_leaves,reference) values` + update_balance_query_params.join(',')
                                                 // console.log('query:', update_balance_query)
                                                 // console.log('values:', update_balance_values)
-
+            
                                                 const update_attendance_full_days_query = `update attendance set updated_status=? where pdate in (?) and emp_id=?`
                                                 const update_attendance_full_days_values = ['EL', selected_dates.split(','), emp_id]
                                                 const update_attendance_half_days_query = `update attendance set updated_status=? where pdate =? and emp_id=?`
@@ -263,9 +327,10 @@ export const reportingheadlogin = (req, res) => {
                                                 await db.promise().query(update_attendance_full_days_query, update_attendance_full_days_values)
                                                 await db.promise().query(update_attendance_half_days_query, update_attendance_half_days_values)
                                                 await db.promise().query(update_balance_query, update_balance_values)
-
+            
                                             }
                                             else if (application_status === 'cancelled' && checkres[0].status === 'approved') {
+                                                // console.log('cancel', 'com')
                                                 // console.log('cancel', 'com')
                                                 let total = 0
                                                 if (result.length !== 0) {
@@ -274,11 +339,41 @@ export const reportingheadlogin = (req, res) => {
                                                 let update_balance_query_params = []
                                                 //const dates = (selected_dates + ',' + half_day).split(',')
                                                 const update_balance_values = []
-                                                //let total = result[0].total_leaves
-
-                                                dates.forEach(date => {
-                                                    // console.log(date)
-                                                    if (date !== '') {
+                                                //let total = result[0].total_leaves`
+            
+                                                // dates.forEach(date => {
+                                                //     // console.log(date)
+                                                //     if (date !== '') {
+                                                //         update_balance_query_params.push('(?)')
+                                                //         if (dates[dates.length - 1] === date && half_day !== "") {
+                                                //             total = total + 0.5
+                                                //             update_balance_values.push([emp_id, 0.5, 0, date, total, id])
+                                                //         }
+                                                //         else {
+                                                //             total = total + 1
+                                                //             update_balance_values.push([emp_id, 1, 0, date, total, id])
+                                                //         }
+                                                //     }
+            
+                                                // })
+            
+                                                for(let x of dates){
+                                                    const date = new Date(x)
+                                                    let month, year;
+                                                    if(date.getDate()<=25){
+                                                        month = months[date.getMonth()]
+                                                        year = date.getFullYear()
+                                                    }
+                                                    else{
+                                                        const new_date = new Date(date.getFullYear(),date.getMonth()+1,1)
+                                                        month = months[new_date.getMonth()]
+                                                        year = new_date.getFullYear()
+                                                    }
+                                                    const check_generated_attendace_query = `select * from monthattendance where month = ? and year =? and emp_id=?`
+                                                    const check_generated_attendace_values = [month,year, emp_id]
+                                                    const check_generated_attendace_result = await db.promise().query(check_generated_attendace_query, check_generated_attendace_values)
+                                                    const check_result = check_generated_attendace_result[0]
+                                                    if(check_result.length===0){
                                                         update_balance_query_params.push('(?)')
                                                         if (dates[dates.length - 1] === date && half_day !== "") {
                                                             total = total + 0.5
@@ -289,23 +384,46 @@ export const reportingheadlogin = (req, res) => {
                                                             update_balance_values.push([emp_id, 1, 0, date, total, id])
                                                         }
                                                     }
-
-                                                })
+                                                    else{
+                                                        //update_generated_attendance_for_days.push(x)
+                                                        let total_leaves = 0;
+                                                        if (dates[dates.length - 1] === x && half_day !== "") {
+                                                            total_leaves = 0.5
+                                                            
+                                                        }
+                                                        else {
+                                                            total_leaves =  1
+                                                            
+                                                        }
+                                                        const {approved_leaves, unapproved_leaves} = check_result[0]
+                                                        console.log('approved/un-app',approved_leaves-total_leaves, unapproved_leaves+1)
+                                                        const update_generated_attendace_query = `update monthattendance set approved_leaves=?, unapproved_leaves=?  where month = ? and year =? and emp_id=?`
+                                                        const update_generated_attendace_values = [approved_leaves-total_leaves, unapproved_leaves+1,month,year, emp_id]
+            
+                                                        const update_leave_status_query = `update balanceleaves set reference=? where reference=? and emp_id=?`
+                                                        const update_leave_status_values = [`${id} + ${month},${year} Unapproved-Leaves Deduction`, `${month},${year} Unapproved-Leaves Deduction`, emp_id]
+            
+                                                        await db.promise().query(update_generated_attendace_query, update_generated_attendace_values)
+                                                        await db.promise().query(update_leave_status_query, update_leave_status_values)
+                                                        
+            
+                                                    }
+                                                }
                                                 // const delete_balance_query =`delete from balanceleaves where debit!=0 and emp_id=? and date in(?)`
                                                 // const delete_balance_value = [emp_id,dates.filter(date=>date!=='')]
                                                 const update_balance_query = `insert into balanceleaves(emp_id,credit,debit,date,total_leaves,reference) values` + update_balance_query_params.join(',')
                                                 // console.log('query:', update_balance_query)
                                                 // console.log('values:', update_balance_values)
-
+            
                                                 const find_holidays_query = `select holiday_date from officeholidays inner join companypagesmanagement on pageId = id inner join usermanagement on usermanagement.company_name = companypagesmanagement.company_name where employee_id=? and officeholidays.department rlike usermanagement.department ;`
                                                 const find_holidays_values = [emp_id]
             
                                                 const holidays_result = await db.promise().query(find_holidays_query, find_holidays_values)
                                                 const office_holidays = holidays_result[0].map(date => date.holiday_date.toLocaleString('en-CA').slice(0, 10))
-
+            
                                                 const find_user_shift_query = `select shift from usermanagement where employee_id = ?`
                                                 const find_user_shift_value = [emp_id]
-
+            
                                                 const shift_result = await db.promise().query(find_user_shift_query, find_user_shift_value)
                                                 const shift = shift_result[0][0].shift
             
@@ -315,9 +433,8 @@ export const reportingheadlogin = (req, res) => {
                                                 const update_attendance_values = [office_holidays, dates, emp_id]
                                                 await db.promise().query(update_balance_query, update_balance_values)
                                                 await db.promise().query(update_attendance_query, update_attendance_values)
-
-
-
+            
+            
                                             }
                                             console.log('dates', dates, dates.length)
                                             for (let i = 0; i < dates.length; i++) {
@@ -464,6 +581,8 @@ export const checkapplicationerequest = (req, res) => {
                                 const update_application_values = [application_status, applicationId]
                                 await db.promise().query(update_application_query, update_application_values)
                                 const dates = [...selected_dates.split(','), half_day].filter(date => date !== '')
+                                console.log('dates', dates)
+                                
                                 if (application_status === 'approved') {
                                     // console.log('approval')
                                     let total = 0
@@ -475,21 +594,80 @@ export const checkapplicationerequest = (req, res) => {
                                     const update_balance_values = []
                                     //let total = result[0].total_leaves
 
-                                    dates.forEach(date => {
-                                        // console.log(date)
-                                        if (date !== '') {
+
+                                    // dates.forEach(date => {
+                                    //     // console.log(date)
+                                    //     if (date !== '') {
+                                    //         update_balance_query_params.push('(?)')
+                                    //         if (dates[dates.length - 1] === date && half_day !== "") {
+                                    //             total = total - 0.5
+                                    //             update_balance_values.push([emp_id, 0, 0.5, date, total, id])
+                                    //         }
+                                    //         else {
+                                    //             total = total - 1
+                                    //             update_balance_values.push([emp_id, 0, 1, date, total, id])
+                                    //         }
+                                    //     }
+
+                                    // })
+
+                                    //const update_generated_attendance_for_days = []
+                                    for(let x of dates){
+                                        const date = new Date(x)
+                                        let month, year;
+                                        if(date.getDate()<=25){
+                                            month = months[date.getMonth()]
+                                            year = date.getFullYear()
+                                        }
+                                        else{
+                                            const new_date = new Date(date.getFullYear(),date.getMonth()+1,1)
+                                            month = months[new_date.getMonth()]
+                                            year = new_date.getFullYear()
+                                        }
+                                        console.log('month/year:', month, year)
+                                        const check_generated_attendace_query = `select * from monthattendance where month = ? and year =? and emp_id=?`
+                                        const check_generated_attendace_values = [month,year,emp_id]
+                                        const check_generated_attendace_result = await db.promise().query(check_generated_attendace_query, check_generated_attendace_values)
+                                        const check_result = check_generated_attendace_result[0]
+                                        console.log('check_result',check_result.length)
+                                        if(check_result.length===0){
                                             update_balance_query_params.push('(?)')
-                                            if (dates[dates.length - 1] === date && half_day !== "") {
+                                            console.log('consider', x)
+                                            if (dates[dates.length - 1] === x && half_day !== "") {
                                                 total = total - 0.5
-                                                update_balance_values.push([emp_id, 0, 0.5, date, total, id])
+                                                update_balance_values.push([emp_id, 0, 0.5, x, total, id])
                                             }
                                             else {
                                                 total = total - 1
-                                                update_balance_values.push([emp_id, 0, 1, date, total, id])
+                                                update_balance_values.push([emp_id, 0, 1, x, total, id])
                                             }
                                         }
+                                        else{
+                                            console.log('wont consider', x)
+                                            //update_generated_attendance_for_days.push(x)
+                                            let total_leaves = 0;
+                                            if (dates[dates.length - 1] === x && half_day !== "") {
+                                                total_leaves = 0.5
+                                                
+                                            }
+                                            else {
+                                                total_leaves =  1
+                                                
+                                            }
+                                            const {approved_leaves, unapproved_leaves} = check_result[0]
+                                            const update_generated_attendace_query = `update monthattendance set approved_leaves=?, unapproved_leaves=?  where month = ? and year =? and emp_id=?`
+                                            const update_generated_attendace_values = [approved_leaves+total_leaves, unapproved_leaves-1,month,year, emp_id]
 
-                                    })
+                                            const update_leave_status_query = `update balanceleaves set reference=? where reference=? and emp_id=?`
+                                            const update_leave_status_values = [`${id} + ${month},${year} Unapproved-Leaves Deduction`, `${month},${year} Unapproved-Leaves Deduction`, emp_id]
+
+                                            await db.promise().query(update_generated_attendace_query, update_generated_attendace_values)
+                                            await db.promise().query(update_leave_status_query, update_leave_status_values)
+                                            
+
+                                        }
+                                    }
+                                    console.log('add',update_balance_values)
                                     // const delete_balance_query =`delete from balanceleaves where debit!=0 and emp_id=? and date in(?)`
                                     // const delete_balance_value = [emp_id,dates.filter(date=>date!=='')]
                                     const update_balance_query = `insert into balanceleaves(emp_id,credit,debit,date,total_leaves,reference) values` + update_balance_query_params.join(',')
@@ -507,6 +685,7 @@ export const checkapplicationerequest = (req, res) => {
                                 }
                                 else if (application_status === 'cancelled' && checkres[0].status === 'approved') {
                                     // console.log('cancel', 'com')
+                                    // console.log('cancel', 'com')
                                     let total = 0
                                     if (result.length !== 0) {
                                         total = result[0].total_leaves
@@ -514,11 +693,41 @@ export const checkapplicationerequest = (req, res) => {
                                     let update_balance_query_params = []
                                     //const dates = (selected_dates + ',' + half_day).split(',')
                                     const update_balance_values = []
-                                    //let total = result[0].total_leaves
+                                    //let total = result[0].total_leaves`
 
-                                    dates.forEach(date => {
-                                        // console.log(date)
-                                        if (date !== '') {
+                                    // dates.forEach(date => {
+                                    //     // console.log(date)
+                                    //     if (date !== '') {
+                                    //         update_balance_query_params.push('(?)')
+                                    //         if (dates[dates.length - 1] === date && half_day !== "") {
+                                    //             total = total + 0.5
+                                    //             update_balance_values.push([emp_id, 0.5, 0, date, total, id])
+                                    //         }
+                                    //         else {
+                                    //             total = total + 1
+                                    //             update_balance_values.push([emp_id, 1, 0, date, total, id])
+                                    //         }
+                                    //     }
+
+                                    // })
+
+                                    for(let x of dates){
+                                        const date = new Date(x)
+                                        let month, year;
+                                        if(date.getDate()<=25){
+                                            month = months[date.getMonth()]
+                                            year = date.getFullYear()
+                                        }
+                                        else{
+                                            const new_date = new Date(date.getFullYear(),date.getMonth()+1,1)
+                                            month = months[new_date.getMonth()]
+                                            year = new_date.getFullYear()
+                                        }
+                                        const check_generated_attendace_query = `select * from monthattendance where month = ? and year =? and emp_id=?`
+                                        const check_generated_attendace_values = [month,year, emp_id]
+                                        const check_generated_attendace_result = await db.promise().query(check_generated_attendace_query, check_generated_attendace_values)
+                                        const check_result = check_generated_attendace_result[0]
+                                        if(check_result.length===0){
                                             update_balance_query_params.push('(?)')
                                             if (dates[dates.length - 1] === date && half_day !== "") {
                                                 total = total + 0.5
@@ -529,8 +738,31 @@ export const checkapplicationerequest = (req, res) => {
                                                 update_balance_values.push([emp_id, 1, 0, date, total, id])
                                             }
                                         }
+                                        else{
+                                            //update_generated_attendance_for_days.push(x)
+                                            let total_leaves = 0;
+                                            if (dates[dates.length - 1] === x && half_day !== "") {
+                                                total_leaves = 0.5
+                                                
+                                            }
+                                            else {
+                                                total_leaves =  1
+                                                
+                                            }
+                                            const {approved_leaves, unapproved_leaves} = check_result[0]
+                                            console.log('approved/un-app',approved_leaves-total_leaves, unapproved_leaves+1)
+                                            const update_generated_attendace_query = `update monthattendance set approved_leaves=?, unapproved_leaves=?  where month = ? and year =? and emp_id=?`
+                                            const update_generated_attendace_values = [approved_leaves-total_leaves, unapproved_leaves+1,month,year, emp_id]
 
-                                    })
+                                            const update_leave_status_query = `update balanceleaves set reference=? where reference=? and emp_id=?`
+                                            const update_leave_status_values = [`${id} + ${month},${year} Unapproved-Leaves Deduction`, `${month},${year} Unapproved-Leaves Deduction`, emp_id]
+
+                                            await db.promise().query(update_generated_attendace_query, update_generated_attendace_values)
+                                            await db.promise().query(update_leave_status_query, update_leave_status_values)
+                                            
+
+                                        }
+                                    }
                                     // const delete_balance_query =`delete from balanceleaves where debit!=0 and emp_id=? and date in(?)`
                                     // const delete_balance_value = [emp_id,dates.filter(date=>date!=='')]
                                     const update_balance_query = `insert into balanceleaves(emp_id,credit,debit,date,total_leaves,reference) values` + update_balance_query_params.join(',')
@@ -558,7 +790,7 @@ export const checkapplicationerequest = (req, res) => {
 
 
                                 }
-                                console.log('dates', dates, dates.length)
+                                //console.log('dates', dates, dates.length)
                                 for (let i = 0; i < dates.length; i++) {
                                     console.log(i, new Date(dates[i]))
                                     try {

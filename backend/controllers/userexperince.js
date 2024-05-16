@@ -56,7 +56,9 @@ const updateuserdesigantion = (emp_id) => {
                         const {promotion_title} = result[0]
                         const update_designation_query = `update usermanagement set designation = ? where employee_id=?`
                         const update_designation_value = [promotion_title, emp_id]
+                        const update_designation_employeedetails_query = `update employeedetails set designation = ? where emp_id=?`
                         await db.promise().query(update_designation_query, update_designation_value)
+                        await db.promise().query(update_designation_employeedetails_query, update_designation_value)
                         
                     }
                     resolve('updated')

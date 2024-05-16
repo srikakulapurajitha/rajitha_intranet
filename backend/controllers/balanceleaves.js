@@ -219,13 +219,13 @@ export const generateattendance = (req, res) => {
                                 const startDate = new Date(year, month - 1, 26).toLocaleString(undefined, { year: 'numeric', month: '2-digit', day: '2-digit' }).slice(0, 10).split('/').reverse().join('-')
                                 const endDate = new Date(year, month, 25).toLocaleString(undefined, { year: 'numeric', month: '2-digit', day: '2-digit' }).slice(0, 10).split('/').reverse().join('-')
 
-                                const check_attendance_query = `select * from attendance where pdate = ?`
-                                const check_attendance_values = [endDate]
+                                const check_attendance_query = `select * from attendance where pdate in (?)`
+                                const check_attendance_values = [[startDate,endDate]]
 
                                 let attendance_result = await db.promise().query(check_attendance_query, check_attendance_values)
                                 attendance_result = attendance_result[0]
 
-                                if (attendance_result.length !== dbresult) {
+                                if (attendance_result.length >= dbresult.length*2) {
                                     const workingDays = {
                                         9: fiveDaysWorkingDays,
                                         8: sixDaysWorkingDays
@@ -261,7 +261,7 @@ export const generateattendance = (req, res) => {
                                                 const finding_leaves_query = `select * from balanceleaves where date >=? and date <=? and emp_id=? order by date`
                                                 const finding_employees_values = [startDate, endDate, i.employee_id]
                                                 
-                                                const last_total_balacance_query = `select total_leaves from balanceleaves where emp_id=? order by date desc limit 1`
+                                                const last_total_balacance_query = `select total_leaves from balanceleaves where emp_id=? order by id desc limit 1`
                                                 const last_total_balacance_values = [ i.employee_id]
 
 
@@ -273,8 +273,11 @@ export const generateattendance = (req, res) => {
                                                 const totalBal = (last_total_balacance_result[0]).length===0?0:(last_total_balacance_result[0][0])['total_leaves']
                                                 console.log('balance', find_employees_result[0], totalBal)
 
+
+
                                                 const bal = balanceLeaves[0]
-                                                const openLeaves = balanceLeaves.length === 0 ? 0 : bal['total_leaves']+bal['debit']-bal['credit']
+                                                
+                                                const openLeaves = balanceLeaves.length === 0 ? totalBal : bal['total_leaves']+bal['debit']-bal['credit']
                                                 const newLeavesAdded = balanceLeaves.length === 0 ? 0 : balanceLeaves.map(data => data.credit).reduce((prev, curr) => prev + curr)
                                                 const adjustedLeaves = totalApprovedLeaves + totalUnapprovedLeaves
                                                 let lossOfPays;
@@ -337,7 +340,7 @@ export const generateattendance = (req, res) => {
 
                                 }
                                 else {
-                                    return res.status(406).json('Please upload all employees attendance data till 25th of selected month!')
+                                    return res.status(406).json('Please upload all employees attendance data till 26th of last month to 25th of selected month!')
                                 }
 
                             }
@@ -399,37 +402,37 @@ export const viewgeneratedattendance = (req,res)=>{
 }
 
 
-export const deletegeneratedattendance = async(req,res) =>{
-    if (req.checkAuth.isAuth && req.checkAuth.user_type === 'admin') {
-        const {month, year} = req.body
-        const keys  =  Object.keys(months)
-        const values = Object.values(months)
-        //console.log(values.indexOf(month),keys[values.indexOf(month)])
-        //const date = new Date(year, keys[values.indexOf(month)],25).toLocaleString(undefined, { year: 'numeric', month: '2-digit', day: '2-digit' }).slice(0, 10).split('/').reverse().join('-')
-        //console.log(date)
-        const delete_generated_attendace_query = `delete from monthattendance where month=? and year=? `
-        const delete_generated_attendace_values = [month,year]
-        const delete_balanced_leaves_entries_query = `delete from balanceleaves where reference=?`
+// export const deletegeneratedattendance = async(req,res) =>{
+//     if (req.checkAuth.isAuth && req.checkAuth.user_type === 'admin') {
+//         const {month, year} = req.body
+//         const keys  =  Object.keys(months)
+//         const values = Object.values(months)
+//         //console.log(values.indexOf(month),keys[values.indexOf(month)])
+//         //const date = new Date(year, keys[values.indexOf(month)],25).toLocaleString(undefined, { year: 'numeric', month: '2-digit', day: '2-digit' }).slice(0, 10).split('/').reverse().join('-')
+//         //console.log(date)
+//         const delete_generated_attendace_query = `delete from monthattendance where month=? and year=? `
+//         const delete_generated_attendace_values = [month,year]
+//         const delete_balanced_leaves_entries_query = `delete from balanceleaves where reference=?`
 
-        const delete_balanced_leaves_entries_values = [ `${month},${year} Unapproved-Leaves Deduction`]
-        try{
+//         const delete_balanced_leaves_entries_values = [ `${month},${year} Unapproved-Leaves Deduction`]
+//         try{
             
-            await db.promise().query(delete_generated_attendace_query, delete_generated_attendace_values)
-            await db.promise().query(delete_balanced_leaves_entries_query, delete_balanced_leaves_entries_values)
+//             await db.promise().query(delete_generated_attendace_query, delete_generated_attendace_values)
+//             await db.promise().query(delete_balanced_leaves_entries_query, delete_balanced_leaves_entries_values)
 
-            return res.status(200).json('Generated Attendance Deleted Successfully')
+//             return res.status(200).json('Generated Attendance Deleted Successfully')
 
-        }
-        catch(err){
-            console.log(err)
-            return res.status(500).json('error occured!')
-        }
+//         }
+//         catch(err){
+//             console.log(err)
+//             return res.status(500).json('error occured!')
+//         }
          
-    }
-    else{
-        return res.status(401).json(`Unauthorized User can't perform action!`) 
-    }
-}
+//     }
+//     else{
+//         return res.status(401).json(`Unauthorized User can't perform action!`) 
+//     }
+// }
 
 export const generatedmonthattendance = async(req,res)=>{
     if (req.checkAuth.isAuth) {
